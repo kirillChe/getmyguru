@@ -1,0 +1,35 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "NODE_ENV=test mocha tests/unit/*.js --exit",
+    "start": "pm2-runtime start app.js --watch",
+    "dbcreate": "sequelize db:create && sequelize db:migrate && sequelize db:seed:all",
+    "migrate": "sequelize db:migrate",
+    "seed": "sequelize db:seed:all"
+  },
+  "author": "Kirill Chernichenko",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "mocha": "^6.0.2",
+    "supertest": "^4.0.2"
+  },
+  "dependencies": {
+    "await-handler": "^1.1.2",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "lodash": "^4.17.11",
+    "morgan": "^1.9.1",
+    "mysql2": "^1.6.5",
+    "ramda": "^0.26.1",
+    "require-all": "^3.0.0",
+    "sequelize": "^5.2.8",
+    "sequelize-cli": "^5.4.0"
+  }
+}

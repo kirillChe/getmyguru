@@ -1,0 +1,21 @@
+{
+    "env": {
+        "es6": true,
+        "node": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+        "Atomics": false,
+        "SharedArrayBuffer": false,
+        "before": false,
+        "describe": false,
+        "it": false
+    },
+    "parserOptions": {
+        "ecmaVersion": 2017,
+        "sourceType": "module"
+    },
+    "rules": {
+        "no-console": "off"
+    }
+}

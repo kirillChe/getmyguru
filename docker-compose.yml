@@ -16,7 +16,6 @@ services:
 
   backend:
     build: './server'
-#      dockerfile: Dockerfile
     depends_on:
       - db
 #    image: kirillche/bmern
@@ -26,11 +25,8 @@ services:
     container_name: back
     volumes:
       - ./server:/app
-#      - ./server/package.json:/opt/package.json
-#      - ./server/package-lock.json:/opt/package-lock.json
       - /app/node_modules
 #      - notused:/opt/app/node_modules
-      #- ./server:/app
 #    command: sh -c 'tail -f /dev/null'
     command: sh -c 'npm start'
 
@@ -45,11 +41,8 @@ services:
     container_name: front
     volumes:
       - ./client:/app
-#      - ./client/package.json:/opt/package.json
-#      - ./client/package-lock.json:/opt/package-lock.json
       - /app/node_modules
 #      - notused:/opt/app/node_modules
-#      - ./client:/app
 #    command: sh -c 'tail -f /dev/null'
     command: sh -c 'npm start'
 

@@ -15,7 +15,7 @@ function Footer(props) {
     return (
         <footer className={classes.footer}>
             <Typography variant="h6" align="center" gutterBottom>
-                &copy; GETMYGURU 2019
+                &copy; COMPANY 2019
             </Typography>
             <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
                 All rights reserved.

@@ -52,7 +52,6 @@ const ages = [
     }
 ];
 
-
 class Filter extends React.Component {
     state = {
         firstName: '',

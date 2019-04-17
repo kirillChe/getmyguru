@@ -8,6 +8,8 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import FitnessIcon from '@material-ui/icons/FitnessCenter';
 
+import {Login} from './';
+
 const styles = {
     root: {
         flexGrow: 1,
@@ -24,25 +26,23 @@ const styles = {
 function ButtonAppBar(props) {
     const { classes } = props;
     return (
-        <div className={classes.root}>
-            <AppBar color="default" position="static">
-                <Toolbar>
-                    <IconButton className={classes.menuButton} color="inherit" aria-label="Icon">
-                        <FitnessIcon />
-                    </IconButton>
-                    <Typography variant="h6" color="inherit" className={classes.grow}>
-                        COMPANY
-                    </Typography>
-                    <Button color="inherit">Login</Button>
-                    <Button variant="outlined" color="primary">Sign Up</Button>
-                </Toolbar>
-            </AppBar>
-        </div>
+        <AppBar position="sticky" color="default" className={classes.root}>
+            <Toolbar>
+                <IconButton className={classes.menuButton} color="inherit" aria-label="Icon">
+                    <FitnessIcon />
+                </IconButton>
+                <Typography variant="h6" color="inherit" className={classes.grow}>
+                    COMPANY
+                </Typography>
+                <Login />
+                <Button variant="outlined" color="primary">Sign Up</Button>
+            </Toolbar>
+        </AppBar>
     );
 }
 
-ButtonAppBar.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
+// ButtonAppBar.propTypes = {
+//     classes: PropTypes.object.isRequired,
+// };
 
 export default withStyles(styles)(ButtonAppBar);

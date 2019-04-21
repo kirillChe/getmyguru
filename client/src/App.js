@@ -12,7 +12,6 @@ import { Main } from "./components";
 
 // import logo from "./logo.svg";
 
-
 function App() {
     return (
       <Router>

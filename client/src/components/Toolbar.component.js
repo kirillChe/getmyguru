@@ -137,7 +137,7 @@ class ButtonAppBar extends React.Component {
                     <Typography variant="h6" color="inherit" className={classes.grow}>
                         COMPANY
                     </Typography>
-                    <Button color="inherit" onClick={this.handleClickLogin}>
+                    <Button color="inherit" className='btn-link' onClick={this.handleClickLogin}>
                         Login
                     </Button>
                     <Button variant="outlined" color="primary" onClick={this.handleClickSignUp}>

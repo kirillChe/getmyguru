@@ -9,7 +9,7 @@ module.exports = {
             userType: 'guru',
             nickname: 'trainer',
             email: 'trainer@yopmail.com',
-            password: 'qwerty12345',
+            password: '$2y$12$ouhlGna5KSMaioCwSWmvOupENFD.ty896bhvwOztmjzLVSo9OcNce',
             phone: '+9721234567',
             age: 44,
             createdAt: new Date(),

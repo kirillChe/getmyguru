@@ -31,7 +31,7 @@ module.exports = {
             },
             password: {
                 allowNull: false,
-                type: Sequelize.STRING(16)
+                type: Sequelize.STRING(100)
             },
             phone: {
                 type: Sequelize.STRING(20)

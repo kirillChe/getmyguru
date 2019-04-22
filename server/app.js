@@ -52,6 +52,7 @@ app.use(passport.session());
 models.sequelize.sync().then(() => {
     console.log('Nice! Database looks fine');
 
+    app.use(middleware.isAuthenticated());
     app.use(middleware.sequelizeQueryParser());
 
     //Require routes into the application

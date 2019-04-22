@@ -10,7 +10,7 @@ module.exports = app => {
     app.get('/health-check', (req, res) => res.sendStatus(200));
 
     // POST /auth
-    app.post('/api/login', (req, res, next) => {
+    app.post('/oauth', (req, res, next) => {
         passportLocal.authenticate('local', (err, user, info) => {
             // console.log('_________________HERE: 107________________________', err, user, info);
             if(info)
@@ -28,17 +28,9 @@ module.exports = app => {
 
                 console.log('app.js :120', req.session);
 
-                return res.redirect('/authrequired');
+                return res.redirect('/');
             })
         })(req, res, next);
-    });
-
-    app.get('/api/authrequired', (req, res) => {
-        if(req.isAuthenticated()) {
-            res.send('you hit the authentication endpoint\n')
-        } else {
-            res.redirect('/')
-        }
     });
 
     // app.get('/api/users', users.find);

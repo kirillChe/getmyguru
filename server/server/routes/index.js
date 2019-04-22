@@ -1,3 +1,4 @@
+const passportLocal = require('../auth/local');
 const usersRoutes = require('./users');
 const messagesRoutes = require('./messages');
 const commentsRoutes = require('./comments');
@@ -7,6 +8,38 @@ const ratingsRoutes = require('./ratings');
 module.exports = app => {
     /** GET /api-status - Check service status **/
     app.get('/health-check', (req, res) => res.sendStatus(200));
+
+    // POST /auth
+    app.post('/api/login', (req, res, next) => {
+        passportLocal.authenticate('local', (err, user, info) => {
+            // console.log('_________________HERE: 107________________________', err, user, info);
+            if(info)
+                return res.send(info.message);
+
+            if (err)
+                return next(err);
+
+            if (!user)
+                return res.sendStatus(401);
+
+            req.login(user, (err) => {
+                if (err)
+                    return next(err);
+
+                console.log('app.js :120', req.session);
+
+                return res.redirect('/authrequired');
+            })
+        })(req, res, next);
+    });
+
+    app.get('/api/authrequired', (req, res) => {
+        if(req.isAuthenticated()) {
+            res.send('you hit the authentication endpoint\n')
+        } else {
+            res.redirect('/')
+        }
+    });
 
     // app.get('/api/users', users.find);
     app.use('/api/users', usersRoutes);

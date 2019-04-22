@@ -5,15 +5,10 @@ const uuid = require('uuid/v4');
 const session = require('express-session');
 const redisStore = require('connect-redis')(session);
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const redis   = require("redis");
 const client = redis.createClient('redis://redis');
-const bcrypt = require('bcrypt');
-// const {User} = require('./server/models');
 //Models
 const models = require('./server/models');
-const on = require('await-handler');
-// //'redis://redis'
 
 
 const cors = require('cors');
@@ -24,40 +19,6 @@ const middleware = require('require-all')({
     dirname: __dirname + '/middleware',
     map: _.camelCase
 });
-
-passport.use(new LocalStrategy(
-    { usernameField: 'email' },
-    async (email, password, done) => {
-        console.log('_________________HERE: 29________________________', email, password);
-        try {
-            const user = await models.User.findOne({ where: {email: email} });
-            if (!user)
-                return done(null, false);
-            console.log('app.js :35', password, user.password);
-            console.log('app.js :35', bcrypt.compareSync(password, user.password));
-            // if (!user.verifyPassword(password)) { return done(null, false); }
-            if (!bcrypt.compareSync(password, user.password))
-                return done(null, false);
-
-            return done(null, user);
-        } catch (error) {
-            console.log('app.js :43', error);
-            done(error);
-        }
-    }
-));
-
-// tell passport how to serialize the user
-passport.serializeUser((user, done) => {
-    done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-    models.User.findByPk(user.id)
-        .then(user => done(null, user) )
-        .catch(error => done(error, false))
-});
-
 
 // Set up the express app
 const app = express();
@@ -97,43 +58,6 @@ models.sequelize.sync().then(() => {
     require('./server/routes')(app);
 
     app.use(middleware.errorHandler());
-
-
-
-    app.post('/api/login', (req, res, next) => {
-        console.log('_________________HERE: 91________________________', req.body);
-        passport.authenticate('local', (err, user, info) => {
-            // console.log('_________________HERE: 107________________________', err, user, info);
-            if(info)
-                return res.send(info.message);
-
-            if (err)
-                return next(err);
-
-            if (!user)
-                return res.sendStatus(401);
-
-            req.login(user, (err) => {
-                if (err)
-                    return next(err);
-
-                console.log('app.js :120', req.session);
-
-                return res.redirect('/authrequired');
-            })
-        })(req, res, next);
-    });
-
-    app.get('/api/authrequired', (req, res) => {
-        if(req.isAuthenticated()) {
-            res.send('you hit the authentication endpoint\n')
-        } else {
-            res.redirect('/')
-        }
-    });
-
-
-
 
     // set the port
     const port = parseInt(process.env.PORT, 10) || 5000;

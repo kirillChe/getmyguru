@@ -11,6 +11,7 @@ passport.use(new LocalStrategy({
     },
     async (email, password, done) => {
         let [err, user] = await on(User.findOne({ where: {email: email} }));
+        console.log('local.js :13', err, user);
         if (err)
             return done(err);
 

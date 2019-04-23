@@ -4,3 +4,6 @@ export { default as Main } from './Main.component';
 export { default as ImageGrid } from './ImageGrid.component';
 export { default as Search } from './Search.component';
 export { default as Filter } from './Filter.component';
+export { default as Login } from './Login.component';
+export { default as SignUp } from './SignUp.component';
+export { default as ForgotPwd } from './ForgotPwd.component';

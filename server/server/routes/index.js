@@ -10,9 +10,10 @@ module.exports = app => {
     app.get('/health-check', (req, res) => res.sendStatus(200));
 
     // POST /auth
-    app.post('/oauth', (req, res, next) => {
+    app.post('/oauth/', (req, res, next) => {
+        console.log('index.js :14', req.body);
         passportLocal.authenticate('local', (err, user, info) => {
-            // console.log('_________________HERE: 107________________________', err, user, info);
+            console.log('_________________HERE: 107________________________', err, user, info);
             if(info)
                 return res.send(info.message);
 

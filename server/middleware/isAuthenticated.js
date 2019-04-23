@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 module.exports = () => (req, res, next) => {
     console.log('isAuthenticated.js :3', req.url);
-    if (req.method === 'POST' && req.url === '/oauth')
+    if (req.method === 'POST' && req.url === '/oauth/')
         return next();
 
     if (req.isAuthenticated()) {

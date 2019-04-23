@@ -35,12 +35,11 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+// @TODO Add missing properties for cookies
 app.use(session({
-    genid: (req) => {
-        return uuid() // use UUIDs for session IDs
-    },
     store: new redisStore({ host: 'redis', port: 6379, client: client,ttl :  260}),
     secret: 'keyboard cat',
+    genid: () => uuid(),
     resave: false,
     saveUninitialized: true
 }));

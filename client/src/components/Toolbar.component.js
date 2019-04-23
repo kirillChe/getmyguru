@@ -12,12 +12,10 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 // import withMobileDialog from '@material-ui/core/withMobileDialog';
 import Slide from '@material-ui/core/Slide';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
 import Link from '@material-ui/core/Link';
+
+import {Login, SignUp, ForgotPwd} from '.';
+
 
 function Transition(props) {
     return <Slide direction="down" {...props} />;
@@ -42,22 +40,12 @@ const styles = theme => ({
         alignItems: 'center',
         padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
     },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing.unit,
-    },
-    submit: {
-        marginTop: theme.spacing.unit * 3,
-    },
     signup: {
         marginTop: theme.spacing.unit * 3,
         alignItems: 'center',
         display: 'flex',
         flexDirection: 'column',
     },
-
-
-
     root: {
         flexGrow: 1,
     },
@@ -79,13 +67,9 @@ class ButtonAppBar extends React.Component {
             showForgotPwd: false
         };
 
-        // I've just put these binding in the constructor
-        // so as not to clock up the render method and they only
-        // get called once during the lifetime of the component
         this.handleClickLogin = this.handleClickLogin.bind(this);
         this.handleClickSignUp = this.handleClickSignUp.bind(this);
         this.handleClickForgotPwd = this.handleClickForgotPwd.bind(this);
-
     };
 
     handleLoginClose = () => {
@@ -155,37 +139,15 @@ class ButtonAppBar extends React.Component {
                             <Typography variant="h5">
                                 Sign Up
                             </Typography>
-                            <form className={classes.form}>
-                                <FormControl margin="normal" required fullWidth>
-                                    <InputLabel htmlFor="email">Email or Nickname</InputLabel>
-                                    <Input id="email" name="email" autoComplete="email" autoFocus />
-                                </FormControl>
-                                <FormControl margin="normal" required fullWidth>
-                                    <InputLabel htmlFor="password">Password</InputLabel>
-                                    <Input name="password" type="password" id="password" autoComplete="current-password" />
-                                </FormControl>
-                                <FormControlLabel
-                                    control={<Checkbox value="remember" color="primary" />}
-                                    label="Remember me"
-                                />
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    className={classes.submit}
-                                >
-                                    Sign Up
-                                </Button>
-                                <div className={classes.signup}>
-                                    <Typography>
-                                        Already have an account?
-                                        <Link href={dudUrl} className={classes.link} onClick={this.handleClickLogin}>
-                                            Log in
-                                        </Link>
-                                    </Typography>
-                                </div>
-                            </form>
+                            <SignUp />
+                            <div className={classes.signup}>
+                                <Typography>
+                                    Already have an account?
+                                    <Link href={dudUrl} className={classes.link} onClick={this.handleClickLogin}>
+                                        Log in
+                                    </Link>
+                                </Typography>
+                            </div>
                         </DialogContent>
                     </Dialog>
                     {/* Sign up dialog start */}
@@ -201,41 +163,19 @@ class ButtonAppBar extends React.Component {
                             <Typography variant="h5">
                                 Login
                             </Typography>
-                            <form className={classes.form}>
-                                <FormControl margin="normal" required fullWidth>
-                                    <InputLabel htmlFor="email">Email or Nickname</InputLabel>
-                                    <Input id="email" name="email" autoComplete="email" autoFocus />
-                                </FormControl>
-                                <FormControl margin="normal" required fullWidth>
-                                    <InputLabel htmlFor="password">Password</InputLabel>
-                                    <Input name="password" type="password" id="password" autoComplete="current-password" />
-                                </FormControl>
-                                <FormControlLabel
-                                    control={<Checkbox value="remember" color="primary" />}
-                                    label="Remember me"
-                                />
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    className={classes.submit}
-                                >
-                                    Login
-                                </Button>
-                                <div className={classes.signup}>
-                                    <Link href={dudUrl} className={classes.link} onClick={this.handleClickForgotPwd}>
-                                        Forgot password?
+                            <Login/>
+                            <div className={classes.signup}>
+                                <Link href={dudUrl} className={classes.link} onClick={this.handleClickForgotPwd}>
+                                    Forgot password?
+                                </Link>
+                                <br/>
+                                <Typography>
+                                    Do not have an account yet?
+                                    <Link href={dudUrl} className={classes.link} onClick={this.handleClickSignUp}>
+                                        Sign Up
                                     </Link>
-                                    <br/>
-                                    <Typography>
-                                        Do not have an account yet?
-                                        <Link href={dudUrl} className={classes.link} onClick={this.handleClickSignUp}>
-                                            Sign Up
-                                        </Link>
-                                    </Typography>
-                                </div>
-                            </form>
+                                </Typography>
+                            </div>
                         </DialogContent>
                     </Dialog>
                     {/* Login dialog end */}
@@ -251,29 +191,15 @@ class ButtonAppBar extends React.Component {
                             <Typography variant="h5">
                                 Forgot password
                             </Typography>
-                            <form className={classes.form}>
-                                <FormControl margin="normal" required fullWidth>
-                                    <InputLabel htmlFor="email">Email</InputLabel>
-                                    <Input id="email" name="email" autoComplete="email" autoFocus />
-                                </FormControl>
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    className={classes.submit}
-                                >
-                                    Reset
-                                </Button>
-                                <div className={classes.signup}>
-                                    <Typography>
-                                        Do you remember it?
-                                        <Link href={dudUrl} className={classes.link} onClick={this.handleClickLogin}>
-                                            Log In
-                                        </Link>
-                                    </Typography>
-                                </div>
-                            </form>
+                            <ForgotPwd />
+                            <div className={classes.signup}>
+                                <Typography>
+                                    Do you remember it?
+                                    <Link href={dudUrl} className={classes.link} onClick={this.handleClickLogin}>
+                                        Log In
+                                    </Link>
+                                </Typography>
+                            </div>
                         </DialogContent>
                     </Dialog>
                     {/* Forgot password end */}

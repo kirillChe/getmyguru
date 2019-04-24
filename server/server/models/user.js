@@ -1,4 +1,5 @@
 'use strict';
+const bcrypt = require('bcryptjs');
 
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
@@ -48,10 +49,16 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.NOW
         }
     }, {});
+
     User.associate = function (models) {
         User.hasMany(models.Message, {foreignKey: 'userId', as: 'messages'});
         User.hasMany(models.Comment, {foreignKey: 'userId', as: 'comments'});
         User.hasMany(models.Rating, {foreignKey: 'userId', as: 'ratings'});
     };
+
+    User.prototype.verifyPassword = function (password) {
+        return bcrypt.compareSync(password, this.password);
+    };
+
     return User;
 };

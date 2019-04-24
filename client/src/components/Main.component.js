@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
-import {ImageGrid} from '.';
-import {Search} from '.';
+import {ImageGrid, Search} from '.';
 
 
 const styles = theme => ({

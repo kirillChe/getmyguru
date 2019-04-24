@@ -1,19 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
-const uuid = require('uuid/v4');
-const session = require('express-session');
-const redisStore = require('connect-redis')(session);
-const passport = require('passport');
-const redis   = require("redis");
-const client = redis.createClient('redis://redis');
-//Models
-const models = require('./server/models');
-
-
 const cors = require('cors');
 const morgan = require('morgan');
 const _ = require('lodash');
+
+// for session
+const uuid = require('uuid/v4');
+const passport = require('passport');
+const session = require('express-session');
+const redisStore = require('connect-redis')(session);
+const redis = require("redis");
+const client = redis.createClient('redis://redis');
+
+//Models
+const models = require('./server/models');
+
 // load middlewares
 const middleware = require('require-all')({
     dirname: __dirname + '/middleware',
@@ -22,6 +23,7 @@ const middleware = require('require-all')({
 
 // Set up the express app
 const app = express();
+
 
 //TODO Don't leave it as is
 app.use(cors(/*{
@@ -35,17 +37,21 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-// @TODO Add missing properties for cookies
+// @TODO Add missing properties for cookies (maxAge, ...)
 app.use(session({
-    store: new redisStore({ host: 'redis', port: 6379, client: client,ttl :  260}),
+    store: new redisStore({client, ttl: 260}),
     secret: 'keyboard cat',
     genid: () => uuid(),
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        // 2 minutes for testing
+        maxAge: 2 * 60 * 1000
+    }
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 
 models.sequelize.sync().then(() => {

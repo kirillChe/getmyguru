@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -7,6 +8,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import ErrorIcon from '@material-ui/icons/Warning';
 
 import axios from "axios";
 
@@ -20,10 +22,12 @@ const styles = theme => ({
     },
 });
 
-class Login extends React.Component {
+class Login extends Component {
     state = {
         email: '',
-        password: ''
+        password: '',
+        wrongCredentials: false,
+        redirectTo: null
     };
 
     validateForm() {
@@ -47,54 +51,91 @@ class Login extends React.Component {
         console.log(data);
 
         axios
-            .post('/oauth/', data)
-            .then(res => console.log(res.data))
+            .post('/login', data)
+            .then(response => {
+                console.log('Login response: ');
+                console.log(response);
+                // console.log(response.data);
+                if (response.status === 200) {
+                    // update App.js state
+                    this.props.updateUser({
+                        loggedIn: true,
+                        email: response.data.email
+                    });
+                    //@todo change it
+                    // update the state to redirect to home
+                    this.setState({
+                        redirectTo: '/'
+                    })
+                } else {
+                    console.log('Not Authorized');
+                    this.setState({
+                        wrongCredentials: true
+                    });
+                    this.forceUpdate();
+                }
+            })
             .catch(err => console.log(err));
     };
 
     render() {
         const { classes } = this.props;
 
-        return (
-            <form className={classes.form} onSubmit={this.handleSubmit}>
-                <FormControl margin="normal" required fullWidth>
-                    <InputLabel htmlFor="email">Email or Nickname</InputLabel>
-                    <Input
-                        id="email"
-                        name="email"
-                        autoComplete="email"
-                        autoFocus
-                        value={this.state.email}
-                        onChange={this.handleChange}
+        if (this.state.redirectTo) {
+            return <Redirect to={{ pathname: this.state.redirectTo }} />
+        } else {
+            return (
+                <form className={classes.form} onSubmit={this.handleSubmit}>
+                    <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="email">Email or Nickname</InputLabel>
+                        <Input
+                            id="email"
+                            name="email"
+                            autoComplete="email"
+                            autoFocus
+                            value={this.state.email}
+                            onChange={this.handleChange}
+                        />
+                    </FormControl>
+                    <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="password">Password</InputLabel>
+                        <Input
+                            name="password"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                            value={this.state.password}
+                            onChange={this.handleChange}
+                        />
+                    </FormControl>
+                    <FormControlLabel
+                        control={<Checkbox value="remember" color="primary" />}
+                        label="Remember me"
                     />
-                </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                    <InputLabel htmlFor="password">Password</InputLabel>
-                    <Input
-                        name="password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        value={this.state.password}
-                        onChange={this.handleChange}
-                    />
-                </FormControl>
-                <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
-                    label="Remember me"
-                />
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                    disabled={!this.validateForm()}
-                >
-                    Login
-                </Button>
-            </form>
-        );
+                    {this.state.wrongCredentials &&
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            color="secondary"
+                            className={classes.submit}
+                            disabled
+                        >
+                            <ErrorIcon/> Credentials not valid
+                        </Button>
+                    }
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                        disabled={!this.validateForm()}
+                    >
+                        Login
+                    </Button>
+                </form>
+            );
+        }
     }
 }
 

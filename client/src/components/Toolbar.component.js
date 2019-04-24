@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import FitnessIcon from '@material-ui/icons/FitnessCenter';
+import AccountIcon from '@material-ui/icons/AccountCircle';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -15,6 +16,7 @@ import Slide from '@material-ui/core/Slide';
 import Link from '@material-ui/core/Link';
 
 import {Login, SignUp, ForgotPwd} from '.';
+import {MainLayout} from "../layouts";
 
 
 function Transition(props) {
@@ -109,7 +111,12 @@ class ButtonAppBar extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, loggedIn, updateUser } = this.props;
+        console.log('___________________');
+        console.log('___________________');
+        console.log(loggedIn, updateUser);
+        console.log('___________________');
+        console.log('___________________');
         const dudUrl = 'javascript:;';
 
         return (
@@ -121,12 +128,20 @@ class ButtonAppBar extends React.Component {
                     <Typography variant="h6" color="inherit" className={classes.grow}>
                         COMPANY
                     </Typography>
-                    <Button color="inherit" className='btn-link' onClick={this.handleClickLogin}>
-                        Login
-                    </Button>
-                    <Button variant="outlined" color="primary" onClick={this.handleClickSignUp}>
-                        Sign Up
-                    </Button>
+                    {loggedIn ? (
+                        <IconButton color="inherit" aria-label="Icon">
+                            <AccountIcon />
+                        </IconButton>
+                    ) : (
+                        <div>
+                            <Button color="inherit" className='btn-link' onClick={this.handleClickLogin}>
+                                Login
+                            </Button>
+                            <Button variant="outlined" color="primary" onClick={this.handleClickSignUp}>
+                                Sign Up
+                            </Button>
+                        </div>
+                    )}
                     {/* Sign up dialog start */}
                     <Dialog
                         open={this.state.showSignUp}
@@ -163,7 +178,7 @@ class ButtonAppBar extends React.Component {
                             <Typography variant="h5">
                                 Login
                             </Typography>
-                            <Login/>
+                            <Login updateUser={updateUser} loggedIn={loggedIn}/>
                             <div className={classes.signup}>
                                 <Link href={dudUrl} className={classes.link} onClick={this.handleClickForgotPwd}>
                                     Forgot password?

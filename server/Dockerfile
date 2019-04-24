@@ -7,11 +7,6 @@ COPY package.json /app
 COPY package-lock.json /app
 RUN npm install -g
 
-
-
-
-
-
 #FROM node:10.15.3-stretch
 #
 #RUN mkdir -p /app

@@ -1,7 +1,8 @@
 {
   "name": "client",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "author": "Kirill Chernichenko",
   "dependencies": {
     "@babel/runtime": "^7.4.3",
     "@material-ui/core": "^3.9.3",

@@ -1,13 +1,10 @@
 const express = require('express');
 const commentCtrl = require('../controllers/commentsController');
-// import auth from '../../config/jwt';
-
 const router = express.Router();
 
 
 router.route('/')
 /** GET /api/comments - Get list of comments */
-// .get(auth, commentCtrl.list)
     .get(commentCtrl.find)
 
     /** POST /api/comments - Create new comment */

@@ -1,8 +1,7 @@
 const express = require('express');
 const ratingCtrl = require('../controllers/ratingsController');
-// import auth from '../../config/jwt';
-
 const router = express.Router();
+
 
 router.route('/calculate')
 /** GET /api/ratings/calculate - Calculate rating for specific user */
@@ -10,7 +9,6 @@ router.route('/calculate')
 
 router.route('/')
 /** GET /api/ratings - Get list of ratings */
-// .get(auth, ratingCtrl.list)
     .get(ratingCtrl.find)
 
     /** POST /api/ratings - Create new rating */

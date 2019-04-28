@@ -49,7 +49,7 @@ class Login extends Component {
         console.log(data);
 
         axios
-            .post('/login', data)
+            .post('/auth/login', data)
             .then(response => {
                 console.log('Login response: ');
                 console.log(response);
@@ -64,15 +64,16 @@ class Login extends Component {
                     // refresh page
                     console.log('_________________HERE: 67________________________');
                     window.location.reload();
-                } else {
-                    console.log('Not Authorized');
-                    this.setState({
-                        wrongCredentials: true
-                    });
-                    this.forceUpdate();
                 }
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                console.log('login error: ');
+                console.log(err);
+                this.setState({
+                    wrongCredentials: true
+                });
+                this.forceUpdate();
+            });
     };
 
     render() {

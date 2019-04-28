@@ -1,13 +1,9 @@
 const express = require('express');
 const userCtrl = require('../controllers/usersController');
-// import auth from '../../config/jwt';
-
 const router = express.Router();
-
 
 router.route('/')
 /** GET /api/users - Get list of users */
-// .get(auth, userCtrl.list)
     .get(userCtrl.find)
 
     /** POST /api/users - Create new user */

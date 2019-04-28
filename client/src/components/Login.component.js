@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -26,8 +25,7 @@ class Login extends Component {
     state = {
         email: '',
         password: '',
-        wrongCredentials: false,
-        redirectTo: null
+        wrongCredentials: false
     };
 
     validateForm() {
@@ -62,11 +60,10 @@ class Login extends Component {
                         loggedIn: true,
                         email: response.data.email
                     });
-                    //@todo change it
-                    // update the state to redirect to home
-                    this.setState({
-                        redirectTo: '/'
-                    })
+                    //@todo change it, add props to state
+                    // refresh page
+                    console.log('_________________HERE: 67________________________');
+                    window.location.reload();
                 } else {
                     console.log('Not Authorized');
                     this.setState({
@@ -80,62 +77,59 @@ class Login extends Component {
 
     render() {
         const { classes } = this.props;
+        let {wrongCredentials} = this.state;
 
-        if (this.state.redirectTo) {
-            return <Redirect to={{ pathname: this.state.redirectTo }} />
-        } else {
-            return (
-                <form className={classes.form} onSubmit={this.handleSubmit}>
-                    <FormControl margin="normal" required fullWidth>
-                        <InputLabel htmlFor="email">Email or Nickname</InputLabel>
-                        <Input
-                            id="email"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                            value={this.state.email}
-                            onChange={this.handleChange}
-                        />
-                    </FormControl>
-                    <FormControl margin="normal" required fullWidth>
-                        <InputLabel htmlFor="password">Password</InputLabel>
-                        <Input
-                            name="password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                            value={this.state.password}
-                            onChange={this.handleChange}
-                        />
-                    </FormControl>
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Remember me"
+        return (
+            <form className={classes.form} onSubmit={this.handleSubmit}>
+                <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="email">Email or Nickname</InputLabel>
+                    <Input
+                        id="email"
+                        name="email"
+                        autoComplete="email"
+                        autoFocus
+                        value={this.state.email}
+                        onChange={this.handleChange}
                     />
-                    {this.state.wrongCredentials &&
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            color="secondary"
-                            className={classes.submit}
-                            disabled
-                        >
-                            <ErrorIcon/> Credentials not valid
-                        </Button>
-                    }
+                </FormControl>
+                <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="password">Password</InputLabel>
+                    <Input
+                        name="password"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                        value={this.state.password}
+                        onChange={this.handleChange}
+                    />
+                </FormControl>
+                <FormControlLabel
+                    control={<Checkbox value="remember" color="primary" />}
+                    label="Remember me"
+                />
+                {wrongCredentials &&
                     <Button
-                        type="submit"
                         fullWidth
-                        variant="contained"
-                        color="primary"
+                        variant="outlined"
+                        color="secondary"
                         className={classes.submit}
-                        disabled={!this.validateForm()}
+                        disabled
                     >
-                        Login
+                        <ErrorIcon/> Credentials not valid
                     </Button>
-                </form>
-            );
-        }
+                }
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    disabled={!this.validateForm()}
+                >
+                    Login
+                </Button>
+            </form>
+        );
     }
 }
 

@@ -38,7 +38,17 @@ module.exports = app => {
         }
     );
 
-    app.get('/api/isLoggedIn', (req, res, next) => {
+    app.post('/api/logout', (req, res) => {
+        if (req.user) {
+            req.logout();
+            req.session.destroy();
+            res.send({ msg: 'logging out' })
+        } else {
+            res.send({ msg: 'no user to log out' })
+        }
+    });
+
+    app.get('/api/isLoggedIn', (req, res) => {
         console.log('===== user!!======');
         console.log(req.user);
 

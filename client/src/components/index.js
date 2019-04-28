@@ -7,3 +7,4 @@ export { default as Filter } from './Filter.component';
 export { default as Login } from './Login.component';
 export { default as SignUp } from './SignUp.component';
 export { default as ForgotPwd } from './ForgotPwd.component';
+export { default as ProfileMenu } from './ProfileMenu.component';

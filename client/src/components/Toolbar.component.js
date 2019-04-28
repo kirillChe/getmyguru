@@ -7,7 +7,6 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import FitnessIcon from '@material-ui/icons/FitnessCenter';
-import AccountIcon from '@material-ui/icons/AccountCircle';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -15,8 +14,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Slide from '@material-ui/core/Slide';
 import Link from '@material-ui/core/Link';
 
-import {Login, SignUp, ForgotPwd} from '.';
-import {MainLayout} from "../layouts";
+import {Login, SignUp, ForgotPwd, ProfileMenu} from '.';
 
 
 function Transition(props) {
@@ -112,12 +110,6 @@ class ButtonAppBar extends React.Component {
 
     render() {
         const { classes, loggedIn, updateUser } = this.props;
-        console.log('___________________');
-        console.log('___________________');
-        console.log(loggedIn, updateUser);
-        console.log('___________________');
-        console.log('___________________');
-        const dudUrl = 'javascript:;';
 
         return (
             <AppBar position="sticky" color="default" className={classes.root}>
@@ -129,9 +121,7 @@ class ButtonAppBar extends React.Component {
                         COMPANY
                     </Typography>
                     {loggedIn ? (
-                        <IconButton color="inherit" aria-label="Icon">
-                            <AccountIcon />
-                        </IconButton>
+                        <ProfileMenu updateUser={updateUser} />
                     ) : (
                         <div>
                             <Button color="inherit" className='btn-link' onClick={this.handleClickLogin}>
@@ -158,7 +148,15 @@ class ButtonAppBar extends React.Component {
                             <div className={classes.signup}>
                                 <Typography>
                                     Already have an account?
-                                    <Link href={dudUrl} className={classes.link} onClick={this.handleClickLogin}>
+                                    <Link
+                                        href=""
+                                        className={classes.link}
+                                        onClick={
+                                            e => {
+                                                e.preventDefault();
+                                                this.handleClickLogin()
+                                            }
+                                        }>
                                         Log in
                                     </Link>
                                 </Typography>
@@ -180,13 +178,29 @@ class ButtonAppBar extends React.Component {
                             </Typography>
                             <Login updateUser={updateUser} loggedIn={loggedIn}/>
                             <div className={classes.signup}>
-                                <Link href={dudUrl} className={classes.link} onClick={this.handleClickForgotPwd}>
+                                <Link
+                                    href=""
+                                    className={classes.link}
+                                    onClick={
+                                        e => {
+                                            e.preventDefault();
+                                            this.handleClickForgotPwd()
+                                        }
+                                    }>
                                     Forgot password?
                                 </Link>
                                 <br/>
                                 <Typography>
                                     Do not have an account yet?
-                                    <Link href={dudUrl} className={classes.link} onClick={this.handleClickSignUp}>
+                                    <Link
+                                        href=""
+                                        className={classes.link}
+                                        onClick={
+                                            e => {
+                                                e.preventDefault();
+                                                this.handleClickSignUp()
+                                            }
+                                        }>
                                         Sign Up
                                     </Link>
                                 </Typography>
@@ -210,7 +224,15 @@ class ButtonAppBar extends React.Component {
                             <div className={classes.signup}>
                                 <Typography>
                                     Do you remember it?
-                                    <Link href={dudUrl} className={classes.link} onClick={this.handleClickLogin}>
+                                    <Link
+                                        href=""
+                                        className={classes.link}
+                                        onClick={
+                                            e => {
+                                                e.preventDefault();
+                                                this.handleClickLogin()
+                                            }
+                                        }>
                                         Log In
                                     </Link>
                                 </Typography>

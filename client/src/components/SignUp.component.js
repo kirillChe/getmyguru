@@ -21,6 +21,7 @@ const styles = theme => ({
 
 class SignUp extends React.Component {
     state = {
+        firstName: '',
         email: '',
         password: ''
     };
@@ -56,15 +57,23 @@ class SignUp extends React.Component {
         return (
             <form className={classes.form} onSubmit={this.handleSubmit}>
                 <FormControl margin="normal" required fullWidth>
-                    <InputLabel htmlFor="email">Email or Nickname</InputLabel>
-                    <Input
-                        id="email"
-                        name="email"
-                        autoComplete="email"
-                        autoFocus
-                        value={this.state.email}
-                        onChange={this.handleChange}
-                    />
+                    {/*<TextField*/}
+                    {/*    id="first-name"*/}
+                    {/*    label="firstName"*/}
+                    {/*    value={this.state.firstName}*/}
+                    {/*    onChange={this.handleChange('name')}*/}
+                    {/*    margin="normal"*/}
+                    {/*    variant="filled"*/}
+                    {/*/>*/}
+                    {/*<InputLabel htmlFor="email">Email or Nickname</InputLabel>*/}
+                    {/*<Input*/}
+                    {/*    id="email"*/}
+                    {/*    name="email"*/}
+                    {/*    autoComplete="email"*/}
+                    {/*    autoFocus*/}
+                    {/*    value={this.state.email}*/}
+                    {/*    onChange={this.handleChange}*/}
+                    {/*/>*/}
                 </FormControl>
                 <FormControl margin="normal" required fullWidth>
                     <InputLabel htmlFor="password">Password</InputLabel>

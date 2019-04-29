@@ -55,6 +55,7 @@ class Login extends Component {
                 console.log(response);
                 // console.log(response.data);
                 if (response.status === 200) {
+                    console.log('_________________HERE: 58________________________', response.data);
                     // update App.js state
                     this.props.updateUser({
                         loggedIn: true,

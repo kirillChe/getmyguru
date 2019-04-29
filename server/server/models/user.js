@@ -50,11 +50,15 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {});
 
-    User.associate = function (models) {
+    User.associate = models => {
         User.hasMany(models.Message, {foreignKey: 'userId', as: 'messages'});
         User.hasMany(models.Comment, {foreignKey: 'userId', as: 'comments'});
         User.hasMany(models.Rating, {foreignKey: 'userId', as: 'ratings'});
     };
+
+    User.beforeCreate(user => {
+        user.password = bcrypt.hashSync(user.password, 10);
+    });
 
     User.prototype.verifyPassword = function (password) {
         return bcrypt.compareSync(password, this.password);

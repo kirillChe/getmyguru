@@ -67,46 +67,26 @@ class ButtonAppBar extends React.Component {
             showForgotPwd: false
         };
 
-        this.handleClickLogin = this.handleClickLogin.bind(this);
-        this.handleClickSignUp = this.handleClickSignUp.bind(this);
-        this.handleClickForgotPwd = this.handleClickForgotPwd.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     };
 
-    handleLoginClose = () => {
-        this.setState({ showLogin: false });
+    handleClose = function (state) {
+        return () => {
+            this.setState({[state]: false});
+        }
     };
 
-    handleSignUpClose = () => {
-        this.setState({ showSignUp: false });
+    handleClick = function (state) { 
+        return () => {
+            let states = {
+                showLogin: false,
+                showSignUp: false,
+                showForgotPwd: false
+            };
+            states[state] = true;
+            this.setState(() => states);
+        }
     };
-
-    handleForgotPwdClose = () => {
-        this.setState({ showForgotPwd: false });
-    };
-
-    handleClickLogin = (event) => {
-        this.setState( state => ({
-            showLogin: true,
-            showSignUp: false,
-            showForgotPwd: false
-        }));
-    };
-
-    handleClickSignUp(event) {
-        this.setState(state => ({
-            showSignUp: true,
-            showLogin: false,
-            showForgotPwd: false
-        }));
-    }
-
-    handleClickForgotPwd(event) {
-        this.setState(state => ({
-            showForgotPwd: true,
-            showSignUp: false,
-            showLogin: false
-        }));
-    }
 
     render() {
         const { classes, loggedIn, updateUser } = this.props;
@@ -124,10 +104,10 @@ class ButtonAppBar extends React.Component {
                         <ProfileMenu updateUser={updateUser} />
                     ) : (
                         <div>
-                            <Button color="inherit" className='btn-link' onClick={this.handleClickLogin}>
+                            <Button color="inherit" className='btn-link' onClick={this.handleClick('showLogin')}>
                                 Login
                             </Button>
-                            <Button variant="outlined" color="primary" onClick={this.handleClickSignUp}>
+                            <Button variant="outlined" color="primary" onClick={this.handleClick('showSignUp')}>
                                 Sign Up
                             </Button>
                         </div>
@@ -136,7 +116,7 @@ class ButtonAppBar extends React.Component {
                     <Dialog
                         open={this.state.showSignUp}
                         TransitionComponent={Transition}
-                        onClose={this.handleSignUpClose}
+                        onClose={this.handleClose('showSignUp')}
                         aria-labelledby="responsive-dialog-title"
                         className={classes.dialog}
                     >
@@ -154,7 +134,7 @@ class ButtonAppBar extends React.Component {
                                         onClick={
                                             e => {
                                                 e.preventDefault();
-                                                this.handleClickLogin()
+                                                this.handleClick('showLogin')()
                                             }
                                         }>
                                         Log in
@@ -168,7 +148,7 @@ class ButtonAppBar extends React.Component {
                     <Dialog
                         open={this.state.showLogin}
                         TransitionComponent={Transition}
-                        onClose={this.handleLoginClose}
+                        onClose={this.handleClose('showLogin')}
                         aria-labelledby="responsive-dialog-title"
                         className={classes.dialog}
                     >
@@ -184,7 +164,7 @@ class ButtonAppBar extends React.Component {
                                     onClick={
                                         e => {
                                             e.preventDefault();
-                                            this.handleClickForgotPwd()
+                                            this.handleClick('showForgotPwd')()
                                         }
                                     }>
                                     Forgot password?
@@ -198,7 +178,7 @@ class ButtonAppBar extends React.Component {
                                         onClick={
                                             e => {
                                                 e.preventDefault();
-                                                this.handleClickSignUp()
+                                                this.handleClick('showSignUp')()
                                             }
                                         }>
                                         Sign Up
@@ -212,7 +192,7 @@ class ButtonAppBar extends React.Component {
                     <Dialog
                         open={this.state.showForgotPwd}
                         TransitionComponent={Transition}
-                        onClose={this.handleForgotPwdClose}
+                        onClose={this.handleClose('showForgotPwd')}
                         aria-labelledby="responsive-dialog-title"
                         className={classes.dialog}
                     >
@@ -230,7 +210,7 @@ class ButtonAppBar extends React.Component {
                                         onClick={
                                             e => {
                                                 e.preventDefault();
-                                                this.handleClickLogin()
+                                                this.handleClick('showLogin')()
                                             }
                                         }>
                                         Log In

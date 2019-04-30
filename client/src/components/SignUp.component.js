@@ -1,102 +1,82 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
 
-import axios from "axios";
+import {SignUpGuru, SignUpAdept} from '.';
+
+function TabContainer(props) {
+    return (
+        <Typography component="div" style={{ padding: 8 * 3 }}>
+            {props.children}
+        </Typography>
+    );
+}
+
+TabContainer.propTypes = {
+    children: PropTypes.node.isRequired,
+};
 
 const styles = theme => ({
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing.unit,
+    root: {
+        flexGrow: 1,
+        backgroundColor: theme.palette.background.paper,
     },
-    submit: {
-        marginTop: theme.spacing.unit * 3,
+    tabsRoot: {
+        borderBottom: '1px solid #e8e8e8',
+    },
+    tabsIndicator: {
+        backgroundColor: '#1890ff',
+    },
+    tabRoot: {
+        textTransform: 'initial',
+        '&$tabSelected': {
+            color: '#1890ff',
+            fontWeight: theme.typography.fontWeightMedium,
+        },
+        '&:focus': {
+            color: '#1890ff',
+        },
     },
 });
 
 class SignUp extends React.Component {
     state = {
-        firstName: '',
-        email: '',
-        password: ''
+        value: 0,
     };
 
-    validateForm() {
-        return this.state.email.length > 0 && this.state.password.length > 0;
-    }
-
-    handleChange = event => {
-        this.setState({
-            [event.target.id]: event.target.value
-        });
-    };
-
-    handleSubmit = event => {
-        event.preventDefault();
-        let data = {
-            email: this.state.email,
-            password: this.state.password
-        };
-
-        console.log(`Login Form submitted:`);
-        console.log(data);
-
-        axios
-            .post('/oauth/', data)
-            .then(res => console.log(res.data));
+    handleChange = (event, value) => {
+        this.setState({ value });
     };
 
     render() {
         const { classes } = this.props;
+        const { value } = this.state;
 
         return (
-            <form className={classes.form} onSubmit={this.handleSubmit}>
-                <FormControl margin="normal" required fullWidth>
-                    {/*<TextField*/}
-                    {/*    id="first-name"*/}
-                    {/*    label="firstName"*/}
-                    {/*    value={this.state.firstName}*/}
-                    {/*    onChange={this.handleChange('name')}*/}
-                    {/*    margin="normal"*/}
-                    {/*    variant="filled"*/}
-                    {/*/>*/}
-                    {/*<InputLabel htmlFor="email">Email or Nickname</InputLabel>*/}
-                    {/*<Input*/}
-                    {/*    id="email"*/}
-                    {/*    name="email"*/}
-                    {/*    autoComplete="email"*/}
-                    {/*    autoFocus*/}
-                    {/*    value={this.state.email}*/}
-                    {/*    onChange={this.handleChange}*/}
-                    {/*/>*/}
-                </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                    <InputLabel htmlFor="password">Password</InputLabel>
-                    <Input
-                        name="password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        value={this.state.password}
-                        onChange={this.handleChange}
-                    />
-                </FormControl>
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                    disabled={!this.validateForm()}
+            <div className={classes.root}>
+                <Tabs
+                    value={value}
+                    onChange={this.handleChange}
+                    classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
                 >
-                    Sign Up
-                </Button>
-            </form>
+                    <Tab
+                        disableRipple
+                        classes={{ root: classes.tabRoot }}
+                        label="Client"
+                    />
+                    <Tab
+                        disableRipple
+                        classes={{ root: classes.tabRoot }}
+                        label="Trainer"
+                    />
+                </Tabs>
+                {value === 0 && <SignUpAdept />}
+                {value === 1 && <SignUpGuru />}
+
+            </div>
         );
     }
 }

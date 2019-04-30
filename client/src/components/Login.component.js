@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import ErrorIcon from '@material-ui/icons/Warning';
+import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 import axios from "axios";
 
@@ -25,17 +27,27 @@ class Login extends Component {
     state = {
         email: '',
         password: '',
-        wrongCredentials: false
+        remember: '',
+        wrongCredentials: false,
+        showPassword: false
     };
 
     validateForm() {
         return this.state.email.length > 0 && this.state.password.length > 0;
     }
 
-    handleChange = event => {
-        this.setState({
-            [event.target.id]: event.target.value
-        });
+    handleChange = name => event => {
+        if (name === 'remember') {
+            this.setState({ [name]: event.target.checked });
+        } else {
+            this.setState({ [name]: event.target.value });
+        }
+    };
+
+    togglePasswordMask = () => {
+        this.setState(prevState => ({
+            showPassword: !prevState.showPassword
+        }));
     };
 
     handleSubmit = event => {
@@ -55,7 +67,6 @@ class Login extends Component {
                 console.log(response);
                 // console.log(response.data);
                 if (response.status === 200) {
-                    console.log('_________________HERE: 58________________________', response.data);
                     // update App.js state
                     this.props.updateUser({
                         loggedIn: true,
@@ -63,7 +74,6 @@ class Login extends Component {
                     });
                     //@todo change it, add props to state
                     // refresh page
-                    console.log('_________________HERE: 67________________________');
                     window.location.reload();
                 }
             })
@@ -83,30 +93,48 @@ class Login extends Component {
 
         return (
             <form className={classes.form} onSubmit={this.handleSubmit}>
-                <FormControl margin="normal" required fullWidth>
-                    <InputLabel htmlFor="email">Email or Nickname</InputLabel>
-                    <Input
-                        id="email"
-                        name="email"
-                        autoComplete="email"
-                        autoFocus
-                        value={this.state.email}
-                        onChange={this.handleChange}
-                    />
-                </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                    <InputLabel htmlFor="password">Password</InputLabel>
-                    <Input
-                        name="password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        value={this.state.password}
-                        onChange={this.handleChange}
-                    />
-                </FormControl>
+                <TextField
+                    id="email"
+                    label="Email"
+                    value={this.state.email}
+                    onChange={this.handleChange('email')}
+                    autoFocus
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                />
+                <TextField
+                    id="password"
+                    label="Password"
+                    type={this.state.showPassword ? 'text' : 'password'}
+                    value={this.state.password}
+                    onChange={this.handleChange('password')}
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="Toggle password visibility"
+                                    onClick={this.togglePasswordMask}
+                                >
+                                    {this.state.showPassword ? <Visibility/> : <VisibilityOff/>}
+                                </IconButton>
+                            </InputAdornment>
+                        )
+                    }}
+                />
                 <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
+                    control={
+                        <Checkbox
+                            id="remember"
+                            value="remember"
+                            checked={this.state.remember}
+                            color="primary"
+                            onChange={this.handleChange('remember')}
+                        />
+                    }
                     label="Remember me"
                 />
                 {wrongCredentials &&

@@ -21,8 +21,9 @@ module.exports = {
                 type: Sequelize.ENUM('admin', 'guru', 'adept'),
                 defaultValue: 'adept'
             },
-            nickname: {
-                type: Sequelize.STRING(30)
+            gender: {
+                allowNull: false,
+                type: Sequelize.ENUM('male', 'female')
             },
             email: {
                 allowNull: false,

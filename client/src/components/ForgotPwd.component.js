@@ -2,16 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
+import TextField from '@material-ui/core/TextField';
 
 import axios from "axios";
 
 const styles = theme => ({
     form: {
-        width: '100%', // Fix IE 11 issue.
+        width: '90%', // Fix IE 11 issue.
         marginTop: theme.spacing.unit,
     },
     submit: {
@@ -53,10 +50,16 @@ class ForgotPwd extends React.Component {
 
         return (
             <form className={classes.form} onSubmit={this.handleSubmit}>
-                <FormControl margin="normal" required fullWidth>
-                    <InputLabel htmlFor="email">Email</InputLabel>
-                    <Input id="email" name="email" autoComplete="email" autoFocus />
-                </FormControl>
+                <TextField
+                    id="email"
+                    label="Email"
+                    value={this.state.email}
+                    onChange={this.handleChange}
+                    autoFocus
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                />
                 <Button
                     type="submit"
                     fullWidth

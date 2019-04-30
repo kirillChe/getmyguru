@@ -15,6 +15,7 @@ import Slide from '@material-ui/core/Slide';
 import Link from '@material-ui/core/Link';
 
 import {Login, SignUp, ForgotPwd, ProfileMenu} from '.';
+import {MainLayout} from "../layouts";
 
 
 function Transition(props) {
@@ -27,8 +28,8 @@ const styles = theme => ({
         display: 'block', // Fix IE 11 issue.
         marginLeft: theme.spacing.unit * 3,
         marginRight: theme.spacing.unit * 3,
-        [theme.breakpoints.up(450 + theme.spacing.unit * 3 * 2)]: {
-            width: 450,
+        [theme.breakpoints.up(500 + theme.spacing.unit * 3 * 2)]: {
+            width: 500,
             marginLeft: 'auto',
             marginRight: 'auto',
         },
@@ -76,8 +77,11 @@ class ButtonAppBar extends React.Component {
         }
     };
 
-    handleClick = function (state) { 
-        return () => {
+    handleClick = function (state) {
+        return (e) => {
+            //hook for calling from another component
+            if (e)
+                e.preventDefault();
             let states = {
                 showLogin: false,
                 showSignUp: false,
@@ -85,6 +89,7 @@ class ButtonAppBar extends React.Component {
             };
             states[state] = true;
             this.setState(() => states);
+            console.log('Toolbar.component.js :90', this.states);
         }
     };
 
@@ -124,19 +129,14 @@ class ButtonAppBar extends React.Component {
                             <Typography variant="h5">
                                 Sign Up
                             </Typography>
-                            <SignUp />
+                            <SignUp dialogClick={this.handleClick} />
                             <div className={classes.signup}>
                                 <Typography>
                                     Already have an account?
                                     <Link
                                         href=""
                                         className={classes.link}
-                                        onClick={
-                                            e => {
-                                                e.preventDefault();
-                                                this.handleClick('showLogin')()
-                                            }
-                                        }>
+                                        onClick={this.handleClick('showLogin')}>
                                         Log in
                                     </Link>
                                 </Typography>
@@ -162,10 +162,7 @@ class ButtonAppBar extends React.Component {
                                     href=""
                                     className={classes.link}
                                     onClick={
-                                        e => {
-                                            e.preventDefault();
-                                            this.handleClick('showForgotPwd')()
-                                        }
+                                            this.handleClick('showForgotPwd')
                                     }>
                                     Forgot password?
                                 </Link>
@@ -176,10 +173,8 @@ class ButtonAppBar extends React.Component {
                                         href=""
                                         className={classes.link}
                                         onClick={
-                                            e => {
-                                                e.preventDefault();
-                                                this.handleClick('showSignUp')()
-                                            }
+
+                                                this.handleClick('showSignUp')
                                         }>
                                         Sign Up
                                     </Link>
@@ -208,10 +203,8 @@ class ButtonAppBar extends React.Component {
                                         href=""
                                         className={classes.link}
                                         onClick={
-                                            e => {
-                                                e.preventDefault();
-                                                this.handleClick('showLogin')()
-                                            }
+
+                                                this.handleClick('showLogin')
                                         }>
                                         Log In
                                     </Link>

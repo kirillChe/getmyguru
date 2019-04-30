@@ -11,6 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import ErrorIcon from '@material-ui/icons/Warning';
 
 import axios from "axios";
 import * as R from "ramda";
@@ -51,7 +52,8 @@ class SignUpAdept extends Component {
         phone: '',
         password: '',
         userType: 'adept',
-        showPassword: false
+        showPassword: false,
+        submitError: false
     };
 
     validateForm() {
@@ -75,23 +77,48 @@ class SignUpAdept extends Component {
         event.preventDefault();
         let data = R.omit(['showPassword'], this.state);
 
-        console.log(`Login Form submitted:`);
+        console.log(`Sign up adept form submitted:`);
         console.log(data);
 
         axios
             .post('/api/users', data)
-            .then(res => console.log(res.data));
+            .then(response => {
+                console.log('Sign up adept response: ');
+                console.log(response);
+                if (response.status === 200) {
+                    this.props.dialogClick('showLogin')();
+                }
+            })
+            .catch(err => {
+                console.log('Sign up error: ');
+                console.log(err);
+                this.setState({
+                    submitError: true
+                });
+                this.forceUpdate();
+            });
     };
 
     render() {
         const { classes } = this.props;
+        const {
+            gender,
+            age,
+            firstName,
+            lastName,
+            email,
+            phone,
+            password,
+            showPassword,
+            submitError
+        } = this.state;
 
         return (
             <form className={classes.form} onSubmit={this.handleSubmit}>
                 <TextField
                     id="firstName"
                     label="First Name"
-                    value={this.state.firstName}
+                    value={firstName}
                     onChange={this.handleChange}
                     margin="normal"
                     variant="outlined"
@@ -100,7 +127,7 @@ class SignUpAdept extends Component {
                 <TextField
                     id="lastName"
                     label="Last Name"
-                    value={this.state.lastName}
+                    value={lastName}
                     onChange={this.handleChange}
                     margin="normal"
                     variant="outlined"
@@ -110,7 +137,7 @@ class SignUpAdept extends Component {
                     <RadioGroup
                         aria-label="gender"
                         name="gender"
-                        value={this.state.gender}
+                        value={gender}
                         onChange={this.handleChange}
                     >
                         <FormControlLabel
@@ -131,7 +158,7 @@ class SignUpAdept extends Component {
                     id="age"
                     select
                     label="Age"
-                    value={this.state.age}
+                    value={age}
                     onChange={this.handleChange}
                     SelectProps={{
                         native: true
@@ -149,7 +176,7 @@ class SignUpAdept extends Component {
                 <TextField
                     id="email"
                     label="Email"
-                    value={this.state.email}
+                    value={email}
                     onChange={this.handleChange}
                     margin="normal"
                     variant="outlined"
@@ -158,7 +185,7 @@ class SignUpAdept extends Component {
                 <TextField
                     id="phone"
                     label="Phone"
-                    value={this.state.phone}
+                    value={phone}
                     onChange={this.handleChange}
                     margin="normal"
                     variant="outlined"
@@ -167,8 +194,8 @@ class SignUpAdept extends Component {
                 <TextField
                     id="password"
                     label="Password"
-                    type={this.state.showPassword ? 'text' : 'password'}
-                    value={this.state.password}
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
                     onChange={this.handleChange}
                     margin="normal"
                     variant="outlined"
@@ -180,12 +207,23 @@ class SignUpAdept extends Component {
                                     aria-label="Toggle password visibility"
                                     onClick={this.togglePasswordMask}
                                 >
-                                    {this.state.showPassword ? <Visibility/> : <VisibilityOff/>}
+                                    {showPassword ? <Visibility/> : <VisibilityOff/>}
                                 </IconButton>
                             </InputAdornment>
                         )
                     }}
                 />
+                {submitError &&
+                <Button
+                    fullWidth
+                    variant="outlined"
+                    color="secondary"
+                    className={classes.submit}
+                    disabled
+                >
+                    <ErrorIcon/> Wrong data entered
+                </Button>
+                }
                 <Button
                     type="submit"
                     fullWidth

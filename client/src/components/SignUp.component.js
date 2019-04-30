@@ -21,6 +21,7 @@ TabContainer.propTypes = {
 
 const styles = theme => ({
     root: {
+        width: '90%',
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
     },
@@ -73,8 +74,8 @@ class SignUp extends React.Component {
                         label="Trainer"
                     />
                 </Tabs>
-                {value === 0 && <SignUpAdept />}
-                {value === 1 && <SignUpGuru />}
+                {value === 0 && <SignUpAdept dialogClick={this.props.dialogClick} />}
+                {value === 1 && <SignUpGuru dialogClick={this.props.dialogClick} />}
 
             </div>
         );

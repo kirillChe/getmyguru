@@ -7,7 +7,7 @@ module.exports = {
             firstName: 'Vasya',
             lastName: 'Bzdonskiy',
             userType: 'adept',
-            nickname: 'junior',
+            gender: 'male',
             email: 'junior@yopmail.com',
             password: '$2y$12$ouhlGna5KSMaioCwSWmvOupENFD.ty896bhvwOztmjzLVSo9OcNce',
             phone: '+9727773254',

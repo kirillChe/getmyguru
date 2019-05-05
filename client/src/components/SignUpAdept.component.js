@@ -3,10 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -15,22 +11,6 @@ import ErrorIcon from '@material-ui/icons/Warning';
 
 import axios from "axios";
 import * as R from "ramda";
-
-const ages = getAges(14, 100);
-
-function getAges (start, end) {
-    let i = start;
-    let result = [];
-
-    do {
-        result.push({
-            value: i,
-            label: i
-        });
-        i += 1;
-    } while (i <= end);
-    return result;
-}
 
 const styles = theme => ({
     form: {
@@ -44,12 +24,9 @@ const styles = theme => ({
 
 class SignUpAdept extends Component {
     state = {
-        gender: 'male',
-        age: 20,
         firstName: '',
         lastName: '',
         email: '',
-        phone: '',
         password: '',
         userType: 'adept',
         showPassword: false,
@@ -75,7 +52,7 @@ class SignUpAdept extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
-        let data = R.omit(['showPassword'], this.state);
+        let data = R.omit(['showPassword', 'submitError'], this.state);
 
         console.log(`Sign up adept form submitted:`);
         console.log(data);
@@ -85,7 +62,7 @@ class SignUpAdept extends Component {
             .then(response => {
                 console.log('Sign up adept response: ');
                 console.log(response);
-                if (response.status === 200) {
+                if (response.status === 201) {
                     this.props.dialogClick('showLogin')();
                 }
             })
@@ -102,12 +79,9 @@ class SignUpAdept extends Component {
     render() {
         const { classes } = this.props;
         const {
-            gender,
-            age,
             firstName,
             lastName,
             email,
-            phone,
             password,
             showPassword,
             submitError
@@ -133,59 +107,10 @@ class SignUpAdept extends Component {
                     variant="outlined"
                     fullWidth
                 />
-                <FormControl component="fieldset">
-                    <RadioGroup
-                        aria-label="gender"
-                        name="gender"
-                        value={gender}
-                        onChange={this.handleChange}
-                    >
-                        <FormControlLabel
-                            value="male"
-                            control={<Radio color="primary" />}
-                            label="Male"
-                            labelPlacement="start"
-                        />
-                        <FormControlLabel
-                            value="female"
-                            control={<Radio color="primary" />}
-                            label="Female"
-                            labelPlacement="start"
-                        />
-                    </RadioGroup>
-                </FormControl>
-                <TextField
-                    id="age"
-                    select
-                    label="Age"
-                    value={age}
-                    onChange={this.handleChange}
-                    SelectProps={{
-                        native: true
-                    }}
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                >
-                    {ages.map(option => (
-                        <option key={option.value} value={option.value}>
-                            {option.label}
-                        </option>
-                    ))}
-                </TextField>
                 <TextField
                     id="email"
                     label="Email"
                     value={email}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                />
-                <TextField
-                    id="phone"
-                    label="Phone"
-                    value={phone}
                     onChange={this.handleChange}
                     margin="normal"
                     variant="outlined"

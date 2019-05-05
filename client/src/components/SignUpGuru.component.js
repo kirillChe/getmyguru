@@ -75,17 +75,17 @@ class SignUpAdept extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
-        let data = R.omit(['showPassword'], this.state);
+        let data = R.omit(['showPassword', 'submitError'], this.state);
 
-        console.log(`Sign up adept form submitted:`);
+        console.log(`Sign up guru form submitted:`);
         console.log(data);
 
         axios
             .post('/api/users', data)
             .then(response => {
-                console.log('Sign up adept response: ');
+                console.log('Sign up guru response: ');
                 console.log(response);
-                if (response.status === 200) {
+                if (response.status === 201) {
                     this.props.dialogClick('showLogin')();
                 }
             })

@@ -5,6 +5,7 @@ import Fade from '@material-ui/core/Fade';
 import IconButton from '@material-ui/core/IconButton';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import axios from 'axios';
+import {withRouter} from "react-router-dom";
 
 class ProfileMenu extends React.Component {
     state = {
@@ -19,6 +20,12 @@ class ProfileMenu extends React.Component {
         this.setState({ anchorEl: null });
     };
 
+    handleProfile = () => {
+        console.log('Go to profile');
+        // return <Redirect to='/profile' />
+        this.props.history.push('/profile');
+    };
+
     handleLogout = event => {
         event.preventDefault();
         console.log('logging out');
@@ -31,7 +38,8 @@ class ProfileMenu extends React.Component {
                 })
             }
         }).catch(error => {
-            console.log('Logout error')
+            console.log('Logout error');
+            console.log('ProfileMenu.component.js :43', error);
         })
     };
 
@@ -55,7 +63,7 @@ class ProfileMenu extends React.Component {
                     onClose={this.handleClose}
                     TransitionComponent={Fade}
                 >
-                    <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+                    <MenuItem onClick={this.handleProfile}>Profile</MenuItem>
                     <MenuItem onClick={this.handleClose}>My messages</MenuItem>
                     <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
                 </Menu>
@@ -64,4 +72,4 @@ class ProfileMenu extends React.Component {
     }
 }
 
-export default ProfileMenu;
+export default withRouter(ProfileMenu);

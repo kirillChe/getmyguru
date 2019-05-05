@@ -17,10 +17,13 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             defaultValue: 'adept'
         },
+        // avatar: {
+        //     type: DataTypes.INTEGER(11)
+        // },
         gender: {
             type: DataTypes.ENUM,
             values: ['male', 'female'],
-            allowNull: false
+            allowNull: true
         },
         email: {
             type: DataTypes.STRING(40),
@@ -41,18 +44,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER(2)
         },
         updatedAt: {
-            allowNull: false,
             type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            defaultValue: DataTypes.NOW,
+            allowNull: false
         },
         createdAt: {
-            allowNull: false,
             type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            defaultValue: DataTypes.NOW,
+            allowNull: false
         }
     }, {});
 
     User.associate = models => {
+        User.hasMany(models.File, {foreignKey: 'userId', as: 'files', onDelete: 'cascade', hooks: true });
         User.hasMany(models.Message, {foreignKey: 'userId', as: 'messages'});
         User.hasMany(models.Comment, {foreignKey: 'userId', as: 'comments'});
         User.hasMany(models.Rating, {foreignKey: 'userId', as: 'ratings'});

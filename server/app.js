@@ -36,7 +36,7 @@ app.use(session({
     store: new redisStore({client, ttl: 260}),
     secret: 'keyboard cat',
     genid: () => uuid(),
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     cookie: {
         // 2 minutes for testing

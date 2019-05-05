@@ -89,7 +89,6 @@ class ButtonAppBar extends React.Component {
             };
             states[state] = true;
             this.setState(() => states);
-            console.log('Toolbar.component.js :90', this.states);
         }
     };
 
@@ -136,7 +135,8 @@ class ButtonAppBar extends React.Component {
                                     <Link
                                         href=""
                                         className={classes.link}
-                                        onClick={this.handleClick('showLogin')}>
+                                        onClick={this.handleClick('showLogin')}
+                                    >
                                         Log in
                                     </Link>
                                 </Typography>
@@ -161,9 +161,7 @@ class ButtonAppBar extends React.Component {
                                 <Link
                                     href=""
                                     className={classes.link}
-                                    onClick={
-                                            this.handleClick('showForgotPwd')
-                                    }>
+                                    onClick={this.handleClick('showForgotPwd')}>
                                     Forgot password?
                                 </Link>
                                 <br/>
@@ -172,10 +170,8 @@ class ButtonAppBar extends React.Component {
                                     <Link
                                         href=""
                                         className={classes.link}
-                                        onClick={
-
-                                                this.handleClick('showSignUp')
-                                        }>
+                                        onClick={this.handleClick('showSignUp')}
+                                    >
                                         Sign Up
                                     </Link>
                                 </Typography>
@@ -202,10 +198,8 @@ class ButtonAppBar extends React.Component {
                                     <Link
                                         href=""
                                         className={classes.link}
-                                        onClick={
-
-                                                this.handleClick('showLogin')
-                                        }>
+                                        onClick={this.handleClick('showLogin')}
+                                    >
                                         Log In
                                     </Link>
                                 </Typography>

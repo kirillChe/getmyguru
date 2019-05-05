@@ -7,14 +7,10 @@ const passport = require('../passport');
 router.get(
     '/isLoggedIn',
     (req, res) => {
-        console.log('===== user!!======');
-        console.log(req.user);
+        if (req.user)
+            return res.json({user: req.user});
 
-        if (req.user) {
-            res.json({user: req.user})
-        } else {
-            res.json({user: null})
-        }
+        res.json({user: null});
     }
 );
 
@@ -27,12 +23,17 @@ router.post(
         next();
     },
     passport.authenticate('local'),
-    (req, res) => {
+    (req, res, next) => {
         console.log('logged in', req.user);
-        var userInfo = {
-            email: req.user.email
-        };
-        res.send(userInfo);
+        req.login(req.user, (err) => {
+            if (err)
+                return next(err);
+
+            var userInfo = {
+                email: req.user.email
+            };
+            res.send(userInfo);
+        })
     }
 );
 

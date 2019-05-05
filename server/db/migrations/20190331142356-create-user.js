@@ -22,7 +22,6 @@ module.exports = {
                 defaultValue: 'adept'
             },
             gender: {
-                allowNull: false,
                 type: Sequelize.ENUM('male', 'female')
             },
             email: {

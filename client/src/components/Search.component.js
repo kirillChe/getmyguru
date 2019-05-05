@@ -81,6 +81,8 @@ class Search extends React.Component {
                     </Tooltip>
                 </Paper>
                 <Popover
+                    elevation={1}
+                    className={classes.root}
                     id="simple-popper"
                     open={open}
                     anchorEl={anchorEl}

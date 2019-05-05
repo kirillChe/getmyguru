@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint .",
     "test": "NODE_ENV=test mocha tests/unit/*.js --exit",
-    "start": "pm2-runtime start app.js --watch",
+    "start": "pm2-runtime start ecosystem.config.js",
     "dbcreate": "sequelize db:create && sequelize db:migrate && sequelize db:seed:all",
     "migrate": "sequelize db:migrate",
     "seed": "sequelize db:seed:all"
@@ -23,12 +23,14 @@
     "await-handler": "^1.1.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
+    "busboy": "^0.3.1",
     "connect-redis": "^3.4.1",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-session": "^1.16.1",
     "morgan": "^1.9.1",
     "mysql2": "^1.6.5",
+    "nodemailer": "^6.1.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "ramda": "^0.26.1",

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import axios from 'axios';
 
 import { MainLayout } from './layouts';
-import { Main } from "./components";
+import { Main, Profile } from "./components";
 
 
 class App extends Component {
@@ -55,6 +55,7 @@ class App extends Component {
             <Router>
                 <MainLayout updateUser={this.updateUser} loggedIn={this.state.loggedIn}>
                     <Route exact path="/" component={Main} />
+                    <Route exact path="/profile" component={Profile} />
                     {/*<Route path="/create" component={CreateTodo} />*/}
 
                 </MainLayout>

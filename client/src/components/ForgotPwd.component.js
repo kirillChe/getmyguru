@@ -55,7 +55,6 @@ class ForgotPwd extends React.Component {
                     label="Email"
                     value={this.state.email}
                     onChange={this.handleChange}
-                    autoFocus
                     margin="normal"
                     variant="outlined"
                     fullWidth

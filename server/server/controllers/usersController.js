@@ -1,10 +1,29 @@
 const on = require('await-handler');
-const User = require('../models').User;
+const {User} = require('../models');
+const nodemailer = require('nodemailer');
 
 const create = async (req, res, next) => {
     let [err, user] = await on(User.create(req.body));
     if (err)
         return next(err);
+
+    let transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: '4422201@gmail.com',
+            pass: 'hkimctyrztasefmk'
+        }
+    });
+
+    let [er, info] = await on(transporter.sendMail({
+        from: 'Info <info@getmyguru.online>', // sender address
+        to: user.email, // list of receivers
+        subject: `Hello, ${user.firstName} ${user.lastName}!`, // Subject line
+        text: 'Click bellow to confirm your registration', // plain text body
+        html: "<b>Hello world?</b>" // html body
+    }));
+
+    console.log("Message sent: %s", er, info);
 
     res.status(201).json(user);
 };
@@ -49,6 +68,8 @@ const destroy = async (req, res, next) => {
         next(error);
     }
 };
+
+
 
 
 module.exports = {

@@ -98,7 +98,6 @@ class Login extends Component {
                     label="Email"
                     value={this.state.email}
                     onChange={this.handleChange('email')}
-                    autoFocus
                     margin="normal"
                     variant="outlined"
                     fullWidth

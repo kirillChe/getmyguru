@@ -7,7 +7,7 @@ module.exports = {
         // args: 'one two',
         instances: 1,
         autorestart: true,
-        ignore_watch: ['node_modules', 'server/files'],
+        ignore_watch: ['node_modules', 'public'],
         watch: true,
         // max_memory_restart: '1G',
         env: {

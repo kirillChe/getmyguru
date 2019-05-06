@@ -4,7 +4,7 @@ const Busboy = require('busboy');
 const path = require('path');
 const fs = require('fs');
 const on = require('await-handler');
-const filePath = './server/files/';
+const filePath = __dirname + '/../../public';
 
 module.exports = (sequelize, DataTypes) => {
     const File = sequelize.define('File', {
@@ -36,23 +36,26 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     File.upload = function (ctx, cb) {
+        console.log('file.js :39', filePath);
         let {userId, req, res} = ctx;
         var busboy = new Busboy({headers: req.headers});
+        //@todo add image size validation
         busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
+            console.log('file.js :43', filename, mimetype);
             let date = Date.now();
             let name = `${date}-${userId}`;
             var saveTo = path.join(filePath, name);
             file.on('end', async () => {
                 let data = {
                     userId,
-                    location: name
+                    location: `api/public/${name}`
                 };
                 let [err, file] = await on(File.create(data));
                 if (err) {
                     console.log('Failed to create file model: ', err);
                     fs.unlinkSync(saveTo);
                 } else {
-                    console.log('File model is created successfully');
+                    console.log('File model is created successfully: fileId: ', file.id);
                 }
             });
             file.pipe(fs.createWriteStream(saveTo));

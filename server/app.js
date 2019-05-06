@@ -52,6 +52,7 @@ models.sequelize.sync().then(() => {
     console.log('Nice! Database looks fine');
 
     app.use(middleware.isAuthenticated());
+    app.use(middleware.publicHandler());
     app.use(middleware.queryParser());
 
     //Require routes into the application

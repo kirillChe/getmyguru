@@ -36,15 +36,16 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     File.upload = function (ctx, cb) {
-        console.log('file.js :39', filePath);
         let {userId, req, res} = ctx;
         var busboy = new Busboy({headers: req.headers});
         //@todo add image size validation
         busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
-            console.log('file.js :43', filename, mimetype);
             let date = Date.now();
             let name = `${date}-${userId}`;
             var saveTo = path.join(filePath, name);
+            file.on('error', (error) => {
+                console.log('Upload file failed with error: ', error);
+            });
             file.on('end', async () => {
                 let data = {
                     userId,
@@ -59,6 +60,9 @@ module.exports = (sequelize, DataTypes) => {
                 }
             });
             file.pipe(fs.createWriteStream(saveTo));
+        });
+        busboy.on('error', function (error) {
+            console.log('Upload failed: ', error);
         });
         busboy.on('finish', function () {
             console.log('Upload complete');

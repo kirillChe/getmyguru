@@ -53,7 +53,7 @@ class Login extends Component {
         console.log(data);
 
         axios
-            .put('/api/users/setNewPassword', data)
+            .post('/api/users/setNewPassword', data)
             .then(response => {
                 console.log('Set new pwd response: ');
                 console.log(response);

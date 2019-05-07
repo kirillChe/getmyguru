@@ -21,6 +21,9 @@ module.exports = {
                 type: Sequelize.ENUM('admin', 'guru', 'adept'),
                 defaultValue: 'adept'
             },
+            avatar: {
+                type: Sequelize.INTEGER(11).UNSIGNED
+            },
             gender: {
                 type: Sequelize.ENUM('male', 'female')
             },

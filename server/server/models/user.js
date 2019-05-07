@@ -13,6 +13,7 @@ const mailerConfig = {
     }
 };
 
+
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         firstName: {
@@ -29,9 +30,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             defaultValue: 'adept'
         },
-        // avatar: {
-        //     type: DataTypes.INTEGER(11)
-        // },
+        avatar: {
+            type: DataTypes.INTEGER(11)
+        },
         gender: {
             type: DataTypes.ENUM,
             values: ['male', 'female'],

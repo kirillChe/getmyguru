@@ -7,7 +7,7 @@ const router = express.Router();
 router.route('/resetPassword').post(userCtrl.resetPassword);
 
 /** GET /api/users/resetPassword - Send a link for reset password */
-router.route('/setNewPassword').put(userCtrl.setNewPassword);
+router.route('/setNewPassword').post(userCtrl.setNewPassword);
 
 router.route('/')
 /** GET /api/users - Get list of users */

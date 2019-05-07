@@ -63,7 +63,7 @@ class SignUpAdept extends Component {
                 console.log('Sign up adept response: ');
                 console.log(response);
                 if (response.status === 201) {
-                    this.props.dialogClick('showLogin')();
+                    this.props.dialogClick();
                 }
             })
             .catch(err => {

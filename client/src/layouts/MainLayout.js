@@ -5,12 +5,13 @@ import {Toolbar, Footer} from '../components';
 
 class MainLayout extends PureComponent {
     render() {
+        let {children} = this.props;
         return (
             <React.Fragment>
                 <CssBaseline/>
                 <Toolbar updateUser = {this.props.updateUser} loggedIn = {this.props.loggedIn}/>
                 <main>
-                    <div>{this.props.children}</div>
+                    <div>{children}</div>
                 </main>
                 <Footer/>
             </React.Fragment>

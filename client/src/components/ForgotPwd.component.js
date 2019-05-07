@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import ErrorIcon from '@material-ui/icons/Warning';
 
-import axios from "axios";
+import axios from 'axios';
 
 const styles = theme => ({
     form: {
@@ -18,7 +19,8 @@ const styles = theme => ({
 
 class ForgotPwd extends React.Component {
     state = {
-        email: ''
+        email: '',
+        wrongCredentials: false
     };
 
     validateForm() {
@@ -37,16 +39,31 @@ class ForgotPwd extends React.Component {
             email: this.state.email
         };
 
-        console.log(`Login Form submitted:`);
+        console.log(`Forgot pwd Form submitted:`);
         console.log(data);
 
         axios
-            .post('/oauth/', data)
-            .then(res => console.log(res.data));
+            .post('/api/users/resetPassword', data)
+            .then(response => {
+                console.log('Forgot pwd response: ');
+                console.log(response);
+                if (response.status === 204) {
+                    this.props.dialogClick('showEmailSent')();
+                }
+            })
+            .catch(err => {
+                console.log('Forgot pwd error: ');
+                console.log(err);
+                this.setState({
+                    wrongCredentials: true
+                });
+                this.forceUpdate();
+            });
     };
 
     render() {
         const { classes } = this.props;
+        let { wrongCredentials } = this.state;
 
         return (
             <form className={classes.form} onSubmit={this.handleSubmit}>
@@ -59,12 +76,24 @@ class ForgotPwd extends React.Component {
                     variant="outlined"
                     fullWidth
                 />
+                {wrongCredentials &&
+                    <Button
+                        fullWidth
+                        variant="outlined"
+                        color="secondary"
+                        className={classes.submit}
+                        disabled
+                    >
+                        <ErrorIcon/> Credentials not valid
+                    </Button>
+                }
                 <Button
                     type="submit"
                     fullWidth
                     variant="contained"
                     color="primary"
                     className={classes.submit}
+                    disabled={!this.validateForm()}
                 >
                     Reset
                 </Button>

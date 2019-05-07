@@ -94,8 +94,12 @@ module.exports = (sequelize, DataTypes) => {
         return bcrypt.compareSync(password, this.password);
     };
 
-    User.prototype.resetPassword = async function (url) {
-        let user = this;
+    User.resetPassword = async function ({url, email}) {
+
+        let [err, user] = await on(User.findOne({ where: {email} }));
+        if (err || !user)
+            throw err || new Error('User Not Found');
+
         let token = jwt.sign({}, user.password, {
             algorithm: 'HS256',
             subject: '' + user.id,
@@ -103,11 +107,11 @@ module.exports = (sequelize, DataTypes) => {
             expiresIn: 60 * 60 * 24
         });
 
-        let forgotPwdLink = `${url}?token=${token}`;
+        let forgotPwdLink = `${url}/${token}`;
 
         let transporter = nodemailer.createTransport(mailerConfig);
 
-        let [err, info] = await on(transporter.sendMail({
+        let [err2, info] = await on(transporter.sendMail({
             from: 'Info <info@getmyguru.online>', // sender address
             to: user.email, // list of receivers
             subject: `Hello, ${user.firstName} ${user.lastName}!`, // Subject line
@@ -117,13 +121,13 @@ module.exports = (sequelize, DataTypes) => {
             // html: "<b>Hello world?</b>" // html body
         }));
 
-        if (err)
-            throw err;
+        if (err2)
+            throw err2;
 
         return info;
     };
 
-    User.validateResetToken = async function (token) {
+    User.setNewPassword = async function ({newPassword, token}) {
         let decoded = jwt.decode(token, {complete: true});
         let userId = decoded.payload.sub;
 
@@ -137,19 +141,18 @@ module.exports = (sequelize, DataTypes) => {
             throw err2;
         }
 
-        return user;
-    };
+        console.log('___________________');
+        console.log('___________________');
+        console.log(newPassword, user.password);
+        console.log('___________________');
+        console.log('___________________');
 
-    User.prototype.setNewPassword = async function (newPassword) {
-        let [err, res] = await on(bcrypt.compare(newPassword, this.password));
-        if (err)
-            throw err;
-
-        if (res === true)
+        let isEqual = bcrypt.compareSync(newPassword, user.password);
+        if (isEqual)
             throw new Error('A new password must be different from the old password');
 
         // The password will be encrypted in 'beforeSave' hook
-        return this.update({password: newPassword});
+        return user.update({password: newPassword});
     };
 
     return User;

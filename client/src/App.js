@@ -55,6 +55,7 @@ class App extends Component {
             <Router>
                 <MainLayout updateUser={this.updateUser} loggedIn={this.state.loggedIn}>
                     <Route exact path="/" component={Main} />
+                    <Route path="/reset_password" component={Main} />
                     <Route exact path="/profile" component={Profile} />
                     {/*<Route path="/create" component={CreateTodo} />*/}
 

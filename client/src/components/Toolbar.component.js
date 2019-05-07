@@ -7,15 +7,14 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import FitnessIcon from '@material-ui/icons/FitnessCenter';
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 // import withMobileDialog from '@material-ui/core/withMobileDialog';
 import Slide from '@material-ui/core/Slide';
 import Link from '@material-ui/core/Link';
 
-import {Login, SignUp, ForgotPwd, ProfileMenu} from '.';
-import {MainLayout} from "../layouts";
+import {Login, SignUp, ForgotPwd, ProfileMenu, SetNewPwd} from '.';
+import * as R from 'ramda';
 
 
 function Transition(props) {
@@ -59,13 +58,21 @@ const styles = theme => ({
     },
 });
 
+const getPathComponents = path => R.split('/', path);
+
 class ButtonAppBar extends React.Component {
     constructor(props) {
         super(props);
+
+        let pathComponents = getPathComponents(window.location.pathname);
+
         this.state = {
+            showSetNewPwd: pathComponents && pathComponents[1] === 'reset_password',
+            showEmailSent: false,
             showLogin: false,
             showSignUp: false,
-            showForgotPwd: false
+            showForgotPwd: false,
+            token: pathComponents && pathComponents[2]
         };
 
         this.handleClick = this.handleClick.bind(this);
@@ -83,12 +90,14 @@ class ButtonAppBar extends React.Component {
             if (e)
                 e.preventDefault();
             let states = {
+                showSetNewPwd: false,
+                showEmailSent: false,
                 showLogin: false,
                 showSignUp: false,
                 showForgotPwd: false
             };
             states[state] = true;
-            this.setState(() => states);
+            this.setState(states);
         }
     };
 
@@ -116,6 +125,26 @@ class ButtonAppBar extends React.Component {
                             </Button>
                         </div>
                     )}
+                    {/* Email sent dialog start */}
+                    <Dialog
+                        open={this.state.showEmailSent}
+                        TransitionComponent={Transition}
+                        onClose={this.handleClose('showEmailSent')}
+                        aria-labelledby="responsive-dialog-title"
+                        className={classes.dialog}
+                    >
+                        <DialogContent className={classes.content}>
+                            <Typography variant="h5">
+                                Email sent!
+                            </Typography>
+                            <div className={classes.signup}>
+                                <Typography>
+                                    A reset password link has been sent to you via email. Go to the mail and click the link to enter a new password.
+                                </Typography>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                    {/* Email sent dialog end */}
                     {/* Sign up dialog start */}
                     <Dialog
                         open={this.state.showSignUp}
@@ -128,7 +157,7 @@ class ButtonAppBar extends React.Component {
                             <Typography variant="h5">
                                 Sign Up
                             </Typography>
-                            <SignUp dialogClick={this.handleClick} />
+                            <SignUp dialogClick={this.handleClick('showLogin')} />
                             <div className={classes.signup}>
                                 <Typography>
                                     Already have an account?
@@ -143,7 +172,23 @@ class ButtonAppBar extends React.Component {
                             </div>
                         </DialogContent>
                     </Dialog>
-                    {/* Sign up dialog start */}
+                    {/* Sign up dialog end */}
+                    {/* Set new pwd dialog start */}
+                    <Dialog
+                        open={this.state.showSetNewPwd}
+                        TransitionComponent={Transition}
+                        onClose={this.handleClose('showSetNewPwd')}
+                        aria-labelledby="responsive-dialog-title"
+                        className={classes.dialog}
+                    >
+                        <DialogContent className={classes.content}>
+                            <Typography variant="h5">
+                                Set new password
+                            </Typography>
+                            <SetNewPwd token={this.state.token} dialogClick={this.handleClick('showLogin')} />
+                        </DialogContent>
+                    </Dialog>
+                    {/* Set new pwd dialog end */}
                     {/* Login dialog start */}
                     <Dialog
                         open={this.state.showLogin}
@@ -191,7 +236,7 @@ class ButtonAppBar extends React.Component {
                             <Typography variant="h5">
                                 Forgot password
                             </Typography>
-                            <ForgotPwd />
+                            <ForgotPwd dialogClick={this.handleClick} />
                             <div className={classes.signup}>
                                 <Typography>
                                     Do you remember it?

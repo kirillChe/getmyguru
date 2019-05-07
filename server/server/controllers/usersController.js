@@ -53,53 +53,42 @@ const destroy = async (req, res, next) => {
 };
 
 const resetPassword = async (req, res, next) => {
-    if (!req.query.email || !req.query.url)
+    if (!req.body.email)
         return res.status(400).json('Missing required parameters');
 
     try {
-        let user = await User.findOne({ where: {email: req.query.email} });
-        if (!user)
-            return res.sendStatus(404);
+        //@todo move host/port to config
+        let url = `http://${req.host}:3100/reset_password`;
 
-        let info = await user.resetPassword(req.query.url);
-        console.log('usersController.js :62', info);
+        let ctx = {
+            url,
+            email: req.body.email
+        };
+
+        let info = await User.resetPassword(ctx);
+        console.log('usersController.js :72', info);
+
         res.sendStatus(204);
     } catch (error) {
-        next(error);
-    }
-};
-
-const validateResetToken = async (req, res, next) => {
-    if (!req.query.token)
-        return res.status(400).json('Missing required parameters');
-
-    try {
-        let user = await User.validateResetToken(req.query.token);
-        if (!user)
-            return res.sendStatus(400);
-
-        req.session.uid = user.id;
-        res.status(201).json(user);
-    } catch (error) {
+        //@todo add error handler
         next(error);
     }
 };
 
 const setNewPassword = async (req, res, next) => {
-    if (!req.session.uid || req.session.uid !== req.params.id)
-        return res.status(400).json('Session is not valid');
+    let ctx = {
+        token: req.body.token,
+        newPassword: req.body.newPassword
+    };
 
-    if (!req.body.newPassword || !req.params.id)
+    if (!ctx.newPassword || !ctx.token)
         return res.status(400).json('Missing required parameters');
 
     try {
-        let user = await User.findByPk(req.params.id);
-        if (!user)
-            return res.sendStatus(404);
-
-        await user.setNewPassword(req.body.newPassword);
+        await User.setNewPassword(ctx);
         res.sendStatus(204);
     } catch (error) {
+        //@todo add error handler
         next(error);
     }
 };
@@ -112,6 +101,5 @@ module.exports = {
     update,
     destroy,
     resetPassword,
-    validateResetToken,
     setNewPassword
 };

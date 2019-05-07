@@ -13,6 +13,8 @@ const mailerConfig = {
     }
 };
 
+const transporter = nodemailer.createTransport(mailerConfig);
+
 
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
@@ -117,8 +119,6 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         let forgotPwdLink = `${url}/${token}`;
-
-        let transporter = nodemailer.createTransport(mailerConfig);
 
         let [err2, info] = await on(transporter.sendMail({
             from: 'Info <info@getmyguru.online>', // sender address

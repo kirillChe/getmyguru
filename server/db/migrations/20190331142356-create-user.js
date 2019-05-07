@@ -42,6 +42,9 @@ module.exports = {
             age: {
                 type: Sequelize.INTEGER(2)
             },
+            rating: {
+                type: Sequelize.TINYINT
+            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE,

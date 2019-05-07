@@ -31,10 +31,7 @@ const calculate = async (req, res, next) => {
     if (!req.query.userId)
         return res.sendStatus(400);
 
-    let ctx = {
-        userId: req.query.userId
-    };
-    let [err, rating] = await on(Rating.calculate(ctx));
+    let [err, rating] = await on(Rating.calculate(req.query.userId));
     if (err)
         return next(err);
 

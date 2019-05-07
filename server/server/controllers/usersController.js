@@ -93,6 +93,59 @@ const setNewPassword = async (req, res, next) => {
     }
 };
 
+const mostPopular = async (req, res, next) => {
+    let filter = {
+        where: {
+            userType: 'guru'
+        },
+        attributes: ['firstName', 'lastName', 'avatar', 'rating'],
+        order: [
+            ['rating', 'DESC']
+        ],
+        limit: 4
+    };
+
+    try {
+        let user = await User.findAll(filter);
+        user.rating = R.map(user);
+
+        /**
+         * Add rating / 10
+         * avatar location
+         * description
+         */
+
+        console.log('___________________');
+        console.log('___________________');
+        console.log(user[0].rating);
+        console.log('___________________');
+        console.log('___________________');
+        res.json(user);
+    }catch (e) {
+        console.log('usersController.js :114', e);
+        next(e);
+    }
+
+
+
+
+    // let ctx = {
+    //     token: req.body.token,
+    //     newPassword: req.body.newPassword
+    // };
+    //
+    // if (!ctx.newPassword || !ctx.token)
+    //     return res.status(400).json('Missing required parameters');
+    //
+    // try {
+    //     await User.setNewPassword(ctx);
+    //     res.sendStatus(204);
+    // } catch (error) {
+    //     //@todo add error handler
+    //     next(error);
+    // }
+};
+
 
 module.exports = {
     create,
@@ -101,5 +154,6 @@ module.exports = {
     update,
     destroy,
     resetPassword,
-    setNewPassword
+    setNewPassword,
+    mostPopular
 };

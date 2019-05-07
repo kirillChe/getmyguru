@@ -2,6 +2,7 @@
 
 const on = require('await-handler');
 const R = require('ramda');
+const {User} = require('.');
 
 module.exports = (sequelize, DataTypes) => {
     const Rating = sequelize.define('Rating', {
@@ -30,10 +31,23 @@ module.exports = (sequelize, DataTypes) => {
         Rating.belongsTo(User, {as: 'user'})
     };
 
-    Rating.calculate = async function (ctx) {
+    Rating.afterCreate(async rating => {
+        try {
+            let userRating = await Rating.calculate(rating.rated);
+            let user = await User.findByPk(rating.rated);
+            user.update({rating: R.multiply(10, userRating)});
+
+        } catch (e) {
+            //@todo send to some logger
+            console.log('Calculate user rating failed: ', err);
+            //throw err;
+        }
+    });
+
+    Rating.calculate = async userId => {
         let filter = {
             where: {
-                rated: ctx.userId
+                rated: userId
             }
         };
 

@@ -56,6 +56,14 @@ module.exports = (sequelize, DataTypes) => {
         age: {
             type: DataTypes.INTEGER(2)
         },
+        rating: {
+            type: DataTypes.TINYINT,
+            validate: {
+                isNumeric: true,
+                min: 10,
+                max: 100
+            }
+        },
         updatedAt: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
@@ -141,12 +149,6 @@ module.exports = (sequelize, DataTypes) => {
         } catch(err2) {
             throw err2;
         }
-
-        console.log('___________________');
-        console.log('___________________');
-        console.log(newPassword, user.password);
-        console.log('___________________');
-        console.log('___________________');
 
         let isEqual = bcrypt.compareSync(newPassword, user.password);
         if (isEqual)

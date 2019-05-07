@@ -14,6 +14,7 @@ module.exports = {
                 password: '$2y$12$ouhlGna5KSMaioCwSWmvOupENFD.ty896bhvwOztmjzLVSo9OcNce',
                 phone: '+9725551234',
                 age: 36,
+                rating: 100,
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -28,6 +29,7 @@ module.exports = {
                 password: '$2y$12$ouhlGna5KSMaioCwSWmvOupENFD.ty896bhvwOztmjzLVSo9OcNce',
                 phone: '+9721234567',
                 age: 44,
+                rating: 79,
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -42,6 +44,7 @@ module.exports = {
                 password: '$2y$12$ouhlGna5KSMaioCwSWmvOupENFD.ty896bhvwOztmjzLVSo9OcNce',
                 phone: '+9727773254',
                 age: 16,
+                rating: 32,
                 createdAt: new Date(),
                 updatedAt: new Date()
             }

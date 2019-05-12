@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-// import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 // import CardActions from '@material-ui/core/CardActions';
@@ -10,7 +9,9 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
-// import cards from './tileData';
+
+import * as R from 'ramda';
+import axios from 'axios';
 
 const styles = theme => ({
     cardGrid: {
@@ -22,7 +23,7 @@ const styles = theme => ({
         flexDirection: 'column',
     },
     cardMedia: {
-        paddingTop: '56.25%', // 16:9
+        paddingTop: '100%', // 16:9
     },
     cardContent: {
         flexGrow: 1,
@@ -39,90 +40,102 @@ const styles = theme => ({
     }
 });
 
-/**
- * The example data is structured as follows:
- *
- * import image from 'path/to/image.jpg';
- * [etc...]
- *
- * const tileData = [
- *   {
- *     img: image,
- *     title: 'Image',
- *     author: 'author',
- *   },
- *   {
- *     [etc...]
- *   },
- * ];
- */
 
+class ImageGrid extends Component {
+    constructor() {
+        super();
+        this.state = {
+            users: []
+        };
 
+        this.getMostPopularUsers = this.getMostPopularUsers.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+    }
 
+    componentDidMount() {
+        this.getMostPopularUsers()
+    }
 
-const cards = [
-   {
-     img: 'https://material-ui.com/static/images/grid-list/breakfast.jpg',
-     title: 'Image',
-     author: 'author',
-   },
-   {
-     img: 'https://material-ui.com/static/images/grid-list/burgers.jpg',
-     title: 'Image',
-     author: 'author',
-   },
-   {
-     img: 'https://material-ui.com/static/images/grid-list/camera.jpg',
-     title: 'Image',
-     author: 'author',
-   },
-   {
-     img: 'https://material-ui.com/static/images/grid-list/morning.jpg',
-     title: 'Image',
-     author: 'author',
-   }
- ];
+    getMostPopularUsers() {
+        console.log('_________________HERE: 83________________________');
+        //@todo provide limit
+        axios.get('/api/users/mostPopular')
+            .then(response => {
+                console.log('Get users response: ');
+                console.log(response.data);
+                if (response.data) {
+                    console.log('Get Users: ', response.data);
 
+                    let users = R.map(user => {
+                        //@todo buy images when time came
+                        if (!user.avatarLocation) {
+                            user.avatarLocation = user.gender === 'male' ?
+                                'https://thumbs.dreamstime.com/z/default-placeholder-fitness-trainer-t-shirt-half-length-portrait-photo-avatar-gray-color-default-placeholder-fitness-trainer-116470280.jpg' :
+                                'https://thumbs.dreamstime.com/z/default-placeholder-fitness-trainer-t-shirt-default-placeholder-fitness-trainer-t-shirt-half-length-portrait-photo-119457655.jpg';
+                        }
+                        return user;
+                    }, response.data);
 
-function ImageGrid(props) {
-    const { classes } = props;
+                    this.setState({ users })
+                } else {
+                    console.log('Get users: no user');
+                    // this.setState({
+                    //     loggedIn: false,
+                    //     email: null
+                    // })
+                }
+            }).catch(err => {
+                console.log('Sign up error: ');
+                console.log(err);
+                this.setState({
+                    submitError: true
+                });
+                this.forceUpdate();
+            });
+    }
 
-    return (
-        <div className={classNames(classes.layout, classes.cardGrid)}>
-            {/* End hero unit */}
-            <Grid container spacing={40}>
-                {cards.map(card => (
-                    <Grid item key={card.img} sm={6} md={4} lg={3}>
-                        <Card className={classes.card}>
-                            <CardActionArea>
-                                <CardMedia
-                                    className={classes.cardMedia}
-                                    image={card.img}
-                                    title={card.title}
-                                />
-                                <CardContent className={classes.cardContent}>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        Heading
-                                    </Typography>
-                                    <Typography>
-                                        This is a media card. You can use this section to describe the content.
-                                    </Typography>
-                                </CardContent>
-                            </CardActionArea>
-                            {/*<CardActions>*/}
+    render() {
+        const { classes } = this.props;
+        const { users: cards } = this.state;
+        console.log('ImageGrid.component.js :106', cards);
+
+        return (
+            <div className={classNames(classes.layout, classes.cardGrid)}>
+                {/* End hero unit */}
+                <Grid container spacing={40}>
+                    {cards.map(card => (
+                        <Grid item key={card.avatarLocation} sm={6} md={4} lg={3}>
+                            <Card className={classes.card}>
+                                <CardActionArea>
+                                    <CardMedia
+                                        className={classes.cardMedia}
+                                        image={card.avatarLocation}
+                                        title={card.title}
+                                    />
+                                    <CardContent className={classes.cardContent}>
+                                        <Typography gutterBottom variant="h5" component="h2">
+                                            {card.firstName} {card.lastName}
+                                        </Typography>
+                                        {/*<Typography>*/}
+                                        {/*    This is a media card. You can use this section to describe the content.*/}
+                                        {/*</Typography>*/}
+                                    </CardContent>
+                                </CardActionArea>
+                                {/*<CardActions>*/}
                                 {/*<Button size="small" color="primary">*/}
-                                    {/*View*/}
+                                {/*View*/}
                                 {/*</Button>*/}
                                 {/*<Button size="small" color="primary">*/}
-                                    {/*Edit*/}
+                                {/*Edit*/}
                                 {/*</Button>*/}
-                            {/*</CardActions>*/}
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
-        </div>
-    );
+                                {/*</CardActions>*/}
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
+            </div>
+        );
+    }
 }
 
 ImageGrid.propTypes = {

@@ -1,5 +1,7 @@
 const on = require('await-handler');
-const {User} = require('../models');
+const {User, File} = require('../models');
+const R = require('ramda');
+const async = require('async');
 
 const create = async (req, res, next) => {
     let [err, user] = await on(User.create(req.body));
@@ -66,7 +68,6 @@ const resetPassword = async (req, res, next) => {
         };
 
         let info = await User.resetPassword(ctx);
-        console.log('usersController.js :72', info);
 
         res.sendStatus(204);
     } catch (error) {
@@ -98,52 +99,40 @@ const mostPopular = async (req, res, next) => {
         where: {
             userType: 'guru'
         },
-        attributes: ['firstName', 'lastName', 'avatar', 'rating'],
+        attributes: ['firstName', 'lastName', 'avatar', 'rating', 'gender'],
         order: [
             ['rating', 'DESC']
         ],
-        limit: 4
+        limit: req.query.limit || 4
     };
 
+    //@todo refactor
     try {
-        let user = await User.findAll(filter);
-        user.rating = R.map(user);
+        let users = await User.findAll(filter);
+        users = R.map(user => {
+            user.rating = R.divide(user.rating, 10);
+            return user;
+        }, users);
+
+        await Promise.all(users.map(async user => {
+            if (!user.avatar) {
+                user.setDataValue('avatarLocation', null);
+            } else {
+                let file = await File.findByPk(user.avatar);
+                user.setDataValue('avatarLocation', file.location);
+            }
+        }));
 
         /**
          * Add rating / 10
          * avatar location
          * description
          */
-
-        console.log('___________________');
-        console.log('___________________');
-        console.log(user[0].rating);
-        console.log('___________________');
-        console.log('___________________');
-        res.json(user);
+        res.json(users);
     }catch (e) {
         console.log('usersController.js :114', e);
         next(e);
     }
-
-
-
-
-    // let ctx = {
-    //     token: req.body.token,
-    //     newPassword: req.body.newPassword
-    // };
-    //
-    // if (!ctx.newPassword || !ctx.token)
-    //     return res.status(400).json('Missing required parameters');
-    //
-    // try {
-    //     await User.setNewPassword(ctx);
-    //     res.sendStatus(204);
-    // } catch (error) {
-    //     //@todo add error handler
-    //     next(error);
-    // }
 };
 
 

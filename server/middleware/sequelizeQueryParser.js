@@ -1,6 +1,7 @@
+const R = require('ramda');
+const Op = require('sequelize').Op;
+
 module.exports = () => {
-    const R = require('ramda');
-    const Op = require('sequelize').Op;
 
     return (req, res, next) => {
         if (req.method !== 'GET')

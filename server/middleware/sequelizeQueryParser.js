@@ -7,8 +7,26 @@ module.exports = () => {
         if (req.method !== 'GET')
             return next();
 
-        if (req.query.filter)
-            req.query.filter = parseQuery(JSON.parse(req.query.filter));
+        if (req.query) {
+            let query = req.query;
+
+            query.filter = query.filter ? parseQuery(JSON.parse(query.filter)) : {};
+
+            if (query._sort) {
+                let order = R.split(',', query._order);
+                let sort = R.split(',', query._sort);
+                query.filter.order = [];
+                sort.forEach((v, i) => {
+                    //query.order should looks like [ ['rating', 'DESC'] ]
+                    query.filter.order.push([v, order[i]]);
+                });
+            }
+
+            query.filter.limit = query._limit ? Number(query._limit) : 25;
+            query.filter.offset = query._page && query._limit ? ((query._page - 1) * query._limit) : 0;
+
+            req.query = R.omit(['_limit', '_page', '_sort', '_order'], query);
+        }
 
         next();
     };

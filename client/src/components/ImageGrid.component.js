@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
-// import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
@@ -48,18 +47,31 @@ class ImageGrid extends Component {
             users: []
         };
 
-        this.getMostPopularUsers = this.getMostPopularUsers.bind(this);
+        this.getMostRatedUsers = this.getMostRatedUsers.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
     }
 
     componentDidMount() {
-        this.getMostPopularUsers()
+        this.getMostRatedUsers()
     }
 
-    getMostPopularUsers() {
-        console.log('_________________HERE: 83________________________');
-        //@todo provide limit
-        axios.get('/api/users/mostPopular')
+    getMostRatedUsers() {
+
+        let params = {
+            _limit: 4,
+            _order: 'DESC',
+            _sort: 'rating',
+            filter: {
+                where: {
+                    userType: 'guru'
+                }
+            }
+        };
+
+        if (this.props.attr === 'last')
+            params._sort = 'createdAt';
+
+        axios.get('/api/users/getGurusPreviews', {params})
             .then(response => {
                 console.log('Get users response: ');
                 console.log(response.data);
@@ -79,32 +91,23 @@ class ImageGrid extends Component {
                     this.setState({ users })
                 } else {
                     console.log('Get users: no user');
-                    // this.setState({
-                    //     loggedIn: false,
-                    //     email: null
-                    // })
                 }
             }).catch(err => {
-                console.log('Sign up error: ');
+                console.log('Show image grid error: ');
                 console.log(err);
-                this.setState({
-                    submitError: true
-                });
-                this.forceUpdate();
             });
     }
 
     render() {
         const { classes } = this.props;
         const { users: cards } = this.state;
-        console.log('ImageGrid.component.js :106', cards);
 
         return (
             <div className={classNames(classes.layout, classes.cardGrid)}>
                 {/* End hero unit */}
                 <Grid container spacing={40}>
                     {cards.map(card => (
-                        <Grid item key={card.avatarLocation} sm={6} md={4} lg={3}>
+                        <Grid item key={card.avatarLocation + '-' + card.id} sm={6} md={4} lg={3}>
                             <Card className={classes.card}>
                                 <CardActionArea>
                                     <CardMedia
@@ -116,19 +119,8 @@ class ImageGrid extends Component {
                                         <Typography gutterBottom variant="h5" component="h2">
                                             {card.firstName} {card.lastName}
                                         </Typography>
-                                        {/*<Typography>*/}
-                                        {/*    This is a media card. You can use this section to describe the content.*/}
-                                        {/*</Typography>*/}
                                     </CardContent>
                                 </CardActionArea>
-                                {/*<CardActions>*/}
-                                {/*<Button size="small" color="primary">*/}
-                                {/*View*/}
-                                {/*</Button>*/}
-                                {/*<Button size="small" color="primary">*/}
-                                {/*Edit*/}
-                                {/*</Button>*/}
-                                {/*</CardActions>*/}
                             </Card>
                         </Grid>
                     ))}

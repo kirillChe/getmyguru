@@ -34,13 +34,13 @@ function Main(props) {
                 </div>
             </div>
             <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                The most popular.
+                The most rated.
             </Typography>
-            <ImageGrid />
+            <ImageGrid attr={'rated'}/>
             <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                Recently reviewed.
+                Last joined.
             </Typography>
-            <ImageGrid />
+            <ImageGrid attr={'last'}/>
         </React.Fragment>
     );
 }

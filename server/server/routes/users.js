@@ -9,7 +9,7 @@ router.route('/resetPassword').post(userCtrl.resetPassword);
 /** GET /api/users/resetPassword - Send a link for reset password */
 router.route('/setNewPassword').post(userCtrl.setNewPassword);
 
-router.route('/mostPopular').get(userCtrl.mostPopular);
+router.route('/getGurusPreviews').get(userCtrl.getGurusPreviews);
 
 router.route('/')
 /** GET /api/users - Get list of users */

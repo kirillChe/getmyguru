@@ -1,7 +1,6 @@
 const on = require('await-handler');
 const {User, File} = require('../models');
 const R = require('ramda');
-const async = require('async');
 
 const create = async (req, res, next) => {
     let [err, user] = await on(User.create(req.body));
@@ -94,21 +93,15 @@ const setNewPassword = async (req, res, next) => {
     }
 };
 
-const mostPopular = async (req, res, next) => {
-    let filter = {
-        where: {
-            userType: 'guru'
-        },
-        attributes: ['firstName', 'lastName', 'avatar', 'rating', 'gender'],
-        order: [
-            ['rating', 'DESC']
-        ],
-        limit: req.query.limit || 4
+const getGurusPreviews = async (req, res, next) => {
+    req.query.filter.attributes = ['id', 'firstName', 'lastName', 'avatar', 'rating', 'gender'];
+    req.query.filter.where = {
+        userType: 'guru'
     };
 
     //@todo refactor
     try {
-        let users = await User.findAll(filter);
+        let users = await User.findAll(req.query.filter);
         users = R.map(user => {
             user.rating = R.divide(user.rating, 10);
             return user;
@@ -123,11 +116,6 @@ const mostPopular = async (req, res, next) => {
             }
         }));
 
-        /**
-         * Add rating / 10
-         * avatar location
-         * description
-         */
         res.json(users);
     }catch (e) {
         console.log('usersController.js :114', e);
@@ -144,5 +132,5 @@ module.exports = {
     destroy,
     resetPassword,
     setNewPassword,
-    mostPopular
+    getGurusPreviews
 };

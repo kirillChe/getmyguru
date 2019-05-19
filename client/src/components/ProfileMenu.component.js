@@ -7,7 +7,11 @@ import AccountIcon from '@material-ui/icons/AccountCircle';
 import axios from 'axios';
 import {withRouter} from "react-router-dom";
 
+import { MainContext } from '../context';
+
 class ProfileMenu extends React.Component {
+    static contextType = MainContext;
+
     state = {
         anchorEl: null,
     };
@@ -32,9 +36,9 @@ class ProfileMenu extends React.Component {
         axios.post('/auth/logout').then(response => {
             console.log(response.data);
             if (response.status === 200) {
-                this.props.updateUser({
+                this.context.updateUser({
                     loggedIn: false,
-                    email: null
+                    user: {}
                 })
             }
         }).catch(error => {

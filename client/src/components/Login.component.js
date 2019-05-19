@@ -11,6 +11,8 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
+import { MainContext } from '../context';
+
 import axios from 'axios';
 
 const styles = theme => ({
@@ -24,6 +26,9 @@ const styles = theme => ({
 });
 
 class Login extends Component {
+
+    static contextType = MainContext;
+
     state = {
         email: '',
         password: '',
@@ -64,13 +69,13 @@ class Login extends Component {
             .post('/auth/login', data)
             .then(response => {
                 console.log('Login response: ');
-                console.log(response);
+                console.log(response.data);
                 // console.log(response.data);
                 if (response.status === 200) {
-                    // update App.js state
-                    this.props.updateUser({
+                    // update main context state
+                    this.context.updateUser({
                         loggedIn: true,
-                        email: response.data.email
+                        user: response.data
                     });
                     //@todo change it, add props to state
                     // refresh page

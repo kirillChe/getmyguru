@@ -47,15 +47,15 @@ class ImageGrid extends Component {
             users: []
         };
 
-        this.getMostRatedUsers = this.getMostRatedUsers.bind(this);
+        this.getGuruProfiles = this.getGuruProfiles.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
     }
 
     componentDidMount() {
-        this.getMostRatedUsers()
+        this.getGuruProfiles()
     }
 
-    getMostRatedUsers() {
+    getGuruProfiles() {
 
         let params = {
             _limit: 4,
@@ -74,9 +74,7 @@ class ImageGrid extends Component {
         axios.get('/api/users/getGurusPreviews', {params})
             .then(response => {
                 console.log('Get users response: ');
-                console.log(response.data);
                 if (response.data) {
-                    console.log('Get Users: ', response.data);
 
                     let users = R.map(user => {
                         //@todo buy images when time came
@@ -90,7 +88,7 @@ class ImageGrid extends Component {
 
                     this.setState({ users })
                 } else {
-                    console.log('Get users: no user');
+                    console.log('Get users: no users');
                 }
             }).catch(err => {
                 console.log('Show image grid error: ');

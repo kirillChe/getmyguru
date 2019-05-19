@@ -1,6 +1,10 @@
-const on = require('await-handler');
 const {User, File} = require('../models');
+const on = require('await-handler');
 const R = require('ramda');
+const Busboy = require('busboy');
+const path = require('path');
+const fs = require('fs');
+const filePath = __dirname + '/../../public';
 
 const create = async (req, res, next) => {
     let [err, user] = await on(User.create(req.body));
@@ -29,17 +33,120 @@ const findById = async (req, res, next) => {
 };
 
 const update = async (req, res, next) => {
-    try {
-        const model = await User.findByPk(req.params.id);
-        if (!model)
-            return res.sendStatus(404);
+    //user can update himself only if he is not admin
+    // if (req.params.id !== 'me' && req.session.passport.type !== 'admin')
+    //     return res.status(400);
 
-        //@todo check if it works
-        model.update(req.body);
-        res.sendStatus(204);
-    } catch (error) {
-        next(error);
-    }
+    let userId = req.params.id === 'me' ? req.session.passport.id : req.params.id;
+
+    let [err, user] = await on(User.create(User.findByPk(userId)));
+    if (err)
+        return next(err);
+
+    if (!user)
+        return res.sendStatus(404);
+
+    // let {userId, req, res} = ctx;
+    let busboy = new Busboy({headers: req.headers});
+    let userData = {};
+
+    busboy.on('field', (fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) => {
+        console.log('Field [' + fieldname + ']: value: ' + val);
+        userData.fieldname = val;
+    });
+
+    //@todo add image size validation
+    busboy.on('file', async (fieldname, file, filename, encoding, mimetype) => {
+        let name = `${userId}-avatar`;
+        let saveTo = path.join(filePath, name);
+        let data = {
+            userId,
+            location: `api/public/${name}`
+        };
+        fs.unlinkSync(saveTo);
+        let [err, result] = await on(File.destroy({where: data}));
+        console.log('_________________HERE: 68________________________', err, result);
+        if (err) {
+            //@todo send to kibana
+            console.log('Failed to delete file model (avatar): ', err);
+        }
+
+        file.on('error', error => {
+            console.log('Upload avatar failed with error: ', error);
+        });
+
+        file.on('end', async () => {
+            let [err1, file] = await on(File.create(data));
+            if (err1) {
+                console.log('Failed to create file model (avatar): ', err1);
+                fs.unlinkSync(saveTo);
+            } else {
+                console.log('File model is created successfully: fileId: ', file.id);
+                userData.avatar = file.id;
+                userData.avatarLocation = data.location;
+            }
+        });
+        file.pipe(fs.createWriteStream(saveTo));
+    });
+
+    busboy.on('error', error => {
+        console.log('Upload failed: ', error);
+    });
+
+    busboy.on('finish', async () => {
+        console.log('Upload complete');
+
+        let [err, user] = await on(User.create(userData));
+        console.log('_________________HERE: 99________________________', err, user);
+        if (err)
+            return next(err);
+
+        user.avatarLocation = userData.avatarLocation;
+
+        res.writeHead(200, {'Connection': 'close'});
+        res.end("That's all folks!");
+        res.status(200).json(user);
+
+
+    });
+
+    req.pipe(busboy);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // console.log('___________________');
+    // console.log('___________________');
+    // console.dir(req.params, {colors: true, depth: 3});
+    // console.dir(req.body, {colors: true, depth: 3});
+    // console.dir(req.file, {colors: true, depth: 3});
+    // console.log('___________________');
+    // console.log('___________________');
+    // return next();
+    // try {
+    //     const model = await User.findByPk(req.params.id);
+    //     if (!model)
+    //         return res.sendStatus(404);
+    //
+    //     //@todo check if it works
+    //     model.update(req.body);
+    //     res.sendStatus(204);
+    // } catch (error) {
+    //     next(error);
+    // }
 };
 
 const destroy = async (req, res, next) => {

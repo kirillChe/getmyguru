@@ -37,12 +37,12 @@ module.exports = (sequelize, DataTypes) => {
 
     File.upload = function (ctx, cb) {
         let {userId, req, res} = ctx;
-        var busboy = new Busboy({headers: req.headers});
+        let busboy = new Busboy({headers: req.headers});
         //@todo add image size validation
         busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
             let date = Date.now();
-            let name = `${date}-${userId}`;
-            var saveTo = path.join(filePath, name);
+            let name = `${userId}-${date}`;
+            let saveTo = path.join(filePath, name);
             file.on('error', (error) => {
                 console.log('Upload file failed with error: ', error);
             });

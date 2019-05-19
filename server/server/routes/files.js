@@ -2,7 +2,7 @@ const express = require('express');
 const fileCtrl = require('../controllers/filesController');
 const router = express.Router();
 
-/** POST /api/files/:userId - Upload file */
+/** POST /api/files/upload/:userId - Upload file */
 router.route('/upload/:userId').post(fileCtrl.upload);
 
 /** GET /api/files - Get list of files */

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -13,7 +13,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Slide from '@material-ui/core/Slide';
 import Link from '@material-ui/core/Link';
 
-import {Login, SignUp, ForgotPwd, ProfileMenu, SetNewPwd} from '.';
+import {Login, SignUp, ForgotPwd, ProfileMenu, SetNewPwd} from '../components';
+import { MainContext } from '../context';
 import * as R from 'ramda';
 
 
@@ -60,7 +61,9 @@ const styles = theme => ({
 
 const getPathComponents = path => R.split('/', path);
 
-class ButtonAppBar extends React.Component {
+class ToolbarLayout extends React.Component {
+    static contextType = MainContext;
+
     constructor(props) {
         super(props);
 
@@ -102,7 +105,8 @@ class ButtonAppBar extends React.Component {
     };
 
     render() {
-        const { classes, loggedIn, updateUser } = this.props;
+        let context = this.context;
+        const { classes } = this.props;
 
         return (
             <AppBar position="sticky" color="default" className={classes.root}>
@@ -113,8 +117,8 @@ class ButtonAppBar extends React.Component {
                     <Typography variant="h6" color="inherit" className={classes.grow}>
                         COMPANY
                     </Typography>
-                    {loggedIn ? (
-                        <ProfileMenu updateUser={updateUser} />
+                    {context.loggedIn ? (
+                        <ProfileMenu />
                     ) : (
                         <div>
                             <Button color="inherit" className='btn-link' onClick={this.handleClick('showLogin')}>
@@ -201,7 +205,7 @@ class ButtonAppBar extends React.Component {
                             <Typography variant="h5">
                                 Login
                             </Typography>
-                            <Login updateUser={updateUser} loggedIn={loggedIn}/>
+                            <Login loggedIn={context.loggedIn}/>
                             <div className={classes.signup}>
                                 <Link
                                     href=""
@@ -259,8 +263,8 @@ class ButtonAppBar extends React.Component {
 }
 
 
-ButtonAppBar.propTypes = {
+ToolbarLayout.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ButtonAppBar);
+export default withStyles(styles)(ToolbarLayout);

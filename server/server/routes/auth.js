@@ -1,4 +1,5 @@
 const express = require('express');
+const R = require('ramda');
 const router = express.Router();
 const passport = require('../passport');
 
@@ -8,9 +9,10 @@ router.get(
     '/isLoggedIn',
     (req, res) => {
         if (req.user)
-            return res.json({user: req.user});
+            return res.json(req.user);
 
-        res.json({user: null});
+        // res.json({user: null});
+        res.sendStatus(401);
     }
 );
 
@@ -29,10 +31,7 @@ router.post(
             if (err)
                 return next(err);
 
-            var userInfo = {
-                email: req.user.email
-            };
-            res.send(userInfo);
+            res.send(R.omit(['password'], req.user.toJSON()));
         })
     }
 );

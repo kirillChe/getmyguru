@@ -4,6 +4,8 @@ const R = require('ramda');
 const Busboy = require('busboy');
 const path = require('path');
 const fs = require('fs');
+const events = require('events');
+
 const filePath = __dirname + '/../../public';
 
 const create = async (req, res, next) => {
@@ -34,57 +36,78 @@ const findById = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     //user can update himself only if he is not admin
-    // if (req.params.id !== 'me' && req.session.passport.type !== 'admin')
-    //     return res.status(400);
+    if (req.params.id !== 'me' && req.session.passport.user.userType !== 'admin')
+        return res.status(400);
 
-    let userId = req.params.id === 'me' ? req.session.passport.id : req.params.id;
+    let userId = req.params.id === 'me' ? req.session.passport.user.id : req.params.id;
 
-    let [err, user] = await on(User.create(User.findByPk(userId)));
+    let [err, user] = await on(User.findByPk(userId));
+    console.log('usersController.js :44', err, user && user.id);
     if (err)
         return next(err);
 
     if (!user)
         return res.sendStatus(404);
 
-    // let {userId, req, res} = ctx;
     let busboy = new Busboy({headers: req.headers});
-    let userData = {};
+    let userData = {}, fileProvided = false;
+    const em = new events.EventEmitter();
 
-    busboy.on('field', (fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) => {
+    busboy.on('field', (fieldname, val) => {
         console.log('Field [' + fieldname + ']: value: ' + val);
-        userData.fieldname = val;
+        userData[fieldname] = val;
     });
 
     //@todo add image size validation
     busboy.on('file', async (fieldname, file, filename, encoding, mimetype) => {
+        fileProvided = true;
+
+        //validate file type
+        if (R.not(R.equals(R.head(R.split('/', mimetype)), 'image'))) {
+            console.log('Not allowed file type');
+            return em.emit('uploadFinished');
+        }
+
+        //validate file size
+        if (req.headers['content-length'] / 1024 > 400) {
+            console.log('Not allowed file size');
+            return em.emit('uploadFinished');
+        }
+
         let name = `${userId}-avatar`;
         let saveTo = path.join(filePath, name);
         let data = {
             userId,
-            location: `api/public/${name}`
+            location: `/api/public/${name}`
         };
-        fs.unlinkSync(saveTo);
-        let [err, result] = await on(File.destroy({where: data}));
-        console.log('_________________HERE: 68________________________', err, result);
-        if (err) {
+
+        //first, delete old avatar if exist
+        try {
+            fs.unlinkSync(saveTo);
+            await File.destroy({where: data});
+        } catch (e) {
             //@todo send to kibana
-            console.log('Failed to delete file model (avatar): ', err);
+            console.log('Failed to delete file model or unlink file (avatar): ', e);
         }
 
         file.on('error', error => {
+            //@todo send to kibana and add error handler
             console.log('Upload avatar failed with error: ', error);
+            em.emit('uploadFinished');
         });
 
         file.on('end', async () => {
-            let [err1, file] = await on(File.create(data));
-            if (err1) {
-                console.log('Failed to create file model (avatar): ', err1);
-                fs.unlinkSync(saveTo);
-            } else {
-                console.log('File model is created successfully: fileId: ', file.id);
+            //create file model or delete file from fs if got error
+            try {
+                let file = await File.create(data);
                 userData.avatar = file.id;
-                userData.avatarLocation = data.location;
+                userData.avatarLocation = file.location;
+
+            } catch (e) {
+                console.log('Failed to create file model (avatar): ', e);
+                fs.unlinkSync(saveTo);
             }
+            em.emit('uploadFinished');
         });
         file.pipe(fs.createWriteStream(saveTo));
     });
@@ -96,57 +119,36 @@ const update = async (req, res, next) => {
     busboy.on('finish', async () => {
         console.log('Upload complete');
 
-        let [err, user] = await on(User.create(userData));
-        console.log('_________________HERE: 99________________________', err, user);
-        if (err)
-            return next(err);
+        //@todo REFACTOR
+        if (fileProvided) {
+            em.on('uploadFinished', async () => {
+                //update user model
+                try {
+                    let updatedUser = await user.update(userData);
+                    updatedUser.setDataValue('avatarLocation', userData.avatarLocation || null);
 
-        user.avatarLocation = userData.avatarLocation;
+                    return res.status(200).json(updatedUser);
 
-        res.writeHead(200, {'Connection': 'close'});
-        res.end("That's all folks!");
-        res.status(200).json(user);
+                } catch (e) {
+                    console.log('Failed to update user model: ', e);
+                    next(e);
+                }
+            });
+        } else {
+            //update user model
+            try {
+                let updatedUser = await user.update(userData);
+                updatedUser.setDataValue('avatarLocation', userData.avatarLocation || null);
 
-
+                return res.status(200).json(updatedUser);
+            } catch (e) {
+                console.log('Failed to update user model: ', e);
+                next(e);
+            }
+        }
     });
 
     req.pipe(busboy);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // console.log('___________________');
-    // console.log('___________________');
-    // console.dir(req.params, {colors: true, depth: 3});
-    // console.dir(req.body, {colors: true, depth: 3});
-    // console.dir(req.file, {colors: true, depth: 3});
-    // console.log('___________________');
-    // console.log('___________________');
-    // return next();
-    // try {
-    //     const model = await User.findByPk(req.params.id);
-    //     if (!model)
-    //         return res.sendStatus(404);
-    //
-    //     //@todo check if it works
-    //     model.update(req.body);
-    //     res.sendStatus(204);
-    // } catch (error) {
-    //     next(error);
-    // }
 };
 
 const destroy = async (req, res, next) => {
@@ -173,7 +175,7 @@ const resetPassword = async (req, res, next) => {
             email: req.body.email
         };
 
-        let info = await User.resetPassword(ctx);
+        await User.resetPassword(ctx);
 
         res.sendStatus(204);
     } catch (error) {
@@ -224,7 +226,7 @@ const getGurusPreviews = async (req, res, next) => {
         }));
 
         res.json(users);
-    }catch (e) {
+    } catch (e) {
         console.log('usersController.js :114', e);
         next(e);
     }

@@ -1,12 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
+import { Button, TextField, Radio, RadioGroup, FormControlLabel, FormControl } from '@material-ui/core';
 
 import axios from "axios";
 const ages = getAges(14, 100);
@@ -31,8 +26,8 @@ const styles = theme => ({
         flexWrap: 'wrap',
     },
     textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+        // marginLeft: theme.spacing.unit,
+        // marginRight: theme.spacing.unit,
         width: 200,
     },
     menu: {
@@ -99,91 +94,93 @@ class Filter extends Component {
         } = this.state;
 
         return (
-            <form className={classes.form} onSubmit={this.handleSubmit}>
-                <TextField
-                    id="firstName"
-                    label="First Name"
-                    value={firstName}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    variant="outlined"
-                    className={classes.textField}
-                />
-                <TextField
-                    id="lastName"
-                    label="Last Name"
-                    value={lastName}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    variant="outlined"
-                    className={classes.textField}
-                />
-                <FormControl component="fieldset">
-                    <RadioGroup
-                        aria-label="gender"
-                        name="gender"
-                        value={gender}
+            <React.Fragment>
+                <form className={classes.form} onSubmit={this.handleSubmit}>
+                    <TextField
+                        id="firstName"
+                        label="First Name"
+                        value={firstName}
                         onChange={this.handleChange}
+                        margin="normal"
+                        variant="outlined"
+                        className={classes.textField}
+                    />
+                    <TextField
+                        id="lastName"
+                        label="Last Name"
+                        value={lastName}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        variant="outlined"
+                        className={classes.textField}
+                    />
+                    <FormControl component="fieldset">
+                        <RadioGroup
+                            aria-label="gender"
+                            name="gender"
+                            value={gender}
+                            onChange={this.handleChange}
+                        >
+                            <FormControlLabel
+                                value="male"
+                                control={<Radio color="primary"/>}
+                                label="Male"
+                                labelPlacement="start"
+                            />
+                            <FormControlLabel
+                                value="female"
+                                control={<Radio color="primary"/>}
+                                label="Female"
+                                labelPlacement="start"
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                    <TextField
+                        id="age"
+                        select
+                        label="Age"
+                        value={age}
+                        onChange={this.handleChange}
+                        SelectProps={{
+                            native: true
+                        }}
+                        margin="normal"
+                        variant="outlined"
+                        className={classes.textField}
                     >
-                        <FormControlLabel
-                            value="male"
-                            control={<Radio color="primary"/>}
-                            label="Male"
-                            labelPlacement="start"
-                        />
-                        <FormControlLabel
-                            value="female"
-                            control={<Radio color="primary"/>}
-                            label="Female"
-                            labelPlacement="start"
-                        />
-                    </RadioGroup>
-                </FormControl>
-                <TextField
-                    id="age"
-                    select
-                    label="Age"
-                    value={age}
-                    onChange={this.handleChange}
-                    SelectProps={{
-                        native: true
-                    }}
-                    margin="normal"
-                    variant="outlined"
-                    className={classes.textField}
-                >
-                    {ages.map(option => (
-                        <option key={option.value} value={option.value}>
-                            {option.label}
-                        </option>
-                    ))}
-                </TextField>
-                <TextField
-                    id="email"
-                    label="Email"
-                    value={email}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    variant="outlined"
-                    className={classes.textField}
-                />
-                <TextField
-                    id="phone"
-                    label="Phone"
-                    value={phone}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    variant="outlined"
-                    className={classes.textField}
-                />
-                <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                >
-                    Search
-                </Button>
-            </form>
+                        {ages.map(option => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </TextField>
+                    <TextField
+                        id="email"
+                        label="Email"
+                        value={email}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        variant="outlined"
+                        className={classes.textField}
+                    />
+                    <TextField
+                        id="phone"
+                        label="Phone"
+                        value={phone}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        variant="outlined"
+                        className={classes.textField}
+                    />
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                    >
+                        Search
+                    </Button>
+                </form>
+            </React.Fragment>
             // <form className={classes.container} noValidate autoComplete="off">
             //     <TextField
             //         id="first-name"

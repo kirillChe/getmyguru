@@ -1,8 +1,5 @@
 import React from 'react';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Fade from '@material-ui/core/Fade';
-import IconButton from '@material-ui/core/IconButton';
+import { IconButton, Avatar, MenuItem, Menu, Fade } from '@material-ui/core';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import axios from 'axios';
 import {withRouter} from "react-router-dom";
@@ -27,7 +24,7 @@ class ProfileMenu extends React.Component {
     handleProfile = () => {
         console.log('Go to profile');
         // return <Redirect to='/profile' />
-        this.props.history.push('/profile');
+        this.props.history.push(`/profile/${this.context.user.id}`);
     };
 
     handleLogout = event => {
@@ -50,15 +47,20 @@ class ProfileMenu extends React.Component {
     render() {
         const { anchorEl } = this.state;
         const open = Boolean(anchorEl);
+        const { avatarLocation } = this.context.user;
 
         return (
-            <div>
+            <React.Fragment>
                 <IconButton
                     aria-owns={open ? 'fade-menu' : undefined}
                     aria-haspopup="true"
                     onClick={this.handleClick}
                 >
-                    <AccountIcon />
+                    {avatarLocation ? (
+                        <Avatar alt="avatar" src={avatarLocation} />
+                    ) : (
+                        <AccountIcon />
+                    )}
                 </IconButton>
                 <Menu
                     id="fade-menu"
@@ -71,7 +73,7 @@ class ProfileMenu extends React.Component {
                     <MenuItem onClick={this.handleClose}>My messages</MenuItem>
                     <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
                 </Menu>
-            </div>
+            </React.Fragment>
         );
     }
 }

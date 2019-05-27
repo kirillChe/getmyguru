@@ -1,8 +1,5 @@
 import React, { PureComponent } from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
 import {ToolbarLayout, FooterLayout} from './';
@@ -30,7 +27,6 @@ class MainLayout extends PureComponent {
             content = <CircularProgress className={classes.progress} />;
         } else {
             content = <React.Fragment>
-                <CssBaseline/>
                 <ToolbarLayout />
                 <main>
                     <div>{children}</div>

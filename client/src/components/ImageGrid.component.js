@@ -14,7 +14,7 @@ import axios from 'axios';
 
 const styles = theme => ({
     cardGrid: {
-        padding: `${theme.spacing.unit * 8}px 0`,
+        padding: `${theme.spacing(8)}px 0`,
     },
     card: {
         height: '100%',
@@ -29,9 +29,9 @@ const styles = theme => ({
     },
     layout: {
         width: 'auto',
-        marginLeft: theme.spacing.unit * 3,
-        marginRight: theme.spacing.unit * 3,
-        [theme.breakpoints.up(1300 + theme.spacing.unit * 3 * 2)]: {
+        marginLeft: theme.spacing(3),
+        marginRight: theme.spacing(3),
+        [theme.breakpoints.up(1300 + theme.spacing(3) * 2)]: {
             width: 1300,
             marginLeft: 'auto',
             marginRight: 'auto',
@@ -103,7 +103,7 @@ class ImageGrid extends Component {
         return (
             <div className={classNames(classes.layout, classes.cardGrid)}>
                 {/* End hero unit */}
-                <Grid container spacing={40}>
+                <Grid container spacing={10}>
                     {cards.map(card => (
                         <Grid item key={card.avatarLocation + '-' + card.id} sm={6} md={4} lg={3}>
                             <Card className={classes.card}>

@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
             file.on('end', async () => {
                 let data = {
                     userId,
-                    location: `api/public/${name}`
+                    location: `/api/public/${name}`
                 };
                 let [err, file] = await on(File.create(data));
                 if (err) {

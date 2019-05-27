@@ -26,7 +26,7 @@ router.post(
     },
     passport.authenticate('local'),
     (req, res, next) => {
-        console.log('logged in', req.user);
+        console.log('logged in', req.user && req.user.id);
         req.login(req.user, (err) => {
             if (err)
                 return next(err);
@@ -35,28 +35,6 @@ router.post(
         })
     }
 );
-
-// router.route('/login').post((req, res, next) => {
-//     passport.authenticate('local', (err, user, info) => {
-//         if (!user && info)
-//             return res.status(401).send(info.message);
-//
-//         if (err)
-//             return next(err);
-//
-//         if (!user)
-//             return res.sendStatus(401);
-//
-//         req.login(user, (err) => {
-//             if (err)
-//                 return next(err);
-//
-//             next();
-//
-//             // return res.redirect('/api/users');
-//         })
-//     })(req, res, next);
-// });
 
 /** POST /auth/logout - Logout from the App */
 router.post(

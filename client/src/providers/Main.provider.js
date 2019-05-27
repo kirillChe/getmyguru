@@ -18,7 +18,7 @@ class MainProvider extends PureComponent {
         console.log('Main.provider.js :18', this.state.user, state);
     };
 
-    async getUserData() {
+    getUserData = async () => {
         let {data: user} = await axios.get('/auth/isLoggedIn');
         console.log('Get User: There is a user saved in the server session: ', user);
         if (!user) {
@@ -35,7 +35,7 @@ class MainProvider extends PureComponent {
                 user
             })
         }
-    }
+    };
 
     async componentDidMount() {
         try {
@@ -54,7 +54,12 @@ class MainProvider extends PureComponent {
         loggedIn: false,
         user: {},
         updateUser: this.updateUser,
-        loading: true
+        loading: true,
+        allowedLanguages: ['en', 'ru'],
+        defaultUserAvatar: {
+            male: 'https://thumbs.dreamstime.com/z/default-placeholder-fitness-trainer-t-shirt-half-length-portrait-photo-avatar-gray-color-default-placeholder-fitness-trainer-116470280.jpg',
+            female: 'https://thumbs.dreamstime.com/z/default-placeholder-fitness-trainer-t-shirt-default-placeholder-fitness-trainer-t-shirt-half-length-portrait-photo-119457655.jpg'
+        }
     };
 
     render() {

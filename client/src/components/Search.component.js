@@ -15,7 +15,7 @@ import {Filter} from '.';
 
 const styles = theme => ({
     typography: {
-        margin: theme.spacing.unit * 2,
+        margin: theme.spacing(2),
     },
     root: {
         padding: '2px 4px',
@@ -36,7 +36,7 @@ const styles = theme => ({
         margin: 4,
     },
     searchButton: {
-        margin: theme.spacing.unit
+        // margin: theme.spacing.unit
     }
 });
 

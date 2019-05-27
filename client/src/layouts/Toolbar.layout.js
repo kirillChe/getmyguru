@@ -1,17 +1,18 @@
-import React, { useContext } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    IconButton,
+    Dialog,
+    DialogContent,
+    Slide,
+    Link
+} from '@material-ui/core';
 import FitnessIcon from '@material-ui/icons/FitnessCenter';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-// import withMobileDialog from '@material-ui/core/withMobileDialog';
-import Slide from '@material-ui/core/Slide';
-import Link from '@material-ui/core/Link';
 
 import {Login, SignUp, ForgotPwd, ProfileMenu, SetNewPwd} from '../components';
 import { MainContext } from '../context';
@@ -26,23 +27,23 @@ const styles = theme => ({
     dialog: {
         width: 'auto',
         display: 'block', // Fix IE 11 issue.
-        marginLeft: theme.spacing.unit * 3,
-        marginRight: theme.spacing.unit * 3,
-        [theme.breakpoints.up(500 + theme.spacing.unit * 3 * 2)]: {
+        marginLeft: theme.spacing(3),
+        marginRight: theme.spacing(3),
+        [theme.breakpoints.up(500 + theme.spacing(3) * 2)]: {
             width: 500,
             marginLeft: 'auto',
             marginRight: 'auto',
         },
     },
     content: {
-        marginTop: theme.spacing.unit * 2,
+        marginTop: theme.spacing(2),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+        padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
     },
     signup: {
-        marginTop: theme.spacing.unit * 3,
+        marginTop: theme.spacing(3),
         alignItems: 'center',
         display: 'flex',
         flexDirection: 'column',
@@ -61,7 +62,7 @@ const styles = theme => ({
 
 const getPathComponents = path => R.split('/', path);
 
-class ToolbarLayout extends React.Component {
+class ToolbarLayout extends Component {
     static contextType = MainContext;
 
     constructor(props) {
@@ -111,10 +112,10 @@ class ToolbarLayout extends React.Component {
         return (
             <AppBar position="sticky" color="default" className={classes.root}>
                 <Toolbar>
-                    <IconButton className={classes.menuButton} color="inherit" aria-label="Icon">
+                    <IconButton className={classes.menuButton} color="inherit" aria-label="Icon" href="/">
                         <FitnessIcon />
                     </IconButton>
-                    <Typography variant="h6" color="inherit" className={classes.grow}>
+                    <Typography variant="h6" color="inherit" className={classes.grow} >
                         COMPANY
                     </Typography>
                     {context.loggedIn ? (
@@ -148,8 +149,8 @@ class ToolbarLayout extends React.Component {
                             </div>
                         </DialogContent>
                     </Dialog>
-                    {/* Email sent dialog end */}
-                    {/* Sign up dialog start */}
+                     {/*Email sent dialog end*/}
+                     {/*Sign up dialog start*/}
                     <Dialog
                         open={this.state.showSignUp}
                         TransitionComponent={Transition}

@@ -9,5 +9,6 @@ export { default as SignUp } from './SignUp.component';
 export { default as SignUpGuru } from './SignUpGuru.component';
 export { default as SignUpAdept } from './SignUpAdept.component';
 export { default as Profile } from './Profile.component';
+export { default as EditProfile } from './EditProfile.component';
 export { default as SetNewPwd } from './SetNewPwd.component';
-export { default as ImageDropzone } from './imageDropzone.component';
+// export { default as ImageDropzone } from './imageDropzone.component';

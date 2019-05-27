@@ -18,10 +18,10 @@ import axios from 'axios';
 const styles = theme => ({
     form: {
         width: '90%', // Fix IE 11 issue.
-        marginTop: theme.spacing.unit,
+        // marginTop: theme.spacing.unit,
     },
     submit: {
-        marginTop: theme.spacing.unit * 3,
+        marginTop: theme.spacing(3),
     },
 });
 
@@ -97,72 +97,74 @@ class Login extends Component {
         let {wrongCredentials} = this.state;
 
         return (
-            <form className={classes.form} onSubmit={this.handleSubmit}>
-                <TextField
-                    id="email"
-                    label="Email"
-                    value={this.state.email}
-                    onChange={this.handleChange('email')}
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                />
-                <TextField
-                    id="password"
-                    label="Password"
-                    type={this.state.showPassword ? 'text' : 'password'}
-                    value={this.state.password}
-                    onChange={this.handleChange('password')}
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="Toggle password visibility"
-                                    onClick={this.togglePasswordMask}
-                                >
-                                    {this.state.showPassword ? <Visibility/> : <VisibilityOff/>}
-                                </IconButton>
-                            </InputAdornment>
-                        )
-                    }}
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            id="remember"
-                            value="remember"
-                            checked={this.state.remember}
-                            color="primary"
-                            onChange={this.handleChange('remember')}
-                        />
-                    }
-                    label="Remember me"
-                />
-                {wrongCredentials &&
-                    <Button
-                        fullWidth
+            <React.Fragment>
+                <form className={classes.form} onSubmit={this.handleSubmit}>
+                    <TextField
+                        id="email"
+                        label="Email"
+                        value={this.state.email}
+                        onChange={this.handleChange('email')}
+                        margin="normal"
                         variant="outlined"
-                        color="secondary"
+                        fullWidth
+                    />
+                    <TextField
+                        id="password"
+                        label="Password"
+                        type={this.state.showPassword ? 'text' : 'password'}
+                        value={this.state.password}
+                        onChange={this.handleChange('password')}
+                        margin="normal"
+                        variant="outlined"
+                        fullWidth
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="Toggle password visibility"
+                                        onClick={this.togglePasswordMask}
+                                    >
+                                        {this.state.showPassword ? <Visibility/> : <VisibilityOff/>}
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }}
+                    />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                id="remember"
+                                value="remember"
+                                checked={this.state.remember}
+                                color="primary"
+                                onChange={this.handleChange('remember')}
+                            />
+                        }
+                        label="Remember me"
+                    />
+                    {wrongCredentials &&
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            color="secondary"
+                            className={classes.submit}
+                            disabled
+                        >
+                            <ErrorIcon/> Credentials not valid
+                        </Button>
+                    }
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
                         className={classes.submit}
-                        disabled
+                        disabled={!this.validateForm()}
                     >
-                        <ErrorIcon/> Credentials not valid
+                        Login
                     </Button>
-                }
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                    disabled={!this.validateForm()}
-                >
-                    Login
-                </Button>
-            </form>
+                </form>
+            </React.Fragment>
         );
     }
 }

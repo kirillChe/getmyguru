@@ -10,10 +10,10 @@ import axios from 'axios';
 const styles = theme => ({
     form: {
         width: '90%', // Fix IE 11 issue.
-        marginTop: theme.spacing.unit,
+        // marginTop: theme.spacing.unit,
     },
     submit: {
-        marginTop: theme.spacing.unit * 3,
+        marginTop: theme.spacing(3),
     },
 });
 
@@ -66,38 +66,40 @@ class ForgotPwd extends React.Component {
         let { wrongCredentials } = this.state;
 
         return (
-            <form className={classes.form} onSubmit={this.handleSubmit}>
-                <TextField
-                    id="email"
-                    label="Email"
-                    value={this.state.email}
-                    onChange={this.handleChange}
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                />
-                {wrongCredentials &&
-                    <Button
-                        fullWidth
+            <React.Fragment>
+                <form className={classes.form} onSubmit={this.handleSubmit}>
+                    <TextField
+                        id="email"
+                        label="Email"
+                        value={this.state.email}
+                        onChange={this.handleChange}
+                        margin="normal"
                         variant="outlined"
-                        color="secondary"
+                        fullWidth
+                    />
+                    {wrongCredentials &&
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            color="secondary"
+                            className={classes.submit}
+                            disabled
+                        >
+                            <ErrorIcon/> Credentials not valid
+                        </Button>
+                    }
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
                         className={classes.submit}
-                        disabled
+                        disabled={!this.validateForm()}
                     >
-                        <ErrorIcon/> Credentials not valid
+                        Reset
                     </Button>
-                }
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                    disabled={!this.validateForm()}
-                >
-                    Reset
-                </Button>
-            </form>
+                </form>
+            </React.Fragment>
         );
     }
 }

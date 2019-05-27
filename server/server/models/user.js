@@ -48,6 +48,11 @@ module.exports = (sequelize, DataTypes) => {
                 isEmail: true
             }
         },
+        language: {
+            type: DataTypes.STRING(2),
+            allowNull: false,
+            defaultValue: 'en'
+        },
         password: {
             type: DataTypes.STRING(100),
             allowNull: false
@@ -86,7 +91,8 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     User.beforeSave(user => {
-        user.password = bcrypt.hashSync(user.password, 10);
+        if (user.changed('password'))
+            user.password = bcrypt.hashSync(user.password, 10);
     });
 
     User.afterCreate(async user => {

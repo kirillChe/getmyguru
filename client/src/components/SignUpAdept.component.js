@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import ErrorIcon from '@material-ui/icons/Warning';
+import { Button, TextField, IconButton, InputAdornment } from '@material-ui/core';
+import { Visibility, VisibilityOff, Warning } from '@material-ui/icons/Visibility';
 
 import axios from "axios";
 import * as R from "ramda";
@@ -15,10 +10,10 @@ import * as R from "ramda";
 const styles = theme => ({
     form: {
         width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing.unit,
+        // marginTop: theme.spacing.unit,
     },
     submit: {
-        marginTop: theme.spacing.unit * 3,
+        marginTop: theme.spacing(3),
     }
 });
 
@@ -146,7 +141,7 @@ class SignUpAdept extends Component {
                     className={classes.submit}
                     disabled
                 >
-                    <ErrorIcon/> Wrong data entered
+                    <Warning/> Wrong data entered
                 </Button>
                 }
                 <Button

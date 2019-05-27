@@ -3,7 +3,7 @@ const R = require('ramda');
 
 module.exports = () => (req, res, next) => {
     console.log('isAuthenticated.js :3', req.url);
-    console.log('isAuthenticated.js :4', req.session.cookie);
+    console.log('isAuthenticated.js :4', req.session);
 
     //@todo remove 'true'
     //@todo add users/mostPopular endpoint

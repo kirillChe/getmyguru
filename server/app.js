@@ -33,14 +33,14 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // @TODO Add missing properties for cookies (maxAge, ...)
 app.use(session({
-    store: new redisStore({client, ttl: 260}),
+    store: new redisStore({client, ttl: 26000}),
     secret: 'keyboard cat',
     genid: () => uuid(),
     resave: true,
     saveUninitialized: true,
     cookie: {
-        // 2 minutes for testing
-        maxAge: 2 * 60 * 1000
+        // 2 hours
+        maxAge: 2 * 60 * 60 * 1000
     }
 }));
 

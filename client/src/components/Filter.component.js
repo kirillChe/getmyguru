@@ -1,24 +1,12 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Button, TextField, Radio, RadioGroup, FormControlLabel, FormControl } from '@material-ui/core';
 
-import axios from "axios";
-const ages = getAges(14, 100);
+import axios from 'axios';
+import * as R from 'ramda';
 
-function getAges (start, end) {
-    let i = start;
-    let result = [];
-
-    do {
-        result.push({
-            value: i,
-            label: i
-        });
-        i += 1;
-    } while (i <= end);
-    return result;
-}
+const ages = R.range(14, 100);
 
 const styles = theme => ({
     container: {
@@ -35,8 +23,10 @@ const styles = theme => ({
     },
 });
 
-class Filter extends Component {
-    state = {
+const Filter = (props) => {
+    const {classes} = props;
+
+    const [values, setValues] = useState({
         gender: 'male',
         age: 20,
         firstName: '',
@@ -45,207 +35,127 @@ class Filter extends Component {
         phone: '',
         password: '',
         userType: 'guru'
-    };
+    });
 
-    handleChange = event => {
-        this.setState({
-            // for radio buttons use name
-            [event.target.id || event.target.name]: event.target.value
-        });
-    };
+    function handleChange (e) {
+        const {name, value} = e.target;
+        setValues({...values, [name]: value})
+    }
 
-    handleSubmit = event => {
-        event.preventDefault();
+    async function handleSubmit (e) {
+        e.preventDefault();
         let data = {
-            params: {filter: this.state}
+            params: {filter: values}
         };
 
         console.log(`Search form submitted:`);
         console.log(data);
-
-        axios
-            .get('/api/users', data)
-            .then(response => {
-                console.log('Search response: ');
-                console.log(response);
-                // if (response.status === 201) {
-                //     this.props.dialogClick('showLogin')();
-                // }
-            })
-            .catch(err => {
-                console.log('Search error: ');
-                console.log(err);
-                // this.setState({
-                //     submitError: true
-                // });
-                // this.forceUpdate();
-            });
-    };
-
-    render() {
-        const { classes } = this.props;
-        const {
-            gender,
-            age,
-            firstName,
-            lastName,
-            email,
-            phone
-        } = this.state;
-
-        return (
-            <React.Fragment>
-                <form className={classes.form} onSubmit={this.handleSubmit}>
-                    <TextField
-                        id="firstName"
-                        label="First Name"
-                        value={firstName}
-                        onChange={this.handleChange}
-                        margin="normal"
-                        variant="outlined"
-                        className={classes.textField}
-                    />
-                    <TextField
-                        id="lastName"
-                        label="Last Name"
-                        value={lastName}
-                        onChange={this.handleChange}
-                        margin="normal"
-                        variant="outlined"
-                        className={classes.textField}
-                    />
-                    <FormControl component="fieldset">
-                        <RadioGroup
-                            aria-label="gender"
-                            name="gender"
-                            value={gender}
-                            onChange={this.handleChange}
-                        >
-                            <FormControlLabel
-                                value="male"
-                                control={<Radio color="primary"/>}
-                                label="Male"
-                                labelPlacement="start"
-                            />
-                            <FormControlLabel
-                                value="female"
-                                control={<Radio color="primary"/>}
-                                label="Female"
-                                labelPlacement="start"
-                            />
-                        </RadioGroup>
-                    </FormControl>
-                    <TextField
-                        id="age"
-                        select
-                        label="Age"
-                        value={age}
-                        onChange={this.handleChange}
-                        SelectProps={{
-                            native: true
-                        }}
-                        margin="normal"
-                        variant="outlined"
-                        className={classes.textField}
-                    >
-                        {ages.map(option => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </TextField>
-                    <TextField
-                        id="email"
-                        label="Email"
-                        value={email}
-                        onChange={this.handleChange}
-                        margin="normal"
-                        variant="outlined"
-                        className={classes.textField}
-                    />
-                    <TextField
-                        id="phone"
-                        label="Phone"
-                        value={phone}
-                        onChange={this.handleChange}
-                        margin="normal"
-                        variant="outlined"
-                        className={classes.textField}
-                    />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                    >
-                        Search
-                    </Button>
-                </form>
-            </React.Fragment>
-            // <form className={classes.container} noValidate autoComplete="off">
-            //     <TextField
-            //         id="first-name"
-            //         label="First Name"
-            //         className={classes.textField}
-            //         value={this.state.firstName}
-            //         onChange={this.handleChange('firstName')}
-            //         margin="normal"
-            //     />
-            //
-            //     <TextField
-            //         id="last-name"
-            //         label="LastName"
-            //         className={classes.textField}
-            //         value={this.state.lastName}
-            //         onChange={this.handleChange('lastName')}
-            //         margin="normal"
-            //     />
-            //
-            //     <TextField
-            //         id="age"
-            //         select
-            //         label="Age"
-            //         className={classes.textField}
-            //         value={this.state.age}
-            //         onChange={this.handleChange('age')}
-            //         SelectProps={{
-            //             MenuProps: {
-            //                 className: classes.menu,
-            //             },
-            //         }}
-            //         margin="normal"
-            //     >
-            //         {ages.map(option => (
-            //             <MenuItem key={option.value} value={option.value}>
-            //                 {option.label}
-            //             </MenuItem>
-            //         ))}
-            //     </TextField>
-            //
-            //     <TextField
-            //         id="rating"
-            //         select
-            //         label="Rating"
-            //         className={classes.textField}
-            //         value={this.state.age}
-            //         onChange={this.handleChange('rating')}
-            //         // SelectProps={{
-            //         //     MenuProps: {
-            //         //         className: classes.menu,
-            //         //     },
-            //         // }}
-            //         margin="normal"
-            //     >
-            //         {/*{ages.map(option => (*/}
-            //             {/*<MenuItem key={option.value} value={option.value}>*/}
-            //                 {/*{option.label}*/}
-            //             {/*</MenuItem>*/}
-            //         {/*))}*/}
-            //     </TextField>
-            //     <Button ype="submit" variant="outlined" color="primary">Search</Button>
-            // </form>
-        );
+        
+        try {
+            let response = await axios.get('/api/users', data);
+            console.log('Search response: ');
+            console.log(response);
+        }catch (err) {
+            console.log('Search error: ');
+            console.log(err);
+        }
     }
-}
+
+    return (
+        <React.Fragment>
+            <form className={classes.form} onSubmit={handleSubmit}>
+                <TextField
+                    id="firstName"
+                    name="firstName"
+                    label="First Name"
+                    value={values.firstName}
+                    onChange={handleChange}
+                    margin="normal"
+                    variant="outlined"
+                    className={classes.textField}
+                />
+                <TextField
+                    id="lastName"
+                    name="lastName"
+                    label="Last Name"
+                    value={values.lastName}
+                    onChange={handleChange}
+                    margin="normal"
+                    variant="outlined"
+                    className={classes.textField}
+                />
+                <FormControl component="fieldset">
+                    <RadioGroup
+                        aria-label="gender"
+                        name="gender"
+                        value={values.gender}
+                        onChange={handleChange}
+                    >
+                        <FormControlLabel
+                            value="male"
+                            control={<Radio color="primary"/>}
+                            label="Male"
+                            labelPlacement="start"
+                        />
+                        <FormControlLabel
+                            value="female"
+                            control={<Radio color="primary"/>}
+                            label="Female"
+                            labelPlacement="start"
+                        />
+                    </RadioGroup>
+                </FormControl>
+                <TextField
+                    id="age"
+                    name="age"
+                    select
+                    label="Age"
+                    value={values.age}
+                    onChange={handleChange}
+                    SelectProps={{
+                        native: true
+                    }}
+                    margin="normal"
+                    variant="outlined"
+                    className={classes.textField}
+                >
+                    {ages.map(option => (
+                        <option key={option} value={option}>
+                            {option}
+                        </option>
+                    ))}
+                </TextField>
+                <TextField
+                    id="email"
+                    name="email"
+                    label="Email"
+                    value={values.email}
+                    onChange={handleChange}
+                    margin="normal"
+                    variant="outlined"
+                    className={classes.textField}
+                />
+                <TextField
+                    id="phone"
+                    name="phone"
+                    label="Phone"
+                    value={values.phone}
+                    onChange={handleChange}
+                    margin="normal"
+                    variant="outlined"
+                    className={classes.textField}
+                />
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                >
+                    Search
+                </Button>
+            </form>
+        </React.Fragment>
+    );
+};
 
 Filter.propTypes = {
     classes: PropTypes.object.isRequired,

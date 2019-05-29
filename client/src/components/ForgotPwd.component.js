@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import { Button, TextField } from '@material-ui/core';
 import ErrorIcon from '@material-ui/icons/Warning';
+import useForceUpdate from 'use-force-update';
 
 import axios from 'axios';
 
@@ -17,95 +17,87 @@ const styles = theme => ({
     },
 });
 
-class ForgotPwd extends React.Component {
-    state = {
-        email: '',
-        wrongCredentials: false
-    };
+const ForgotPwd = (props) => {
+    const forceUpdate = useForceUpdate();
+    const [wrongCredentials, setWrongCredentials] = useState(false);
+    const [email, setEmail] = useState('');
+    const { classes } = props;
 
-    validateForm() {
-        return this.state.email.length > 0;
+    function validateForm() {
+        return email.length > 0;
     }
 
-    handleChange = event => {
-        this.setState({
-            [event.target.id]: event.target.value
-        });
-    };
+    function handleChange (event) {
+        setEmail(event.target.value);
+    }
 
-    handleSubmit = event => {
+    async function handleSubmit (event) {
         event.preventDefault();
-        let data = {
-            email: this.state.email
-        };
-
         console.log(`Forgot pwd Form submitted:`);
-        console.log(data);
 
-        axios
-            .post('/api/users/resetPassword', data)
-            .then(response => {
-                console.log('Forgot pwd response: ');
-                console.log(response);
-                if (response.status === 204) {
-                    this.props.dialogClick('showEmailSent')();
-                }
-            })
-            .catch(err => {
+        try {
+            let response = await axios.post('/api/users/resetPassword', {email});
+            console.log('Forgot pwd response: ');
+            console.log(response);
+
+            if (response.status === 204) {
+                props.dialogClick('showEmailSent')();
+            } else {
                 console.log('Forgot pwd error: ');
-                console.log(err);
-                this.setState({
-                    wrongCredentials: true
-                });
-                this.forceUpdate();
-            });
-    };
 
-    render() {
-        const { classes } = this.props;
-        let { wrongCredentials } = this.state;
+                setWrongCredentials(true);
+                forceUpdate();
+            }
 
-        return (
-            <React.Fragment>
-                <form className={classes.form} onSubmit={this.handleSubmit}>
-                    <TextField
-                        id="email"
-                        label="Email"
-                        value={this.state.email}
-                        onChange={this.handleChange}
-                        margin="normal"
-                        variant="outlined"
-                        fullWidth
-                    />
-                    {wrongCredentials &&
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            color="secondary"
-                            className={classes.submit}
-                            disabled
-                        >
-                            <ErrorIcon/> Credentials not valid
-                        </Button>
-                    }
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        disabled={!this.validateForm()}
-                    >
-                        Reset
-                    </Button>
-                </form>
-            </React.Fragment>
-        );
+        }catch (e) {
+            console.log('Forgot pwd error: ');
+            console.log(e);
+
+            setWrongCredentials(true);
+            forceUpdate();
+        }
     }
-}
+
+    return (
+        <React.Fragment>
+            <form className={classes.form} onSubmit={handleSubmit}>
+                <TextField
+                    id="email"
+                    label="Email"
+                    value={email}
+                    onChange={handleChange}
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                />
+                {wrongCredentials &&
+                <Button
+                    fullWidth
+                    variant="outlined"
+                    color="secondary"
+                    className={classes.submit}
+                    disabled
+                >
+                    <ErrorIcon/> Credentials not valid
+                </Button>
+                }
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    disabled={!validateForm()}
+                >
+                    Reset
+                </Button>
+            </form>
+        </React.Fragment>
+    );
+};
 
 ForgotPwd.propTypes = {
-    classes: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(ForgotPwd);

@@ -1,14 +1,18 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import ErrorIcon from '@material-ui/icons/Warning';
-import TextField from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import InputAdornment from '@material-ui/core/InputAdornment';
-
+import {
+    Button,
+    TextField,
+    IconButton,
+    InputAdornment
+} from '@material-ui/core';
+import {
+    Warning,
+    Visibility,
+    VisibilityOff
+} from '@material-ui/icons';
+import useForceUpdate from 'use-force-update';
 import axios from 'axios';
 
 const styles = theme => ({
@@ -21,114 +25,109 @@ const styles = theme => ({
     },
 });
 
-class Login extends Component {
-    state = {
-        password: '',
-        wrongCredentials: false,
-        showPassword: false
-    };
 
-    validateForm() {
-        return this.state.password.length > 0;
+const SetNewPwd = (props) => {
+    const {classes} = props;
+    const forceUpdate = useForceUpdate();
+    const [showPassword, setShowPassword] = useState(false);
+    const [wrongCredentials, setWrongCredentials] = useState(false);
+    const [password, setPassword] = useState('');
+
+    function validateForm() {
+        return password.length > 0;
     }
 
-    handleChange = name => event => {
-        this.setState({ [name]: event.target.value });
-    };
+    function handleChange (event) {
+        setPassword(event.target.value);
+    }
 
-    togglePasswordMask = () => {
-        this.setState(prevState => ({
-            showPassword: !prevState.showPassword
-        }));
-    };
+    function togglePasswordMask () {
+        setShowPassword(!showPassword);
+    }
 
-    handleSubmit = event => {
+    async function handleSubmit (event) {
         event.preventDefault();
         let data = {
-            token: this.props.token,
-            newPassword: this.state.password
+            token: props.token,
+            newPassword: password
         };
 
         console.log(`Set new pwd submitted:`);
         console.log(data);
 
-        axios
-            .post('/api/users/setNewPassword', data)
-            .then(response => {
-                console.log('Set new pwd response: ');
-                console.log(response);
-                if (response.status === 204) {
-                    this.props.dialogClick();
-                }
-            })
-            .catch(err => {
+        try {
+            let response = await axios.post('/api/users/setNewPassword', data);
+            console.log('Set new pwd response: ');
+            console.log(response);
+            if (response.status === 204) {
+                props.dialogClick();
+            } else {
                 console.log('Set new pwd error: ');
-                console.log(err);
-                this.setState({
-                    wrongCredentials: true
-                });
-                this.forceUpdate();
-            });
-    };
-
-    render() {
-        const { classes } = this.props;
-        let {wrongCredentials} = this.state;
-
-        return (
-            <React.Fragment>
-                <form className={classes.form} onSubmit={this.handleSubmit}>
-                    <TextField
-                        id="password"
-                        label="Password"
-                        type={this.state.showPassword ? 'text' : 'password'}
-                        value={this.state.password}
-                        onChange={this.handleChange('password')}
-                        margin="normal"
-                        variant="outlined"
-                        fullWidth
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="Toggle password visibility"
-                                        onClick={this.togglePasswordMask}
-                                    >
-                                        {this.state.showPassword ? <Visibility/> : <VisibilityOff/>}
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }}
-                    />
-                    {wrongCredentials &&
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            color="secondary"
-                            className={classes.submit}
-                            disabled
-                        >
-                            <ErrorIcon/> Credentials not valid
-                        </Button>
-                    }
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        disabled={!this.validateForm()}
-                    >
-                        Reset
-                    </Button>
-                </form>
-            </React.Fragment>
-        );
+                setWrongCredentials(true);
+                forceUpdate();
+            }
+        }catch (e) {
+            console.log('Set new pwd error: ');
+            console.log(e);
+            setWrongCredentials(true);
+            forceUpdate();
+        }
     }
-}
 
-Login.propTypes = {
-    classes: PropTypes.object.isRequired,
+    return (
+        <React.Fragment>
+            <form className={classes.form} onSubmit={handleSubmit}>
+                <TextField
+                    id="password"
+                    name="password"
+                    label="Password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={handleChange}
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="Toggle password visibility"
+                                    onClick={togglePasswordMask}
+                                >
+                                    {showPassword ? <Visibility/> : <VisibilityOff/>}
+                                </IconButton>
+                            </InputAdornment>
+                        )
+                    }}
+                />
+                {wrongCredentials &&
+                <Button
+                    fullWidth
+                    variant="outlined"
+                    color="secondary"
+                    className={classes.submit}
+                    disabled
+                >
+                    <Warning/> Credentials not valid
+                </Button>
+                }
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    disabled={!validateForm()}
+                >
+                    Reset
+                </Button>
+            </form>
+        </React.Fragment>
+    );
 };
 
-export default withStyles(styles)(Login);
+SetNewPwd.propTypes = {
+    classes: PropTypes.object.isRequired
+};
+
+export default withStyles(styles)(SetNewPwd);

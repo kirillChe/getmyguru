@@ -13,10 +13,10 @@ import {
     Link
 } from '@material-ui/core';
 import FitnessIcon from '@material-ui/icons/FitnessCenter';
+import * as R from 'ramda';
 
 import {Login, SignUp, ForgotPwd, ProfileMenu, SetNewPwd} from '../components';
 import { MainContext } from '../context';
-import * as R from 'ramda';
 
 
 class Transition extends React.Component {

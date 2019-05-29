@@ -1,15 +1,20 @@
-import React, { Component } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import ErrorIcon from '@material-ui/icons/Warning';
-import TextField from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import {
+    Button,
+    FormControlLabel,
+    Checkbox,
+    TextField,
+    IconButton,
+    InputAdornment
+} from '@material-ui/core';
+import {
+    Warning,
+    Visibility,
+    VisibilityOff
+} from '@material-ui/icons';
+import useForceUpdate from 'use-force-update';
 
 import { MainContext } from '../context';
 
@@ -25,152 +30,148 @@ const styles = theme => ({
     },
 });
 
-class Login extends Component {
-
-    static contextType = MainContext;
-
-    state = {
+const Login = (props) => {
+    const {classes} = props;
+    const forceUpdate = useForceUpdate();
+    const { updateUser } = useContext(MainContext);
+    const [showPassword, setShowPassword] = useState(false);
+    const [wrongCredentials, setWrongCredentials] = useState(false);
+    const [remember, setRemember] = useState(false);
+    const [values, setValues] = useState({
         email: '',
-        password: '',
-        remember: false,
-        wrongCredentials: false,
-        showPassword: false
-    };
+        password: ''
+    });
 
-    validateForm() {
-        return this.state.email.length > 0 && this.state.password.length > 0;
+    function validateForm() {
+        return values.email.length > 0 && values.password.length > 0;
     }
 
-    handleChange = name => event => {
+    function handleChange (event) {
+        let {name} = event.target;
         if (name === 'remember') {
-            this.setState({ [name]: event.target.checked });
+            setRemember(event.target.checked);
         } else {
-            this.setState({ [name]: event.target.value });
+            let {value} = event.target;
+            setValues({...values, [name]: value})
         }
-    };
+    }
 
-    togglePasswordMask = () => {
-        this.setState(prevState => ({
-            showPassword: !prevState.showPassword
-        }));
-    };
+    function togglePasswordMask () {
+        setShowPassword(!showPassword);
+    }
 
-    handleSubmit = event => {
+    async function handleSubmit (event) {
         event.preventDefault();
+        console.log(`Login Form submitted:`);
         let data = {
-            email: this.state.email,
-            password: this.state.password
+            email: values.email,
+            password: values.password
         };
 
-        console.log(`Login Form submitted:`);
-        console.log(data);
-
-        axios
-            .post('/auth/login', data)
-            .then(response => {
-                console.log('Login response: ');
-                console.log(response.data);
-                // console.log(response.data);
-                if (response.status === 200) {
-                    // update main context state
-                    this.context.updateUser({
-                        loggedIn: true,
-                        user: response.data
-                    });
-                    //@todo change it, add props to state
-                    // refresh page
-                    window.location.reload();
-                }
-            })
-            .catch(err => {
-                console.log('login error: ');
-                console.log(err);
-                this.setState({
-                    wrongCredentials: true
+        try {
+            let response = await axios.post('/auth/login', data);
+            console.log('Login response: ');
+            console.log(response.data);
+            // console.log(response.data);
+            if (response.status === 200) {
+                // update main context state
+                updateUser({
+                    loggedIn: true,
+                    user: response.data
                 });
-                this.forceUpdate();
-            });
-    };
-
-    render() {
-        const { classes } = this.props;
-        let {wrongCredentials} = this.state;
-
-        return (
-            <React.Fragment>
-                <form className={classes.form} onSubmit={this.handleSubmit}>
-                    <TextField
-                        id="email"
-                        label="Email"
-                        value={this.state.email}
-                        onChange={this.handleChange('email')}
-                        margin="normal"
-                        variant="outlined"
-                        fullWidth
-                    />
-                    <TextField
-                        id="password"
-                        label="Password"
-                        type={this.state.showPassword ? 'text' : 'password'}
-                        value={this.state.password}
-                        onChange={this.handleChange('password')}
-                        margin="normal"
-                        variant="outlined"
-                        fullWidth
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="Toggle password visibility"
-                                        onClick={this.togglePasswordMask}
-                                    >
-                                        {this.state.showPassword ? <Visibility/> : <VisibilityOff/>}
-                                    </IconButton>
-                                </InputAdornment>
-                            )
-                        }}
-                    />
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                id="remember"
-                                value="remember"
-                                checked={this.state.remember}
-                                color="primary"
-                                onChange={this.handleChange('remember')}
-                            />
-                        }
-                        label="Remember me"
-                    />
-                    {wrongCredentials &&
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            color="secondary"
-                            className={classes.submit}
-                            disabled
-                        >
-                            <ErrorIcon/> Credentials not valid
-                        </Button>
-                    }
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        disabled={!this.validateForm()}
-                    >
-                        Login
-                    </Button>
-                </form>
-            </React.Fragment>
-        );
+                //@todo change it, add props to state
+                // refresh page
+                window.location.reload();
+            } else {
+                console.log('login error');
+                setWrongCredentials(true);
+                forceUpdate();
+            }
+        }catch (e) {
+            console.log('login error: ');
+            console.log(e);
+            setWrongCredentials(true);
+            forceUpdate();
+        }
     }
-}
+
+    return (
+        <React.Fragment>
+            <form className={classes.form} onSubmit={handleSubmit}>
+                <TextField
+                    id="email"
+                    name="email"
+                    label="Email"
+                    value={values.email}
+                    onChange={handleChange}
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                />
+                <TextField
+                    id="password"
+                    name="password"
+                    label="Password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={values.password}
+                    onChange={handleChange}
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="Toggle password visibility"
+                                    onClick={togglePasswordMask}
+                                >
+                                    {showPassword ? <Visibility/> : <VisibilityOff/>}
+                                </IconButton>
+                            </InputAdornment>
+                        )
+                    }}
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            id="remember"
+                            name="remember"
+                            value="remember"
+                            checked={remember}
+                            color="primary"
+                            onChange={handleChange}
+                        />
+                    }
+                    label="Remember me"
+                />
+                {wrongCredentials &&
+                <Button
+                    fullWidth
+                    variant="outlined"
+                    color="secondary"
+                    className={classes.submit}
+                    disabled
+                >
+                    <Warning/> Credentials not valid
+                </Button>
+                }
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    disabled={!validateForm()}
+                >
+                    Login
+                </Button>
+            </form>
+        </React.Fragment>
+    );
+};
 
 Login.propTypes = {
-    classes: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(Login);

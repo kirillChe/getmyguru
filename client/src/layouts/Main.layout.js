@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { useContext } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -13,34 +13,28 @@ const styles = theme => ({
     }
 });
 
-class MainLayout extends PureComponent {
+const MainLayout = (props) => {
+    const { loading } = useContext(MainContext);
+    let { children, classes } = props;
+    let content;
 
-    static contextType = MainContext;
-
-    render() {
-        let {children} = this.props;
-        const { classes } = this.props;
-        let context = this.context;
-        let content;
-
-        if (context.loading) {
-            content = <CircularProgress className={classes.progress} />;
-        } else {
-            content = <React.Fragment>
-                <ToolbarLayout />
-                <main>
-                    <div>{children}</div>
-                </main>
-                <FooterLayout/>
-            </React.Fragment>;
-        }
-
-        return (
-            <div>
-                {content}
-            </div>
-        )
+    if (loading) {
+        content = <CircularProgress className={classes.progress} />;
+    } else {
+        content = <React.Fragment>
+            <ToolbarLayout />
+            <main>
+                <div>{children}</div>
+            </main>
+            <FooterLayout/>
+        </React.Fragment>;
     }
-}
+
+    return (
+        <div>
+            {content}
+        </div>
+    );
+};
 
 export default withStyles(styles)(MainLayout);

@@ -5,7 +5,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 import {ImageGrid, Search} from '.';
 
-
 const styles = theme => ({
     heroUnit: {
         backgroundColor: theme.palette.background.paper,

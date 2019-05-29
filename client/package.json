@@ -17,7 +17,9 @@
     "react-dom": "^16.8.4",
     "react-dropzone": "^10.1.4",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "2.1.8"
+    "react-router-prop-types": "^1.0.4",
+    "react-scripts": "2.1.8",
+    "use-force-update": "^1.0.5"
   },
   "scripts": {
     "start": "react-scripts start",

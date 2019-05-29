@@ -1,92 +1,88 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { IconButton, Avatar, MenuItem, Menu, Fade } from '@material-ui/core';
 import AccountIcon from '@material-ui/icons/AccountCircle';
+import {withRouter} from 'react-router-dom';
+import ReactRouterPropTypes from 'react-router-prop-types';
 import axios from 'axios';
-import {withRouter} from "react-router-dom";
 
 import { MainContext } from '../context';
 
-class ProfileMenu extends React.Component {
-    static contextType = MainContext;
+const ProfileMenu = (props) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const { updateUser, user } = useContext(MainContext);
 
-    state = {
-        anchorEl: null,
-    };
+    function handleClick (event) {
+        setAnchorEl(event.currentTarget);
+    }
 
-    handleClick = event => {
-        this.setState({ anchorEl: event.currentTarget });
-    };
+    function handleClose () {
+        setAnchorEl(null);
+    }
 
-    handleClose = () => {
-        this.setState({ anchorEl: null });
-    };
-
-    handleProfile = event => {
-        event.preventDefault();
+    function handleProfile (event) {
+        // event.preventDefault();
         console.log('Go to profile');
-        // return <Redirect to='/profile' />
-        this.props.history.push(`/profile/${this.context.user.id}`);
-        this.setState({ anchorEl: null });
-    };
+        props.history.push(`/profile/${user.id}`);
+        setAnchorEl(null);
+    }
 
-    handleMain = event => {
-        event.preventDefault();
+    function handleMain (event) {
+        // event.preventDefault();
         console.log('Go to main page');
-        this.props.history.push('/');
-        this.setState({ anchorEl: null });
-    };
+        props.history.push('/');
+        setAnchorEl(null);
+    }
 
-    handleLogout = event => {
-        event.preventDefault();
+    async function handleLogout (event) {
+        // event.preventDefault();
         console.log('logging out');
-        axios.post('/auth/logout').then(response => {
-            console.log(response.data);
-            if (response.status === 200) {
-                this.context.updateUser({
+        try {
+            let response = await axios.post('/auth/logout');
+
+            if (response.status === 200)
+                updateUser({
                     loggedIn: false,
                     user: {}
-                })
-            }
-            this.props.history.push('/');
-        }).catch(error => {
+                });
+
+            props.history.push('/');
+        } catch (e) {
             console.log('Logout error');
-            console.log('ProfileMenu.component.js :43', error);
-        })
-    };
-
-    render() {
-        const { anchorEl } = this.state;
-        const open = Boolean(anchorEl);
-        const { avatarLocation } = this.context.user;
-
-        return (
-            <React.Fragment>
-                <IconButton
-                    aria-owns={open ? 'fade-menu' : undefined}
-                    aria-haspopup="true"
-                    onClick={this.handleClick}
-                >
-                    {avatarLocation ? (
-                        <Avatar alt="avatar" src={avatarLocation} />
-                    ) : (
-                        <AccountIcon />
-                    )}
-                </IconButton>
-                <Menu
-                    id="fade-menu"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={this.handleClose}
-                    TransitionComponent={Fade}
-                >
-                    <MenuItem onClick={this.handleMain}>Main Page</MenuItem>
-                    <MenuItem onClick={this.handleProfile}>Profile</MenuItem>
-                    <MenuItem onClick={this.handleClose}>My messages</MenuItem>
-                    <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
-                </Menu>
-            </React.Fragment>
-        );
+            console.log('ProfileMenu.component.js :42', e);
+        }
     }
-}
+
+    return (
+        <React.Fragment>
+            <IconButton
+                aria-owns={Boolean(anchorEl) ? 'fade-menu' : undefined}
+                aria-haspopup="true"
+                onClick={handleClick}
+            >
+                {user.avatarLocation ? (
+                    <Avatar alt="avatar" src={user.avatarLocation} />
+                ) : (
+                    <AccountIcon />
+                )}
+            </IconButton>
+            <Menu
+                id="fade-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                TransitionComponent={Fade}
+            >
+                <MenuItem onClick={handleMain}>Main Page</MenuItem>
+                <MenuItem onClick={handleProfile}>Profile</MenuItem>
+                <MenuItem onClick={handleClose}>My messages</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </Menu>
+        </React.Fragment>
+    );
+};
+
+ProfileMenu.propTypes = {
+    history: ReactRouterPropTypes.history.isRequired
+};
 
 export default withRouter(ProfileMenu);

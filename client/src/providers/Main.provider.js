@@ -56,6 +56,7 @@ class MainProvider extends PureComponent {
         updateUser: this.updateUser,
         loading: true,
         allowedLanguages: ['en', 'ru'],
+        //@todo buy images when time came
         defaultUserAvatar: {
             male: 'https://thumbs.dreamstime.com/z/default-placeholder-fitness-trainer-t-shirt-half-length-portrait-photo-avatar-gray-color-default-placeholder-fitness-trainer-116470280.jpg',
             female: 'https://thumbs.dreamstime.com/z/default-placeholder-fitness-trainer-t-shirt-default-placeholder-fitness-trainer-t-shirt-half-length-portrait-photo-119457655.jpg'

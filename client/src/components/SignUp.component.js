@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
+import {
+    Tabs,
+    Tab,
+    Typography
+} from '@material-ui/core';
 
 import {SignUpGuru, SignUpAdept} from '.';
 
@@ -43,44 +45,39 @@ const styles = theme => ({
     },
 });
 
-class SignUp extends Component {
-    state = {
-        value: 0,
-    };
+const SignUp = (props) => {
+    const { classes } = props;
+    const [value, setValue] = useState(0);
 
-    handleChange = (event, value) => {
-        this.setState({ value });
-    };
-
-    render() {
-        const { classes } = this.props;
-        const { value } = this.state;
-
-        return (
-            <div className={classes.root}>
-                <Tabs
-                    value={value}
-                    onChange={this.handleChange}
-                    classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
-                >
-                    <Tab
-                        disableRipple
-                        classes={{ root: classes.tabRoot }}
-                        label="Client"
-                    />
-                    <Tab
-                        disableRipple
-                        classes={{ root: classes.tabRoot }}
-                        label="Trainer"
-                    />
-                </Tabs>
-                {value === 0 && <SignUpAdept dialogClick={this.props.dialogClick} />}
-                {value === 1 && <SignUpGuru dialogClick={this.props.dialogClick} />}
-
-            </div>
-        );
+    function handleChange (event, value) {
+        console.log('SignUp.component.js :53', value);
+        setValue(value);
     }
-}
+
+    return (
+        <div className={classes.root}>
+            <Tabs
+                value={value}
+                onChange={handleChange}
+                classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
+            >
+                <Tab
+                    disableRipple
+                    classes={{ root: classes.tabRoot }}
+                    label="Client"
+                />
+                <Tab
+                    disableRipple
+                    classes={{ root: classes.tabRoot }}
+                    label="Trainer"
+                />
+            </Tabs>
+            {value === 0 && <SignUpAdept dialogClick={props.dialogClick} />}
+            {value === 1 && <SignUpGuru dialogClick={props.dialogClick} />}
+
+        </div>
+    );
+};
 
 SignUp.propTypes = {
     classes: PropTypes.object.isRequired,

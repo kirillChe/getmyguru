@@ -1,25 +1,22 @@
-import React, { Component } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import {Button, TextField, Radio, RadioGroup, Avatar, FormControlLabel, FormControl } from '@material-ui/core';
-import {withRouter} from "react-router-dom";
-// import TextField from '@material-ui/core/TextField';
-// import Radio from '@material-ui/core/Radio';
-// import RadioGroup from '@material-ui/core/RadioGroup';
-// import Avatar from '@material-ui/core/Avatar';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import FormControl from '@material-ui/core/FormControl';
-// import IconButton from '@material-ui/core/IconButton';
-// import Visibility from '@material-ui/icons/Visibility';
-// import VisibilityOff from '@material-ui/icons/VisibilityOff';
-// import InputAdornment from '@material-ui/core/InputAdornment';
+import {
+    Button,
+    TextField,
+    Radio,
+    RadioGroup,
+    Avatar,
+    FormControlLabel,
+    FormControl
+} from '@material-ui/core';
+import {withRouter} from 'react-router-dom';
 import ErrorIcon from '@material-ui/icons/Warning';
+import ReactRouterPropTypes from 'react-router-prop-types';
+import axios from 'axios';
+import * as R from 'ramda';
 
 import { MainContext } from '../context';
-
-
-import axios from "axios";
-import * as R from "ramda";
 
 const ages = R.range(14, 100);
 
@@ -46,240 +43,218 @@ const styles = theme => ({
     }
 });
 
-const getUserAvatar = ctx => ctx.user.avatarLocation || (ctx.user.gender === 'male' ? ctx.defaultUserAvatar.male : ctx.defaultUserAvatar.female);
+const getUserAvatar = (user, defaultUserAvatar) => user.avatarLocation || (user.gender === 'male' ? defaultUserAvatar.male : defaultUserAvatar.female);
 
-class EditProfile extends Component {
+const EditProfile = (props) => {
+    const {classes} = props;
+    const { allowedLanguages, defaultUserAvatar, user } = useContext(MainContext);
+    const [submitError, setSubmitError] = useState(false);
 
-    static contextType = MainContext;
+    const [values, setValues] = useState({
+        phone: user.phone || '',
+        language: user.language || 'en',
+        age: user.age,
+        gender: user.gender || 'male',
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || ''
+    });
 
-    state = {
-        avatarLocation: getUserAvatar(this.context),
-        gender: this.context.user.gender || '',
-        age: this.context.user.age,
-        firstName: this.context.user.firstName || '',
-        lastName: this.context.user.lastName || '',
-        email: this.context.user.email || '',
-        language: this.context.user.language || 'en',
-        phone: this.context.user.phone || '',
-        file: null,
-        submitError: false
-    };
+    const [file, setFile] = useState(null);
+    const [avatarLocation, setAvatarLocation] = useState(getUserAvatar(user, defaultUserAvatar));
 
-    validateForm() {
+    function validateForm () {
         //@todo add required validator
-        // return true;
-        return this.state.firstName.length > 0 &&
-            this.state.lastName.length > 0 &&
-            this.state.email.length > 0;
+        return values.firstName.length > 0 &&
+            values.lastName.length > 0 &&
+            values.email.length > 0;
     }
 
-    handleChange = event => {
-        if (event.target.type === 'file') {
-            this.setState({
-                // for radio buttons use name
-                file: event.target.files[0],
-                avatarLocation: URL.createObjectURL(event.target.files[0])
-            });
-        } else {
-            this.setState({
-                // for radio buttons use name
-                [event.target.id || event.target.name]: event.target.value
-            });
-        }
-    };
+    function handleInputChange (e) {
+        const {name, value} = e.target;
+        setValues({...values, [name]: value})
+    }
 
-    handleSubmit = async event => {
-        event.preventDefault();
+    function handleAvatarChange (e) {
+        setFile(e.target.files[0]);
+        setAvatarLocation(URL.createObjectURL(e.target.files[0]));
+    }
+
+    async function handleSubmit (e) {
+        e.preventDefault();
         const data = new FormData();
-        console.log('_________________HERE: 52________________________', this.state.file);
         const config = {
             headers: {
                 'content-type': 'multipart/form-data'
             }
         };
-        data.append('file', this.state.file);
-        data.append('gender', this.state.gender);
-        data.append('age', this.state.age);
-        data.append('firstName', this.state.firstName);
-        data.append('lastName', this.state.lastName);
-        data.append('email', this.state.email);
-        data.append('language', this.state.language);
-        data.append('phone', this.state.phone);
+
+        R.forEachObjIndexed((val, key) => {
+            data.append(key, val);
+        }, values);
+        data.append('file', file);
 
         try {
             let response = await axios.put('/api/users/me', data, config);
             if (response.status === 200) {
-                this.props.history.push(`/profile/${this.context.user.id}`);
+                props.history.push(`/profile/${user.id}`);
             } else {
-                this.setState({
-                    submitError: true
-                });
+                setSubmitError(true);
             }
-        } catch (e) {
+        } catch (err) {
             console.log('Update user error: ');
-            console.log(e);
-            this.setState({
-                submitError: true
-            });
+            console.log(err);
+            setSubmitError(true);
         }
-    };
-
-    render() {
-        const { classes } = this.props;
-        const {
-            avatarLocation,
-            gender,
-            age,
-            firstName,
-            lastName,
-            email,
-            language,
-            phone,
-            submitError
-        } = this.state;
-        const {allowedLanguages} = this.context;
-
-        return (
-            <div className={classes.container}>
-                <form className={classes.form} onSubmit={this.handleSubmit}>
-                    <Avatar alt="avatar" src={avatarLocation} className={classes.bigAvatar} />
-                     <input
-                         accept="image/*"
-                         className={classes.input}
-                         onChange={this.handleChange}
-                         id="raised-button-file"
-                         type="file"
-                         name="myFile"
-                     />
-                     <label htmlFor="raised-button-file">
-                         <Button component="span" >
-                             Upload
-                         </Button>
-                     </label>
-                    <TextField
-                        id="firstName"
-                        label="First Name"
-                        value={firstName}
-                        onChange={this.handleChange}
-                        margin="normal"
-                        variant="outlined"
-                        fullWidth
-                    />
-                    <TextField
-                        id="lastName"
-                        label="Last Name"
-                        value={lastName}
-                        onChange={this.handleChange}
-                        margin="normal"
-                        variant="outlined"
-                        fullWidth
-                    />
-                    <FormControl component="fieldset">
-                        <RadioGroup
-                            aria-label="gender"
-                            name="gender"
-                            value={gender}
-                            onChange={this.handleChange}
-                        >
-                            <FormControlLabel
-                                value="male"
-                                control={<Radio color="primary" />}
-                                label="Male"
-                                labelPlacement="start"
-                            />
-                            <FormControlLabel
-                                value="female"
-                                control={<Radio color="primary" />}
-                                label="Female"
-                                labelPlacement="start"
-                            />
-                        </RadioGroup>
-                    </FormControl>
-                    <TextField
-                        id="age"
-                        select
-                        label="Age"
-                        value={age}
-                        onChange={this.handleChange}
-                        SelectProps={{
-                            native: true
-                        }}
-                        margin="normal"
-                        variant="outlined"
-                        fullWidth
-                    >
-                        {ages.map(option => (
-                            <option key={option} value={option}>
-                                {option}
-                            </option>
-                        ))}
-                    </TextField>
-                    <TextField
-                        id="language"
-                        select
-                        label="Language"
-                        value={language}
-                        onChange={this.handleChange}
-                        SelectProps={{
-                            native: true
-                        }}
-                        margin="normal"
-                        variant="outlined"
-                        fullWidth
-                    >
-                        {allowedLanguages.map(option => (
-                            <option key={option} value={option}>
-                                {option}
-                            </option>
-                        ))}
-                    </TextField>
-                    <TextField
-                        id="email"
-                        label="Email"
-                        value={email}
-                        onChange={this.handleChange}
-                        margin="normal"
-                        variant="outlined"
-                        fullWidth
-                    />
-                    <TextField
-                        id="phone"
-                        label="Phone"
-                        value={phone}
-                        onChange={this.handleChange}
-                        margin="normal"
-                        variant="outlined"
-                        fullWidth
-                    />
-                    {submitError &&
-                    <Button
-                        fullWidth
-                        variant="outlined"
-                        color="secondary"
-                        className={classes.submit}
-                        disabled
-                    >
-                        <ErrorIcon/> Wrong data entered
-                    </Button>
-                    }
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        disabled={!this.validateForm()}
-                    >
-                        Save
-                    </Button>
-                </form>
-            </div>
-        );
     }
-}
+
+    return (
+        <div className={classes.container}>
+            <form className={classes.form} onSubmit={handleSubmit}>
+                <Avatar alt="avatar" src={avatarLocation} className={classes.bigAvatar} />
+                <input
+                    id="raised-button-file"
+                    name="myFile"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    className={classes.input}
+                />
+                <label htmlFor="raised-button-file">
+                    <Button component="span" >
+                        Upload
+                    </Button>
+                </label>
+                <TextField
+                    id="firstName"
+                    name="firstName"
+                    label="First Name"
+                    value={values.firstName}
+                    onChange={handleInputChange}
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                />
+                <TextField
+                    id="lastName"
+                    name="lastName"
+                    label="Last Name"
+                    value={values.lastName}
+                    onChange={handleInputChange}
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                />
+                <FormControl component="fieldset">
+                    <RadioGroup
+                        aria-label="gender"
+                        name="gender"
+                        value={values.gender}
+                        onChange={handleInputChange}
+                    >
+                        <FormControlLabel
+                            value="male"
+                            control={<Radio color="primary" />}
+                            label="Male"
+                            labelPlacement="start"
+                        />
+                        <FormControlLabel
+                            value="female"
+                            control={<Radio color="primary" />}
+                            label="Female"
+                            labelPlacement="start"
+                        />
+                    </RadioGroup>
+                </FormControl>
+                <TextField
+                    id="age"
+                    name="age"
+                    select
+                    label="Age"
+                    value={values.age}
+                    onChange={handleInputChange}
+                    SelectProps={{
+                        native: true
+                    }}
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                >
+                    {ages.map(option => (
+                        <option key={option} value={option}>
+                            {option}
+                        </option>
+                    ))}
+                </TextField>
+                <TextField
+                    id="language"
+                    name="language"
+                    select
+                    label="Language"
+                    value={values.language}
+                    onChange={handleInputChange}
+                    SelectProps={{
+                        native: true
+                    }}
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                >
+                    {allowedLanguages.map(option => (
+                        <option key={option} value={option}>
+                            {option}
+                        </option>
+                    ))}
+                </TextField>
+                <TextField
+                    id="email"
+                    name="email"
+                    label="Email"
+                    value={values.email}
+                    onChange={handleInputChange}
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                />
+                <TextField
+                    id="phone"
+                    name="phone"
+                    label="Phone"
+                    value={values.phone}
+                    onChange={handleInputChange}
+                    margin="normal"
+                    variant="outlined"
+                    fullWidth
+                />
+                {submitError &&
+                <Button
+                    fullWidth
+                    variant="outlined"
+                    color="secondary"
+                    className={classes.submit}
+                    disabled
+                >
+                    <ErrorIcon/> Wrong data entered
+                </Button>
+                }
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    disabled={!validateForm()}
+                >
+                    Save
+                </Button>
+            </form>
+        </div>
+    );
+};
 
 EditProfile.propTypes = {
-    classes: PropTypes.object.isRequired,
+    history: ReactRouterPropTypes.history.isRequired,
+    classes: PropTypes.object.isRequired
 };
 
 export default withRouter(withStyles(styles)(EditProfile));

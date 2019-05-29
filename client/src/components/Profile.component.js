@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import { MainContext } from '../context';
 
-import axios from "axios";
+import axios from 'axios';
 import * as R from 'ramda';
 
 const styles = () => ({
@@ -38,7 +38,7 @@ const styles = () => ({
 const Profile = (props) => {
     const [profile, setProfile] = useState({});
     const [avatarLocation, setAvatarLocation] = useState(null);
-    const { defaultUserAvatar, user } = React.useContext(MainContext);
+    const { defaultUserAvatar, user } = useContext(MainContext);
     const {classes} = props;
     const profileId = R.split('/', window.location.pathname)[2];
 

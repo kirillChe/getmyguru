@@ -232,6 +232,41 @@ const getGurusPreviews = async (req, res, next) => {
     }
 };
 
+const userProfile = async (req, res, next) => {
+    //@todo add error handler (try/catch)
+    if (!req.params.id)
+        return res.status(400);
+
+    let [err, user] = await on(User.findByPk(req.params.id));
+    if (err)
+        return next(err);
+
+    if (!user)
+        return res.sendStatus(404);
+
+    let filter = {
+        where: {
+            userId: user.id
+        }
+    };
+
+    let files = await File.findAll(filter);
+
+    let result = R.pickAll(['id', 'firstName', 'lastName', 'gender', 'email', 'language', 'phone', 'age', 'rating'], user);
+    result.avatarLocation = null;
+    result.images = [];
+
+    R.forEach(file => {
+        if (file.id === user.avatar) {
+            result.avatarLocation = file.location;
+        } else {
+            result.images.push(file.location);
+        }
+    }, files || []);
+
+    res.status(200).json(result);
+};
+
 
 module.exports = {
     create,
@@ -241,5 +276,6 @@ module.exports = {
     destroy,
     resetPassword,
     setNewPassword,
-    getGurusPreviews
+    getGurusPreviews,
+    userProfile
 };

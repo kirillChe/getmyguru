@@ -19,8 +19,11 @@ import { MainContext } from '../context';
 import * as R from 'ramda';
 
 
-function Transition(props) {
-    return <Slide direction="down" {...props} />;
+class Transition extends React.Component {
+    render() {
+        let props = this.props;
+        return <Slide direction="down" {...props} />;
+    }
 }
 
 const styles = theme => ({
@@ -256,7 +259,7 @@ class ToolbarLayout extends Component {
                             </div>
                         </DialogContent>
                     </Dialog>
-                    {/* Forgot password end */}
+                     {/*Forgot password end*/}
                 </Toolbar>
             </AppBar>
         );

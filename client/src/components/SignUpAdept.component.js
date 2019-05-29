@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Button, TextField, IconButton, InputAdornment } from '@material-ui/core';
-import { Visibility, VisibilityOff, Warning } from '@material-ui/icons/Visibility';
+import { Visibility, VisibilityOff, Warning } from '@material-ui/icons';
 
 import axios from "axios";
 import * as R from "ramda";

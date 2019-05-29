@@ -21,10 +21,19 @@ class ProfileMenu extends React.Component {
         this.setState({ anchorEl: null });
     };
 
-    handleProfile = () => {
+    handleProfile = event => {
+        event.preventDefault();
         console.log('Go to profile');
         // return <Redirect to='/profile' />
         this.props.history.push(`/profile/${this.context.user.id}`);
+        this.setState({ anchorEl: null });
+    };
+
+    handleMain = event => {
+        event.preventDefault();
+        console.log('Go to main page');
+        this.props.history.push('/');
+        this.setState({ anchorEl: null });
     };
 
     handleLogout = event => {
@@ -38,6 +47,7 @@ class ProfileMenu extends React.Component {
                     user: {}
                 })
             }
+            this.props.history.push('/');
         }).catch(error => {
             console.log('Logout error');
             console.log('ProfileMenu.component.js :43', error);
@@ -69,6 +79,7 @@ class ProfileMenu extends React.Component {
                     onClose={this.handleClose}
                     TransitionComponent={Fade}
                 >
+                    <MenuItem onClick={this.handleMain}>Main Page</MenuItem>
                     <MenuItem onClick={this.handleProfile}>Profile</MenuItem>
                     <MenuItem onClick={this.handleClose}>My messages</MenuItem>
                     <MenuItem onClick={this.handleLogout}>Logout</MenuItem>

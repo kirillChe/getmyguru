@@ -32,7 +32,7 @@ class Login extends Component {
     state = {
         email: '',
         password: '',
-        remember: '',
+        remember: false,
         wrongCredentials: false,
         showPassword: false
     };

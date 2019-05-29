@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import IconButton from '@material-ui/core/IconButton';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import ErrorIcon from '@material-ui/icons/Warning';
+import {
+    Button,
+    TextField,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    FormControl,
+    IconButton,
+    InputAdornment
+} from '@material-ui/core';
+import {
+    Visibility,
+    VisibilityOff,
+    Warning
+} from '@material-ui/icons';
 
 import axios from "axios";
 import * as R from "ramda";
@@ -221,7 +225,7 @@ class SignUpAdept extends Component {
                     className={classes.submit}
                     disabled
                 >
-                    <ErrorIcon/> Wrong data entered
+                    <Warning/> Wrong data entered
                 </Button>
                 }
                 <Button

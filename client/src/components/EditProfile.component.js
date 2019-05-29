@@ -19,20 +19,9 @@ import { MainContext } from '../context';
 
 
 import axios from "axios";
-// import * as R from "ramda";
+import * as R from "ramda";
 
-const ages = getAges(14, 100);
-
-function getAges (start, end) {
-    let i = start;
-    let result = [];
-
-    do {
-        result.push(i);
-        i += 1;
-    } while (i <= end);
-    return result;
-}
+const ages = R.range(14, 100);
 
 const styles = theme => ({
     form: {
@@ -76,14 +65,12 @@ class EditProfile extends Component {
         submitError: false
     };
 
-    componentDidMount() {
-        console.log('_________________HERE: 69________________________', this.context);
-    }
-
     validateForm() {
         //@todo add required validator
-        return true;
-        // return this.state.email.length > 0 && this.state.password.length > 0;
+        // return true;
+        return this.state.firstName.length > 0 &&
+            this.state.lastName.length > 0 &&
+            this.state.email.length > 0;
     }
 
     handleChange = event => {

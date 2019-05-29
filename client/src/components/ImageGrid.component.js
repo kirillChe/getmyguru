@@ -8,6 +8,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import {withRouter} from "react-router-dom";
 
 import * as R from 'ramda';
 import axios from 'axios';
@@ -49,11 +50,20 @@ class ImageGrid extends Component {
 
         this.getGuruProfiles = this.getGuruProfiles.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
+        this.handleClickCard = this.handleClickCard.bind(this);
     }
 
     componentDidMount() {
         this.getGuruProfiles()
     }
+
+    handleClickCard = profileId => event => {
+        console.log('ImageGrid.component.js :60', profileId);
+        event.preventDefault();
+        console.log('Go to profile');
+        // return <Redirect to='/profile' />
+        this.props.history.push(`/profile/${profileId}`);
+    };
 
     getGuruProfiles() {
 
@@ -107,7 +117,7 @@ class ImageGrid extends Component {
                     {cards.map(card => (
                         <Grid item key={card.avatarLocation + '-' + card.id} sm={6} md={4} lg={3}>
                             <Card className={classes.card}>
-                                <CardActionArea>
+                                <CardActionArea onClick={this.handleClickCard(card.id)}>
                                     <CardMedia
                                         className={classes.cardMedia}
                                         image={card.avatarLocation}
@@ -132,4 +142,4 @@ ImageGrid.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ImageGrid);
+export default withRouter(withStyles(styles)(ImageGrid));

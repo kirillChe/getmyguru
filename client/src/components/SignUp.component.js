@@ -47,18 +47,15 @@ const styles = theme => ({
 
 const SignUp = (props) => {
     const { classes } = props;
-    const [value, setValue] = useState(0);
-
-    function handleChange (event, value) {
-        console.log('SignUp.component.js :53', value);
-        setValue(value);
-    }
+    const [tabIndex, setTabIndex] = useState(0);
 
     return (
         <div className={classes.root}>
             <Tabs
-                value={value}
-                onChange={handleChange}
+                value={tabIndex}
+                onChange={(event, value) => {
+                    setTabIndex(value);
+                }}
                 classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator }}
             >
                 <Tab
@@ -72,8 +69,8 @@ const SignUp = (props) => {
                     label="Trainer"
                 />
             </Tabs>
-            {value === 0 && <SignUpAdept dialogClick={props.dialogClick} />}
-            {value === 1 && <SignUpGuru dialogClick={props.dialogClick} />}
+            {tabIndex === 0 && <SignUpAdept dialogClick={props.dialogClick} />}
+            {tabIndex === 1 && <SignUpGuru dialogClick={props.dialogClick} />}
 
         </div>
     );

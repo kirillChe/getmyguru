@@ -4,8 +4,8 @@ module.exports = {
     up: queryInterface => {
         return queryInterface.bulkInsert('Ratings', [{
             id: 1,
-            userId: 3,
-            rated: 2,
+            userId: 2,
+            rated: 6,
             value: 1,
             createdAt: new Date()
         }], {});

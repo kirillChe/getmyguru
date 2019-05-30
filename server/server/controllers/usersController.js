@@ -254,6 +254,7 @@ const userProfile = async (req, res, next) => {
 
     let result = R.pickAll(['id', 'firstName', 'lastName', 'gender', 'email', 'language', 'phone', 'age', 'rating'], user);
     result.avatarLocation = null;
+    result.rating = result.rating / 10;
     result.images = [];
 
     R.forEach(file => {

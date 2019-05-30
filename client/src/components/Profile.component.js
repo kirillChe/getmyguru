@@ -1,29 +1,28 @@
 import React, { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import MuiTab from '@material-ui/core/Tab';
+import MuiTabs from '@material-ui/core/Tabs';
+import MuiAvatar from '@material-ui/core/Avatar';
 import {
     Button,
-    Avatar,
     Typography,
     Grid,
-    Divider,
     Box,
     Card,
     CardActionArea,
     CardMedia
 } from '@material-ui/core';
+import {Comment, PhotoLibrary} from '@material-ui/icons';
 import { MainContext } from '../context';
 
 import axios from 'axios';
 import * as R from 'ramda';
 
-const styles = () => ({
+const styles = theme => ({
     editButton: {
         marginLeft: 10,
         marginTop: 0,
-    },
-    divider: {
-        marginTop: 10
     },
     card: {
         height: '100%',
@@ -33,9 +32,51 @@ const styles = () => ({
     cardMedia: {
         paddingTop: '100%', // 16:9
     },
+    tabsRoot: {
+        borderTop: '1px solid #efefef',
+    },
+    tabsIndicator: {
+        height: 1,
+        transform: 'translateY(-53px)',
+        backgroundColor: '#262626',
+    },
+    fixed: {
+        overflowX: 'visible',
+    },
+    labelIcon: {
+        minHeight: null,
+        paddingTop: null,
+        '& $wrapper :first-child': {
+            fontSize: 16,
+            marginBottom: 0,
+            marginRight: 6,
+        },
+    },
+    textColorInherit: {
+        color: '#999',
+    },
+    selected: {
+        color: '#262626'
+    },
+    wrapper: {
+        flexDirection: 'row',
+    },
+    tabRoot: {
+        minHeight: 54,
+        fontWeight: 600,
+        minWidth: 0,
+        [theme.breakpoints.up('md')]: {
+            minWidth: 0,
+        },
+    },
+    avatar: {
+        width: 152,
+        height: 152,
+    },
 });
 
 const Profile = (props) => {
+    const [tabIndex, setTabIndex] = React.useState(0);
     const [profile, setProfile] = useState({});
     const [avatarLocation, setAvatarLocation] = useState(null);
     const { defaultUserAvatar, user } = useContext(MainContext);
@@ -58,7 +99,8 @@ const Profile = (props) => {
                 <Box mb="44px">
                     <Grid container>
                         <Grid item xs={4}>
-                            <Avatar
+                            <MuiAvatar
+                                className={classes.avatar}
                                 alt="My profile"
                                 src={avatarLocation}
                                 style={{ margin: 'auto' }}
@@ -98,22 +140,42 @@ const Profile = (props) => {
                             <Typography variant="body1">{user.phone}</Typography>
                         </Grid>
                     </Grid>
-                <Divider className={classes.divider} />
                 </Box>
-                <Grid container spacing={4}>
-                    {profile.images && profile.images.map(image => (
-                        <Grid item key={image} xs={4}>
-                            <Card className={classes.card}>
-                                <CardActionArea>
-                                    <CardMedia
-                                        className={classes.cardMedia}
-                                        image={image}
-                                    />
-                                </CardActionArea>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
+                <MuiTabs
+                    value={tabIndex}
+                    centered
+                    onChange={(event, value) => {
+                        setTabIndex(value);
+                    }}
+                    classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator, fixed: classes.fixed }}
+                >
+                    <MuiTab
+                        label="Photos"
+                        icon={<PhotoLibrary />}
+                        classes={{ selected: classes.selected, root: classes.tabRoot, labelIcon: classes.labelIcon, textColorInherit: classes.textColorInherit, wrapper: classes.wrapper }}
+                    />
+                    <MuiTab
+                        label="Comments"
+                        icon={<Comment />}
+                        classes={{ selected: classes.selected, root: classes.tabRoot, labelIcon: classes.labelIcon, textColorInherit: classes.textColorInherit, wrapper: classes.wrapper }}
+                    />
+                </MuiTabs>
+                {tabIndex === 0 &&
+                    <Grid container spacing={4}>
+                        {profile.images && profile.images.map(image => (
+                            <Grid item key={image} xs={4}>
+                                <Card className={classes.card}>
+                                    <CardActionArea>
+                                        <CardMedia
+                                            className={classes.cardMedia}
+                                            image={image}
+                                        />
+                                    </CardActionArea>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                }
             </Box>
         </React.Fragment>
     );

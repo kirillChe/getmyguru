@@ -37,14 +37,37 @@ const MessagesList = () => {
 
     const [partners, setPartners] = useState([]);
     const [dialog, setDialog] = useState([]);
-    const [selectedIndex, setSelectedIndex] = React.useState(0);
+    const [selectedPartnerId, setSelectedPartnerId] = React.useState(0);
+
+    async function handleSubmitInput (text) {
+        console.log('handleSubmitInput', text);
+
+        try {
+            let data = {
+                receiver: selectedPartnerId,
+                text
+            };
+
+            let response = await axios.post('/api/messages', data);
+
+            if (response.data) {
+                console.log('MessagesList.component.js :54', response.data);
+
+                getConversationPartners();
+            } else {
+                console.log('Handle submit: error');
+            }
+        }catch (e) {
+            console.log('Get conversation error: ');
+            console.log(e);
+        }
+    }
 
     function handleClickPartner (partnerId) {
         return async event => {
-            console.log('MessageList.component.js :42', partnerId);
             event.preventDefault();
-            console.log('Open conversation');
-            setSelectedIndex(partnerId);
+            console.log('handleClickPartner');
+            setSelectedPartnerId(partnerId);
             getConversation(partnerId);
         }
     }
@@ -56,7 +79,7 @@ const MessagesList = () => {
             let response = await axios.get(`/api/messages/conversation?partnerId=${partnerId}`);
 
             if (response.data) {
-                console.log('MessagesList.component.js :53', response.data);
+                console.log('Get conversation: ', response.data);
 
                 setDialog(response.data);
             } else {
@@ -78,7 +101,7 @@ const MessagesList = () => {
                 setPartners(response.data);
                 let lastPartner = R.head(response.data);
                 // mark partner item as selected
-                setSelectedIndex(lastPartner.id);
+                setSelectedPartnerId(lastPartner.id);
                 // set default opened dialog
                 getConversation(lastPartner.id);
 
@@ -104,7 +127,7 @@ const MessagesList = () => {
                             {partners.map(partner => (
                                 <div key={"partner-" + partner.id}>
                                     <ListItem
-                                        selected={selectedIndex === partner.id}
+                                        selected={selectedPartnerId === partner.id}
                                         button
                                         alignItems="flex-start"
                                         onClick={handleClickPartner(partner.id)}
@@ -137,7 +160,9 @@ const MessagesList = () => {
                             </div>
                         </ThemeProvider>
                         <Divider className={classes.messageInputDivider} variant="fullWidth" />
-                        <MessageInput />
+                        <MessageInput
+                            onSubmit={handleSubmitInput}
+                        />
                     </Grid>
                 </Grid>
             </Box>

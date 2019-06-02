@@ -41,9 +41,13 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-// const noop = () => false;
+const noop = () => false;
 
-const PeaMessageInput = () => {
+const PeaMessageInput = ({
+                             onChange,
+                             onSubmit,
+                             onUpload,
+                         }) => {
     const classes = useStyles();
     const [inputValue, onInputChange] = useState('');
     const [showEmoji, setShowEmoji] = useState(false);
@@ -51,15 +55,17 @@ const PeaMessageInput = () => {
     const handleChange = e => {
         const { value: v } = e.target;
         onInputChange(v);
-    };
-
-    const handleUpload = e => {
-        console.log('handleUpload');
+        onChange(v);
     };
     const toggleEmoji = () => setShowEmoji(!showEmoji);
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('handleSubmit');
+    const handleSubmit = async () => {
+        try {
+            await onSubmit(inputValue);
+            onInputChange('');
+
+        }catch (e) {
+            console.log('MessageInput.component.js :67', e);
+        }
     };
     const onEmojiSelect = e => {
         handleChange({
@@ -101,7 +107,7 @@ const PeaMessageInput = () => {
                         id="pea-message-input-upload"
                         type="file"
                         accept="image/*"
-                        onChange={handleUpload}
+                        onChange={onUpload}
                     />
                     <PeaIcon className={classes.icon} />
                 </label>
@@ -133,25 +139,19 @@ const PeaMessageInput = () => {
     );
 };
 
-// PeaMessageInput.propTypes = {
-//     value: PropTypes.string,
-//     onChange: PropTypes.func,
-//     onUpload: PropTypes.func,
-//     onSubmit: PropTypes.func,
-//     accept: PropTypes.string,
-//     multiple: PropTypes.bool,
-// };
-// PeaMessageInput.defaultProps = {
-//     value: '',
-//     onChange: noop,
-//     onUpload: noop,
-//     onSubmit: noop,
-//     accept: 'image/*',
-//     multiple: false,
-// };
-// PeaMessageInput.metadata = {
-//     name: 'Pea Message input',
-// };
+PeaMessageInput.propTypes = {
+    onChange: PropTypes.func,
+    onUpload: PropTypes.func,
+    onSubmit: PropTypes.func,
+};
+PeaMessageInput.defaultProps = {
+    onChange: noop,
+    onUpload: noop,
+    onSubmit: noop,
+};
+PeaMessageInput.metadata = {
+    name: 'Pea Message input',
+};
 PeaMessageInput.getTheme = () => ({
     'Mui{Component}': {
         // this object will be injected to 'overrides' section

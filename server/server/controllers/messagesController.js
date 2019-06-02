@@ -5,6 +5,12 @@ const R = require('ramda');
 const {Message, User} = require('../models');
 
 const create = async (req, res, next) => {
+    let userId = req.session.passport && req.session.passport.user && req.session.passport.user.id;
+    if (!userId)
+        return res.sendStatus(400);
+
+    req.body.userId = userId;
+
     let [err, message] = await on(Message.create(req.body));
     if (err)
         return next(err);
@@ -71,19 +77,23 @@ const conversationsPartners = async (req, res, next) => {
     )(data);
 
     let result = R.map(id => {
-        let dialog = R.findLast(R.pathEq(['user', 'id'], id))(data);
+
+
+        let dialog = R.find(R.pathEq(['user', 'id'], id))(data);
         let avatarLocation = null;
         if (dialog.user.avatar) {
             fileAvatar = R.find(R.propEq('id', dialog.user.avatar))(dialog.user.files);
             avatarLocation = fileAvatar.location;
         }
 
+        let lastMessage = R.find(d => (d.userId === id && d.receiver === ownerId) || (d.userId === ownerId && d.receiver === id))(data);
+
         return {
             avatarLocation,
             id: dialog.user.id,
             fullName: `${dialog.user.firstName} ${dialog.user.lastName}`,
             createdAt: dialog.createdAt,
-            message: `${R.slice(0, 50, dialog.text)}...`
+            message: `${R.slice(0, 50, lastMessage.text)}...`
         };
     }, partnersIds);
 
@@ -112,7 +122,7 @@ const conversation = async (req, res, next) => {
             ]
         },
         order: [
-            ['createdAt', 'DESC']
+            ['createdAt', 'ASC']
         ]
     };
 

@@ -2,7 +2,7 @@ import React  from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { MainLayout } from './layouts';
 import { MainProvider } from './providers';
-import { Main, Profile, EditProfile } from './components';
+import { Main, Profile, EditProfile, MessagesList } from './components';
 
 export default function App() {
     return (
@@ -13,6 +13,7 @@ export default function App() {
                     <Route path="/reset_password" component={Main} />
                     <Route exact path="/profile/:id" component={Profile} />
                     <Route exact path="/profile/:id/edit" component={EditProfile} />
+                    <Route exact path="/messages/:id" component={MessagesList} />
                 </MainLayout>
             </MainProvider>
         </Router>

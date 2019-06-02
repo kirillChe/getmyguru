@@ -11,4 +11,6 @@ export { default as SignUpAdept } from './SignUpAdept.component';
 export { default as Profile } from './Profile.component';
 export { default as EditProfile } from './EditProfile.component';
 export { default as SetNewPwd } from './SetNewPwd.component';
+export { default as MessagesList } from './MessagesList.component';
+export { default as Chat } from './Chat.component';
 // export { default as ImageDropzone } from './imageDropzone.component';

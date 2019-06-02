@@ -19,6 +19,13 @@ const ProfileMenu = (props) => {
         setAnchorEl(null);
     }
 
+    function handleMessages () {
+        // event.preventDefault();
+        console.log('Go to my messages');
+        props.history.push(`/messages/${user.id}`);
+        setAnchorEl(null);
+    }
+
     function handleProfile (event) {
         // event.preventDefault();
         console.log('Go to profile');
@@ -74,7 +81,7 @@ const ProfileMenu = (props) => {
             >
                 <MenuItem onClick={handleMain}>Main Page</MenuItem>
                 <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My messages</MenuItem>
+                <MenuItem onClick={handleMessages}>My messages</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
         </React.Fragment>

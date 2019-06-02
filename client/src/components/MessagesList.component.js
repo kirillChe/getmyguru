@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useEffect, useState} from 'react';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import {
     List,
@@ -8,13 +8,12 @@ import {
     ListItemText,
     ListItemAvatar,
     Avatar,
-    Typography,
     Box
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
-import {Chat} from '.';
-import {MainContext} from '../context';
+import {Chat, MessageInput} from '.';
 import axios from 'axios';
+import * as R from 'ramda';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -25,43 +24,51 @@ const useStyles = makeStyles(theme => ({
     inline: {
         display: 'inline',
     },
+    messageInputDivider: {
+        marginTop: 20,
+        marginBottom: 20
+    }
 }));
 
-const AVATAR =
-    "https://i.pinimg.com/originals/0a/dd/87/0add874e1ea0676c4365b2dd7ddd32e3.jpg";
 const muiBaseTheme = createMuiTheme();
 
 const MessagesList = () => {
     const classes = useStyles();
 
-    const { defaultUserAvatar, user } = useContext(MainContext);
     const [partners, setPartners] = useState([]);
     const [dialog, setDialog] = useState([]);
+    const [selectedIndex, setSelectedIndex] = React.useState(0);
 
     function handleClickPartner (partnerId) {
         return async event => {
             console.log('MessageList.component.js :42', partnerId);
             event.preventDefault();
             console.log('Open conversation');
-            try {
-                let response = await axios.get(`/api/messages/conversation?partnerId=${partnerId}`);
+            setSelectedIndex(partnerId);
+            getConversation(partnerId);
+        }
+    }
 
-                if (response.data) {
-                    console.log('MessagesList.component.js :53', response.data);
+    async function getConversation(partnerId) {
+        console.log('MessageList.component.js :42', partnerId);
+        console.log('Open conversation');
+        try {
+            let response = await axios.get(`/api/messages/conversation?partnerId=${partnerId}`);
 
-                    setDialog(response.data);
-                } else {
-                    console.log('Get conversation: no conversation');
-                }
-            }catch (e) {
-                console.log('Get conversation error: ');
-                console.log(e);
+            if (response.data) {
+                console.log('MessagesList.component.js :53', response.data);
+
+                setDialog(response.data);
+            } else {
+                console.log('Get conversation: no conversation');
             }
+        }catch (e) {
+            console.log('Get conversation error: ');
+            console.log(e);
         }
     }
 
     async function getConversationPartners() {
-
         try {
             let response = await axios.get('/api/messages/conversationsPartners');
 
@@ -69,6 +76,12 @@ const MessagesList = () => {
                 console.log('MessagesList.component.js :80', response.data);
 
                 setPartners(response.data);
+                let lastPartner = R.head(response.data);
+                // mark partner item as selected
+                setSelectedIndex(lastPartner.id);
+                // set default opened dialog
+                getConversation(lastPartner.id);
+
             } else {
                 console.log('Get conversation partners: no partners');
             }
@@ -91,6 +104,7 @@ const MessagesList = () => {
                             {partners.map(partner => (
                                 <div key={"partner-" + partner.id}>
                                     <ListItem
+                                        selected={selectedIndex === partner.id}
                                         button
                                         alignItems="flex-start"
                                         onClick={handleClickPartner(partner.id)}
@@ -122,6 +136,8 @@ const MessagesList = () => {
                                 )})}
                             </div>
                         </ThemeProvider>
+                        <Divider className={classes.messageInputDivider} variant="fullWidth" />
+                        <MessageInput />
                     </Grid>
                 </Grid>
             </Box>

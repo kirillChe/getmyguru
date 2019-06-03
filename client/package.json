@@ -20,6 +20,7 @@
     "react-router-dom": "^5.0.0",
     "react-router-prop-types": "^1.0.4",
     "react-scripts": "2.1.8",
+    "socket.io-client": "^2.2.0",
     "use-force-update": "^1.0.5"
   },
   "scripts": {

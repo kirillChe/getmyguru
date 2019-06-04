@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import {
     List,
@@ -14,6 +14,8 @@ import { ThemeProvider } from '@material-ui/styles';
 import {Chat, MessageInput} from '.';
 import axios from 'axios';
 import * as R from 'ramda';
+import socketIOClient from "socket.io-client";
+import {MainContext} from "../context";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -34,33 +36,48 @@ const muiBaseTheme = createMuiTheme();
 
 const MessagesList = () => {
     const classes = useStyles();
-
+    const { user } = useContext(MainContext);
     const [partners, setPartners] = useState([]);
     const [dialog, setDialog] = useState([]);
-    const [selectedPartnerId, setSelectedPartnerId] = React.useState(0);
+    const [selectedPartnerId, setSelectedPartnerId] = useState(0);
+
+
+    useEffect(() => {
+        getConversation(selectedPartnerId);
+    }, [selectedPartnerId])
 
     async function handleSubmitInput (text) {
         console.log('handleSubmitInput', text);
+        const socket = socketIOClient('192.168.68.123:5000');
 
-        try {
-            let data = {
-                receiver: selectedPartnerId,
-                text
-            };
+        let data = {
+            userId: user.id,
+            receiver: selectedPartnerId,
+            text
+        };
+        socket.emit('message created', data); // change 'red' to this.state.color
+        getConversationPartners();
 
-            let response = await axios.post('/api/messages', data);
 
-            if (response.data) {
-                console.log('MessagesList.component.js :54', response.data);
-
-                getConversationPartners();
-            } else {
-                console.log('Handle submit: error');
-            }
-        }catch (e) {
-            console.log('Get conversation error: ');
-            console.log(e);
-        }
+        // try {
+        //     let data = {
+        //         receiver: selectedPartnerId,
+        //         text
+        //     };
+        //
+        //     let response = await axios.post('/api/messages', data);
+        //
+        //     if (response.data) {
+        //         console.log('MessagesList.component.js :54', response.data);
+        //
+        //         getConversationPartners();
+        //     } else {
+        //         console.log('Handle submit: error');
+        //     }
+        // }catch (e) {
+        //     console.log('Get conversation error: ');
+        //     console.log(e);
+        // }
     }
 
     function handleClickPartner (partnerId) {
@@ -92,6 +109,8 @@ const MessagesList = () => {
     }
 
     async function getConversationPartners() {
+        const socket = socketIOClient('192.168.68.123:5000');
+
         try {
             let response = await axios.get('/api/messages/conversationsPartners');
 
@@ -99,11 +118,39 @@ const MessagesList = () => {
                 console.log('MessagesList.component.js :80', response.data);
 
                 setPartners(response.data);
-                let lastPartner = R.head(response.data);
-                // mark partner item as selected
-                setSelectedPartnerId(lastPartner.id);
+                let lastPartner;
+
+                if (!selectedPartnerId) {
+                    lastPartner = R.head(response.data);
+                    // mark partner item as selected
+                    setSelectedPartnerId(lastPartner.id);
+                }
+
+
+
+
+
+                // setInterval(this.send(), 1000)
+                socket.on('111', (id) => {
+                    console.log('_________________HERE: 108________________________', id);
+                });
+
                 // set default opened dialog
-                getConversation(lastPartner.id);
+
+
+
+
+
+
+
+
+                //
+                // setPartners(response.data);
+                // let lastPartner = R.head(response.data);
+                // // mark partner item as selected
+                // setSelectedPartnerId(lastPartner.id);
+                // // set default opened dialog
+                // getConversation(lastPartner.id);
 
             } else {
                 console.log('Get conversation partners: no partners');
@@ -114,8 +161,17 @@ const MessagesList = () => {
         }
     }
 
+    async function initSocketListener() {
+        const socket = socketIOClient('192.168.68.123:5000');
+        socket.on(`${user.id}-chat`, (id) => {
+            console.log('_________________HERE: 108________________________', id);
+            getConversationPartners();
+        });
+    }
+
     useEffect(() => {
         getConversationPartners();
+        initSocketListener();
     }, []);
 
     return (

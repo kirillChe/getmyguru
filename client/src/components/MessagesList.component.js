@@ -1,5 +1,6 @@
-import React, {useEffect, useState, useContext} from 'react';
-import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import { withStyles, createMuiTheme } from '@material-ui/core/styles';
 import {
     List,
     Grid,
@@ -17,7 +18,8 @@ import * as R from 'ramda';
 import socketIOClient from "socket.io-client";
 import {MainContext} from "../context";
 
-const useStyles = makeStyles(theme => ({
+const socket = socketIOClient('192.168.68.123:5000');
+const styles = theme => ({
     root: {
         width: '100%',
         maxWidth: 360,
@@ -30,75 +32,46 @@ const useStyles = makeStyles(theme => ({
         marginTop: 20,
         marginBottom: 20
     }
-}));
+});
 
 const muiBaseTheme = createMuiTheme();
 
-const MessagesList = () => {
-    const classes = useStyles();
-    const { user } = useContext(MainContext);
-    const [partners, setPartners] = useState([]);
-    const [dialog, setDialog] = useState([]);
-    const [selectedPartnerId, setSelectedPartnerId] = useState(0);
 
+class MessagesList extends Component{
+    static contextType = MainContext;
 
-    useEffect(() => {
-        getConversation(selectedPartnerId);
-    }, [selectedPartnerId])
+    state = {
+        partners: [],
+        dialog: [],
+        selectedPartnerId: 0
+    };
 
-    async function handleSubmitInput (text) {
-        console.log('handleSubmitInput', text);
-        const socket = socketIOClient('192.168.68.123:5000');
-
+    handleSubmitInput = text => {
         let data = {
-            userId: user.id,
-            receiver: selectedPartnerId,
+            userId: this.context.user.id,
+            receiver: this.state.selectedPartnerId,
             text
         };
-        socket.emit('message created', data); // change 'red' to this.state.color
-        getConversationPartners();
+        socket.on(`${this.context.user.id}-message-saved`, userId => {
+            this.getConversationPartners();
+        });
+        socket.emit('message created', data);
+    };
 
-
-        // try {
-        //     let data = {
-        //         receiver: selectedPartnerId,
-        //         text
-        //     };
-        //
-        //     let response = await axios.post('/api/messages', data);
-        //
-        //     if (response.data) {
-        //         console.log('MessagesList.component.js :54', response.data);
-        //
-        //         getConversationPartners();
-        //     } else {
-        //         console.log('Handle submit: error');
-        //     }
-        // }catch (e) {
-        //     console.log('Get conversation error: ');
-        //     console.log(e);
-        // }
-    }
-
-    function handleClickPartner (partnerId) {
-        return async event => {
-            event.preventDefault();
-            console.log('handleClickPartner');
-            setSelectedPartnerId(partnerId);
-            getConversation(partnerId);
+    handleClickPartner (partnerId) {
+        return event => {
+            // event.preventDefault();
+            this.setState({selectedPartnerId: partnerId});
+            this.getConversation(partnerId);
         }
     }
 
-    async function getConversation(partnerId) {
-        console.log('MessageList.component.js :42', partnerId);
-        console.log('Open conversation');
+    async getConversation(partnerId) {
         try {
-            let response = await axios.get(`/api/messages/conversation?partnerId=${partnerId}`);
+            let response = await axios.get(`/api/messages/conversation?partnerId=${partnerId || this.state.selectedPartnerId}`);
 
             if (response.data) {
-                console.log('Get conversation: ', response.data);
-
-                setDialog(response.data);
+                this.setState({dialog: response.data});
             } else {
                 console.log('Get conversation: no conversation');
             }
@@ -108,49 +81,20 @@ const MessagesList = () => {
         }
     }
 
-    async function getConversationPartners() {
-        const socket = socketIOClient('192.168.68.123:5000');
-
+    async getConversationPartners() {
         try {
             let response = await axios.get('/api/messages/conversationsPartners');
 
             if (response.data) {
-                console.log('MessagesList.component.js :80', response.data);
+                this.setState({partners: response.data});
 
-                setPartners(response.data);
-                let lastPartner;
-
-                if (!selectedPartnerId) {
-                    lastPartner = R.head(response.data);
+                if (!this.state.selectedPartnerId) {
+                    let lastPartner = R.head(response.data);
+                    let partnerId = lastPartner.id;
                     // mark partner item as selected
-                    setSelectedPartnerId(lastPartner.id);
+                    this.setState({selectedPartnerId: partnerId});
                 }
-
-
-
-
-
-                // setInterval(this.send(), 1000)
-                socket.on('111', (id) => {
-                    console.log('_________________HERE: 108________________________', id);
-                });
-
-                // set default opened dialog
-
-
-
-
-
-
-
-
-                //
-                // setPartners(response.data);
-                // let lastPartner = R.head(response.data);
-                // // mark partner item as selected
-                // setSelectedPartnerId(lastPartner.id);
-                // // set default opened dialog
-                // getConversation(lastPartner.id);
+                this.getConversation();
 
             } else {
                 console.log('Get conversation partners: no partners');
@@ -161,69 +105,76 @@ const MessagesList = () => {
         }
     }
 
-    async function initSocketListener() {
-        const socket = socketIOClient('192.168.68.123:5000');
-        socket.on(`${user.id}-chat`, (id) => {
-            console.log('_________________HERE: 108________________________', id);
-            getConversationPartners();
+    initSocketListener() {
+        // const socket = socketIOClient('192.168.68.123:5000');
+        socket.on(`${this.context.user.id}-chat`, (userId) => {
+            this.getConversationPartners();
         });
     }
 
-    useEffect(() => {
-        getConversationPartners();
-        initSocketListener();
-    }, []);
+    componentDidMount() {
+        this.getConversationPartners();
+        this.initSocketListener();
+    }
 
-    return (
-        <React.Fragment>
-            <Box component="main" maxWidth={935} margin="auto" padding="60px 20px 0">
-                <Grid container>
-                    <Grid item xs={4}>
-                        <List className={classes.root}>
-                            {partners.map(partner => (
-                                <div key={"partner-" + partner.id}>
-                                    <ListItem
-                                        selected={selectedPartnerId === partner.id}
-                                        button
-                                        alignItems="flex-start"
-                                        onClick={handleClickPartner(partner.id)}
-                                    >
-                                        <ListItemAvatar>
-                                            <Avatar alt="Remy Sharp" src={partner.avatarLocation} />
-                                        </ListItemAvatar>
-                                        <ListItemText
-                                            primary={partner.fullName}
-                                            secondary={partner.message}
-                                        />
-                                    </ListItem>
-                                    <Divider variant="inset" component="li" />
+    render() {
+        const { classes } = this.props;
+        let {partners, dialog, selectedPartnerId} = this.state;
+        return (
+            <React.Fragment>
+                <Box component="main" maxWidth={935} margin="auto" padding="60px 20px 0">
+                    <Grid container>
+                        <Grid item xs={4}>
+                            <List className={classes.root}>
+                                {partners.map(partner => (
+                                    <div key={"partner-" + partner.id}>
+                                        <ListItem
+                                            selected={selectedPartnerId === partner.id}
+                                            button
+                                            alignItems="flex-start"
+                                            onClick={this.handleClickPartner(partner.id)}
+                                        >
+                                            <ListItemAvatar>
+                                                <Avatar alt="Remy Sharp" src={partner.avatarLocation} />
+                                            </ListItemAvatar>
+                                            <ListItemText
+                                                primary={partner.fullName}
+                                                secondary={partner.message}
+                                            />
+                                        </ListItem>
+                                        <Divider variant="inset" component="li" />
+                                    </div>
+                                ))}
+                            </List>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <ThemeProvider theme={muiBaseTheme}>
+                                <div>
+                                    {dialog.map(d => {
+                                        return (
+                                            <Chat
+                                                uniqKey={"dialog-"+d.id}
+                                                key={"dialog-"+d.id}
+                                                side={d.right ? "right" : "left"}
+                                                messages={[d.text]}
+                                            />
+                                        )})}
                                 </div>
-                            ))}
-                        </List>
+                            </ThemeProvider>
+                            <Divider className={classes.messageInputDivider} variant="fullWidth" />
+                            <MessageInput
+                                onSubmit={this.handleSubmitInput}
+                            />
+                        </Grid>
                     </Grid>
-                    <Grid item xs={8}>
-                        <ThemeProvider theme={muiBaseTheme}>
-                            <div>
-                                {dialog.map(d => {
-                                    return (
-                                    <Chat
-                                        uniqKey={"dialog-"+d.id}
-                                        key={"dialog-"+d.id}
-                                        side={d.right ? "right" : "left"}
-                                        messages={[d.text]}
-                                    />
-                                )})}
-                            </div>
-                        </ThemeProvider>
-                        <Divider className={classes.messageInputDivider} variant="fullWidth" />
-                        <MessageInput
-                            onSubmit={handleSubmitInput}
-                        />
-                    </Grid>
-                </Grid>
-            </Box>
-        </React.Fragment>
-    );
+                </Box>
+            </React.Fragment>
+        )
+    }
+}
+
+MessagesList.propTypes = {
+    classes: PropTypes.object.isRequired,
 };
 
-export default MessagesList;
+export default withStyles(styles)(MessagesList);

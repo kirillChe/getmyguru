@@ -86,7 +86,8 @@ const serverApp = async () => {
             console.log('Message created: ', data);
             try {
                 let message = await models.Message.create(data);
-                io.sockets.emit(`${data.receiver}-chat`, message);
+                io.sockets.emit(`${data.userId}-message-saved`, message.userId);
+                io.sockets.emit(`${data.receiver}-chat`, message.receiver);
             }catch (e) {
                 console.log('app.js :91', variable);
             }

@@ -14,7 +14,7 @@
     "emoji-mart": "^2.11.1",
     "material-ui-dropzone": "^2.3.5",
     "ramda": "^0.26.1",
-    "react": "^16.8.4",
+    "react": "^16.8.6",
     "react-dom": "^16.8.4",
     "react-dropzone": "^10.1.4",
     "react-router-dom": "^5.0.0",

@@ -52,10 +52,10 @@ class MessagesList extends Component{
             receiver: this.state.selectedPartnerId,
             text
         };
-        socket.on(`${this.context.user.id}-message-saved`, userId => {
+        socket.on(`${this.context.user.id}_MESSAGE_SAVED`, userId => {
             this.getConversationPartners();
         });
-        socket.emit('message created', data);
+        socket.emit('NEW_MESSAGE', data);
     };
 
     handleClickPartner (partnerId) {
@@ -107,7 +107,7 @@ class MessagesList extends Component{
 
     initSocketListener() {
         // const socket = socketIOClient('192.168.68.123:5000');
-        socket.on(`${this.context.user.id}-chat`, (userId) => {
+        socket.on(`${this.context.user.id}_GOT_NEW_MESSAGE`, (userId) => {
             this.getConversationPartners();
         });
     }

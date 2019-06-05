@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER(11).UNSIGNED
         },
         text: {
-            type: DataTypes.TEXT
+            type: DataTypes.STRING(3000)
         },
         showToReceiver: {
             allowNull: false,

@@ -81,7 +81,6 @@ const serverApp = async () => {
 
         // once a client has connected, we expect to get a ping from them saying what room they want to join
         socket.on('room', id => {
-            console.log('_________________On Room________________________', id);
             socket.join(`room-${id}`);
         });
 

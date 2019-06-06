@@ -107,11 +107,11 @@ class MessagesList extends Component{
 
     initSocketListener() {
         // const socket = socketIOClient('192.168.68.123:5000');
-        socket.on('connect', () => {
-            console.log('_________________HERE: 111________________________', this.context.user.id);
-            // Connected, let's sign-up for to receive messages for this room
-            socket.emit('room', this.context.user.id);
-        });
+        // socket.on('connect', () => {
+        //     console.log('_________________HERE: 111________________________', this.context.user.id);
+        //     // Connected, let's sign-up for to receive messages for this room
+        // });
+        socket.emit('room', this.context.user.id);
         socket.on('GOT_NEW_MESSAGE', () => {
             this.getConversationPartners();
         });

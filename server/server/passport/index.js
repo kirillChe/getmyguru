@@ -7,12 +7,12 @@ const on = require('await-handler');
 
 // tell passport how to serialize the user
 passport.serializeUser((user, done) => {
-    console.log('*** serializeUser called ***');
+    // console.log('*** serializeUser called ***');
     done(null, user);
 });
 
 passport.deserializeUser(async (user, done) => {
-    console.log('*** DeserializeUser called ***', user);
+    // console.log('*** DeserializeUser called ***');
     // let [err, user] = await on(User.findByPk(id));
     // if (err || !user)
     //     return done(err, false);

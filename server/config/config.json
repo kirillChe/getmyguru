@@ -4,20 +4,23 @@
         "password": "Qwerty",
         "database": "dev_db",
         "host": "db",
-        "dialect": "mysql"
+        "dialect": "mysql",
+        "logging": false
     },
     "test": {
         "username": "root",
         "password": "Qwerty",
         "database": "dev_db",
         "host": "db",
-        "dialect": "mysql"
+        "dialect": "mysql",
+        "logging": false
     },
     "production": {
         "username": "root",
         "password": "Qwerty",
         "database": "dev_db",
         "host": "db",
-        "dialect": "mysql"
+        "dialect": "mysql",
+        "logging": false
     }
 }

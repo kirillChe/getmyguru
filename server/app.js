@@ -79,7 +79,11 @@ const serverApp = async () => {
     io.on('connection', socket => {
         console.log('New client connected');
 
-        socket.join('some room');
+        // once a client has connected, we expect to get a ping from them saying what room they want to join
+        socket.on('room', id => {
+            console.log('_________________On Room________________________', id);
+            socket.join(`room-${id}`);
+        });
 
         // just like on the client side, we have a socket.on method that takes a callback function
         socket.on('NEW_MESSAGE', async (data) => {
@@ -89,8 +93,10 @@ const serverApp = async () => {
 
             try {
                 let message = await models.Message.create(data);
-                io.sockets.emit(`${data.userId}_MESSAGE_SAVED`, message.userId);
-                io.sockets.emit(`${data.receiver}_GOT_NEW_MESSAGE`, message.receiver);
+                io.sockets.in(`room-${message.userId}`).emit('MESSAGE_SAVED', message.userId);
+                io.sockets.in(`room-${message.receiver}`).emit('GOT_NEW_MESSAGE', message.receiver);
+                // io.sockets.emit(`${data.userId}_MESSAGE_SAVED`, message.userId);
+                // io.sockets.emit(`${data.receiver}_GOT_NEW_MESSAGE`, message.receiver);
             }catch (e) {
                 console.log('app.js :91', e);
             }

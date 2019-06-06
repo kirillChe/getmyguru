@@ -52,7 +52,7 @@ class MessagesList extends Component{
             receiver: this.state.selectedPartnerId,
             text
         };
-        socket.on(`${this.context.user.id}_MESSAGE_SAVED`, userId => {
+        socket.on('MESSAGE_SAVED', () => {
             this.getConversationPartners();
         });
         socket.emit('NEW_MESSAGE', data);
@@ -107,7 +107,12 @@ class MessagesList extends Component{
 
     initSocketListener() {
         // const socket = socketIOClient('192.168.68.123:5000');
-        socket.on(`${this.context.user.id}_GOT_NEW_MESSAGE`, (userId) => {
+        socket.on('connect', () => {
+            console.log('_________________HERE: 111________________________', this.context.user.id);
+            // Connected, let's sign-up for to receive messages for this room
+            socket.emit('room', this.context.user.id);
+        });
+        socket.on('GOT_NEW_MESSAGE', () => {
             this.getConversationPartners();
         });
     }

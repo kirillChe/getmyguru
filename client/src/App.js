@@ -11,9 +11,9 @@ export default function App() {
                 <MainLayout>
                     <Route exact path="/" component={Main} />
                     <Route path="/reset_password" component={Main} />
-                    <Route exact path="/profile/:id" component={Profile} />
-                    <Route exact path="/profile/:id/edit" component={EditProfile} />
-                    <Route exact path="/messages/:id" component={MessagesList} />
+                    <Route exact path="/account/profile/:id" component={Profile} />
+                    <Route exact path="/account/profile/:id/edit" component={EditProfile} />
+                    <Route exact path="/account/messages/:id" component={MessagesList} />
                 </MainLayout>
             </MainProvider>
         </Router>

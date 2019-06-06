@@ -56,7 +56,7 @@ const ImageGrid = (props) => {
             event.preventDefault();
             console.log('Go to profile');
             // return <Redirect to='/profile' />
-            props.history.push(`/profile/${profileId}`);
+            props.history.push(`/account/profile/${profileId}`);
         }
     }
 

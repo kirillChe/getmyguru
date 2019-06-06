@@ -18,7 +18,7 @@ import * as R from 'ramda';
 import socketIOClient from "socket.io-client";
 import {MainContext} from "../context";
 
-const socket = socketIOClient('192.168.68.123:5000');
+const socket = socketIOClient('/');
 const styles = theme => ({
     root: {
         width: '100%',

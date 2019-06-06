@@ -97,7 +97,7 @@ const EditProfile = (props) => {
         try {
             let response = await axios.put('/api/users/me', data, config);
             if (response.status === 200) {
-                props.history.push(`/profile/${user.id}`);
+                props.history.push(`/account/profile/${user.id}`);
             } else {
                 setSubmitError(true);
             }

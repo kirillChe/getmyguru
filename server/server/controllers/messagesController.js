@@ -2,7 +2,7 @@ const on = require('await-handler');
 const Op = require('sequelize').Op;
 const R = require('ramda');
 
-const {Message, User} = require('../models');
+const {Message, User, File} = require('../models');
 
 const create = async (req, res, next) => {
     let userId = req.session.passport && req.session.passport.user && req.session.passport.user.id;
@@ -41,58 +41,85 @@ const conversationsPartners = async (req, res, next) => {
     if (!ownerId)
         return res.sendStatus(400);
 
-    let filter = {
-        where: {
-            [Op.or]: [
-                {
-                    userId: ownerId,
-                    showToSender: true
-                },
-                {
-                    receiver: ownerId,
-                    showToReceiver: true
-                }
+    //find all conversations for owner
+    let messages = [];
+    try{
+        let filter = {
+            where: {
+                [Op.or]: [
+                    {
+                        userId: ownerId,
+                        showToSender: true
+                    },
+                    {
+                        receiver: ownerId,
+                        showToReceiver: true
+                    }
+                ]
+            },
+            order: [
+                ['createdAt', 'DESC']
             ]
-        },
-        order: [
-            ['createdAt', 'DESC']
-        ],
-        include: [{
-            model: User, as: 'user', include: ['files']
-        }]
-    };
+        };
 
-    let [err, data] = await on(Message.findAll(filter));
-    if (err)
-        return next(err);
+        messages = await Message.findAll(filter);
 
-    if (!data)
-        res.json([]);
+        //return empty array if no one message was found
+        if (!messages || messages.length === 0)
+            return res.json([]);
 
+    }catch (e) {
+        return next(e);
+    }
+
+    // get uniq list of ids of all partners
     let partnersIds = R.pipe(
         R.map(R.props(['userId', 'receiver'])),
         R.flatten,
         R.uniq,
         R.reject(R.equals(Number(ownerId)))
-    )(data);
+    )(messages);
 
+    //find all partners by their ids
+    let users = [];
+    try{
+        let filter = {
+            where: {
+                id: {
+                    [Op.in]: partnersIds
+                }
+            },
+            include: [{
+                model: File,
+                as: 'files',
+                where: {
+                    id: {
+                        [Op.col]: 'User.avatar'
+                    }
+                },
+                required: false
+            }]
+        };
+
+        users = await User.findAll(filter);
+
+        if (!users || users.length === 0)
+            return next(new Error('Unexpected error occurred: no one user was found'));
+
+    } catch (e) {
+        return next(e);
+    }
+
+    //fill final result with list of partners including part of last message
     let result = R.map(id => {
+        let user = R.find(R.propEq('id', id))(users);
 
-
-        let dialog = R.find(R.pathEq(['user', 'id'], id))(data);
-        let avatarLocation = null;
-        if (dialog.user.avatar) {
-            fileAvatar = R.find(R.propEq('id', dialog.user.avatar))(dialog.user.files);
-            avatarLocation = fileAvatar.location;
-        }
-
-        let lastMessage = R.find(d => (d.userId === id && d.receiver === ownerId) || (d.userId === ownerId && d.receiver === id))(data);
+        let lastMessage = R.find(m => (m.userId === id && m.receiver === ownerId) || (m.userId === ownerId && m.receiver === id))(messages);
 
         return {
-            avatarLocation,
-            id: dialog.user.id,
-            fullName: `${dialog.user.firstName} ${dialog.user.lastName}`,
-            createdAt: dialog.createdAt,
+            avatarLocation: (user.files && user.files[0] && user.files[0].location) || null,
+            id: id,
+            fullName: `${user.firstName} ${user.lastName}`,
             message: `${R.slice(0, 50, lastMessage.text)}...`
         };
     }, partnersIds);
@@ -133,14 +160,12 @@ const conversation = async (req, res, next) => {
     if (!data)
         res.json([]);
 
-    let response = R.map(message => {
-        return {
-            id: message.id,
-            text: message.text,
-            createdAt: message.createdAt,
-            right: message.userId === ownerId
-        };
-    }, data);
+    let response = R.map(message => ({
+        id: message.id,
+        text: message.text,
+        createdAt: message.createdAt,
+        right: message.userId === ownerId
+    }), data);
 
     res.json(response);
 };

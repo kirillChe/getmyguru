@@ -5,19 +5,24 @@ import MuiTab from '@material-ui/core/Tab';
 import MuiTabs from '@material-ui/core/Tabs';
 import MuiAvatar from '@material-ui/core/Avatar';
 import {
+    Dialog,
+    DialogContent,
     Button,
     Typography,
     Grid,
     Box,
     Card,
     CardActionArea,
-    CardMedia
+    CardMedia,
+    Slide
 } from '@material-ui/core';
 import {Comment, PhotoLibrary} from '@material-ui/icons';
 import { MainContext } from '../context';
 
 import axios from 'axios';
 import * as R from 'ramda';
+import socketIOClient from "socket.io-client";
+import {MessageInput} from ".";
 
 const styles = theme => ({
     editButton: {
@@ -75,13 +80,33 @@ const styles = theme => ({
     },
 });
 
+class Transition extends React.Component {
+    render() {
+        let props = this.props;
+        return <Slide direction="down" {...props} />;
+    }
+}
+
 const Profile = (props) => {
+    const [showMessageInput, setShowMessageInput] = React.useState(false);
     const [tabIndex, setTabIndex] = React.useState(0);
     const [profile, setProfile] = useState({});
     const [avatarLocation, setAvatarLocation] = useState(null);
     const { defaultUserAvatar, user } = useContext(MainContext);
     const {classes} = props;
-    const profileId = R.split('/', window.location.pathname)[2];
+    // "/account/profile/{profileId}"
+    const profileId = R.split('/', window.location.pathname)[3];
+
+    function handleSubmitInput (text) {
+        const socket = socketIOClient('/');
+        let data = {
+            userId: user.id,
+            receiver: profileId,
+            text
+        };
+        socket.emit('NEW_MESSAGE', data);
+        setShowMessageInput(false);
+    }
 
     async function getProfile(id) {
         const response = await axios.get(`/api/users/userProfile/${id}`);
@@ -113,12 +138,38 @@ const Profile = (props) => {
                                         {profile.firstName} {profile.lastName}
                                     </Typography>
                                     {user.id === profile.id &&
-                                        <Button className={classes.editButton} variant="outlined" href={`/profile/${user.id}/edit`}>
+                                        <Button className={classes.editButton} variant="outlined" href={`/account/profile/${user.id}/edit`}>
                                             Edit Profile
+                                        </Button>
+                                    }
+                                    {user.id !== profile.id &&
+                                        <Button className={classes.editButton} variant="outlined" onClick={() => setShowMessageInput(true)}>
+                                            Send Message
                                         </Button>
                                     }
                                 </Grid>
                             </Box>
+                            <Dialog
+                                open={showMessageInput}
+                                TransitionComponent={Transition}
+                                onClose={() => setShowMessageInput(false)}
+                                aria-labelledby="responsive-dialog-title"
+                                className={classes.dialog}
+                            >
+                                <DialogContent className={classes.content}>
+                                    <Typography variant="h5">
+                                        New message for {profile.firstName} {profile.lastName}
+                                    </Typography>
+                                    {/*<div className={classes.signup}>*/}
+                                    {/*    <Typography>*/}
+                                    {/*        A reset password link has been sent to you via email. Go to the mail and click the link to enter a new password.*/}
+                                    {/*    </Typography>*/}
+                                    {/*</div>*/}
+                                    <MessageInput
+                                        onSubmit={handleSubmitInput}
+                                    />
+                                </DialogContent>
+                            </Dialog>
                             <Box mb="20px">
                                 <Grid container spacing={5}>
                                     <Grid item>

@@ -41,7 +41,7 @@ const serverApp = async () => {
     app.use(session({
         store: new redisStore({client, ttl: 26000}),
         secret: 'keyboard cat',
-        genid: () => uuid(),
+        // genid: () => uuid(),
         resave: true,
         saveUninitialized: true,
         cookie: {
@@ -78,6 +78,8 @@ const serverApp = async () => {
     // This is what the socket.io syntax is like, we will work this later
     io.on('connection', socket => {
         console.log('New client connected');
+
+        socket.join('some room');
 
         // just like on the client side, we have a socket.on method that takes a callback function
         socket.on('NEW_MESSAGE', async (data) => {

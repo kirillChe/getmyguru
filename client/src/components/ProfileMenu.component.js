@@ -22,14 +22,14 @@ const ProfileMenu = (props) => {
     function handleMessages () {
         // event.preventDefault();
         console.log('Go to my messages');
-        props.history.push(`/messages/${user.id}`);
+        props.history.push(`/account/messages/${user.id}`);
         setAnchorEl(null);
     }
 
     function handleProfile (event) {
         // event.preventDefault();
         console.log('Go to profile');
-        props.history.push(`/profile/${user.id}`);
+        props.history.push(`/account/profile/${user.id}`);
         setAnchorEl(null);
     }
 

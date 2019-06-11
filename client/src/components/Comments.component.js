@@ -18,7 +18,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import axios from 'axios';
 import * as R from 'ramda';
-// import * as moment from 'moment';
+import * as moment from 'moment';
 import {MainContext} from '../context';
 
 
@@ -53,28 +53,34 @@ const Comments = (props) => {
 
     function handleClick(commentId) {
         return () => {
-            console.log('Comments.component.js :44', commentId);
             setOpenComments({...openComments, [commentId]: !openComments[commentId]});
         }
     }
 
-    async function getCommentsTree(profileId) {
-        try {
-            let response = await axios.get(`/api/comments/commentsTree?ownerId=${profileId}`);
-
-            if (response.data) {
-                setComments(response.data);
-                setOpenComments(R.map(com => ({[com.id]: false}), response.data));
-            } else {
-                console.log('Get comments: no comments');
-            }
-        }catch (e) {
-            console.log('Show comments error: ');
-            console.log(e);
-        }
-    }
-
     useEffect(() => {
+
+        async function getCommentsTree(profileId) {
+
+            try {
+                let response = await axios.get(`/api/comments/commentsTree?ownerId=${profileId}`);
+
+                if (response.data) {
+                    setComments(response.data);
+
+                    setOpenComments(R.pipe(
+                        R.map(com => ({[com.id]: false})),
+                        R.mergeAll
+                    )(response.data));
+
+                } else {
+                    console.log('Get comments: no comments');
+                }
+            }catch (e) {
+                console.log('Show comments error: ');
+                console.log(e);
+            }
+        }
+
         getCommentsTree(profileId);
     }, [profileId]);
 
@@ -99,37 +105,38 @@ const Comments = (props) => {
                             {/*    secondary={comment.text}*/}
                             {/*/>*/}
                             <div className={classes.commentText}>
-                                {/*<Typography>*/}
-                                {/*    {comment.userName} {moment(comment.date).format('LLLL')}*/}
-                                {/*    {comment.text}*/}
-                                {/*</Typography>*/}
-
+                                <Typography>
+                                    {comment.userName} {moment(comment.date).format('LLLL')}
+                                    {comment.text}
+                                </Typography>
                             </div>
-                            <IconButton aria-label="Expand" onClick={handleClick(comment.id)}>
-                                {openComments[comment.id] ? <ExpandLess /> : <ExpandMore />}
-                            </IconButton>
+                            {comment.children && comment.children.length > 0 &&
+                                <IconButton aria-label="Expand" onClick={handleClick(comment.id)}>
+                                    {openComments[comment.id] ? <ExpandLess/> : <ExpandMore/>}
+                                </IconButton>
+                            }
                         </ListItem>
 
                         {comment.children && comment.children.length > 0 &&
-                        <Collapse in={openComments[comment.id]} timeout="auto" unmountOnExit>
-                            <List className={classes.root}>
-                                {comment.children.map(childComment => (
-                                    <div className={classes.comment} key={"comment-" + childComment.id}>
-                                        <ListItem alignItems="flex-start">
-                                            <ListItemAvatar>
-                                                <Avatar alt="Remy Sharp"
-                                                        src={childComment.userAvatarLocation || defaultUserAvatar[childComment.userGender]}/>
-                                            </ListItemAvatar>
-                                            <ListItemText
-                                                primary={childComment.userName}
-                                                secondary={childComment.text}
-                                            />
+                            <Collapse in={openComments[comment.id]} timeout="auto" unmountOnExit>
+                                <List className={classes.root}>
+                                    {comment.children.map(childComment => (
+                                        <div className={classes.comment} key={"comment-" + childComment.id}>
+                                            <ListItem alignItems="flex-start">
+                                                <ListItemAvatar>
+                                                    <Avatar alt="Remy Sharp"
+                                                            src={childComment.userAvatarLocation || defaultUserAvatar[childComment.userGender]}/>
+                                                </ListItemAvatar>
+                                                <ListItemText
+                                                    primary={childComment.userName}
+                                                    secondary={childComment.text}
+                                                />
 
-                                        </ListItem>
-                                    </div>
-                                ))}
-                            </List>
-                        </Collapse>
+                                            </ListItem>
+                                        </div>
+                                    ))}
+                                </List>
+                            </Collapse>
                         }
                     </div>
                 ))}

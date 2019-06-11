@@ -5,7 +5,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER(11).UNSIGNED,
             allowNull: true
         },
-        receiver: {
+        ownerId: {
+            type: DataTypes.INTEGER(11).UNSIGNED,
+            allowNull: false
+        },
+        receiverId: {
             type: DataTypes.INTEGER(11).UNSIGNED,
             allowNull: false
         },
@@ -21,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
     Comment.associate = function ({User}) {
-        Comment.belongsTo(User, {as: 'user'})
+        Comment.belongsTo(User, {as: 'user', foreignKey: 'senderId', targetKey: 'id'})
     };
     return Comment;
 };

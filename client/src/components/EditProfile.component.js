@@ -43,8 +43,6 @@ const styles = theme => ({
     }
 });
 
-const getUserAvatar = (user, defaultUserAvatar) => user.avatarLocation || (user.gender === 'male' ? defaultUserAvatar.male : defaultUserAvatar.female);
-
 const EditProfile = (props) => {
     const {classes} = props;
     const { allowedLanguages, defaultUserAvatar, user } = useContext(MainContext);
@@ -61,7 +59,7 @@ const EditProfile = (props) => {
     });
 
     const [file, setFile] = useState(null);
-    const [avatarLocation, setAvatarLocation] = useState(getUserAvatar(user, defaultUserAvatar));
+    const [avatarLocation, setAvatarLocation] = useState(defaultUserAvatar[user.gender]);
 
     function validateForm () {
         //@todo add required validator

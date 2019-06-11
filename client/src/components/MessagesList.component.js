@@ -9,7 +9,8 @@ import {
     ListItemText,
     ListItemAvatar,
     Avatar,
-    Box
+    Box,
+    Typography
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import {Chat, MessageInput} from '.';
@@ -24,9 +25,6 @@ const styles = theme => ({
         width: '100%',
         maxWidth: 360,
         backgroundColor: theme.palette.background.paper,
-    },
-    inline: {
-        display: 'inline',
     },
     messageInputDivider: {
         marginTop: 20,
@@ -48,8 +46,8 @@ class MessagesList extends Component{
 
     handleSubmitInput = text => {
         let data = {
-            userId: this.context.user.id,
-            receiver: this.state.selectedPartnerId,
+            senderId: this.context.user.id,
+            receiverId: this.state.selectedPartnerId,
             text
         };
         socket.on('MESSAGE_SAVED', () => {
@@ -128,6 +126,14 @@ class MessagesList extends Component{
         return (
             <React.Fragment>
                 <Box component="main" maxWidth={935} margin="auto" padding="60px 20px 0">
+                    <Typography
+                        variant="h4"
+                        component="h4"
+                        gutterBottom
+                        align="center"
+                    >
+                        Messages
+                    </Typography>
                     <Grid container>
                         <Grid item xs={4}>
                             <List className={classes.root}>
@@ -140,7 +146,7 @@ class MessagesList extends Component{
                                             onClick={this.handleClickPartner(partner.id)}
                                         >
                                             <ListItemAvatar>
-                                                <Avatar alt="Remy Sharp" src={partner.avatarLocation} />
+                                                <Avatar alt="avatar" src={partner.avatarLocation} />
                                             </ListItemAvatar>
                                             <ListItemText
                                                 primary={partner.fullName}

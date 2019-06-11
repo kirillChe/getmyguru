@@ -2,7 +2,7 @@
 
 module.exports = (sequelize, DataTypes) => {
     const Message = sequelize.define('Message', {
-        receiver: {
+        receiverId: {
             allowNull: false,
             type: DataTypes.INTEGER(11).UNSIGNED
         },
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
     Message.associate = function ({User}) {
-        Message.belongsTo(User, {as: 'user'})
+        Message.belongsTo(User, {as: 'user', foreignKey: 'senderId', targetKey: 'id'})
     };
 
     return Message;

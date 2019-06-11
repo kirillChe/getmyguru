@@ -60,47 +60,46 @@ const ImageGrid = (props) => {
         }
     }
 
-    async function getGuruProfiles() {
-        let params = {
-            _limit: 4,
-            _order: 'DESC',
-            _sort: 'rating',
-            filter: {
-                where: {
-                    userType: 'guru'
-                }
-            }
-        };
-
-        if (props.attr === 'last')
-            params._sort = 'createdAt';
-
-        try {
-            let response = await axios.get('/api/users/getGurusPreviews', {params});
-
-            if (response.data) {
-                let users = R.map(user => {
-                    if (!user.avatarLocation) {
-                        user.avatarLocation = user.gender === 'male' ?
-                            defaultUserAvatar.male :
-                            defaultUserAvatar.female;
-                    }
-                    return user;
-                }, response.data);
-
-                setUsers(users);
-            } else {
-                console.log('Get users: no users');
-            }
-        }catch (e) {
-            console.log('Show image grid error: ');
-            console.log(e);
-        }
-    }
 
     useEffect(() => {
+        async function getGuruProfiles() {
+            let params = {
+                _limit: 4,
+                _order: 'DESC',
+                _sort: 'rating',
+                filter: {
+                    where: {
+                        userType: 'guru'
+                    }
+                }
+            };
+
+            if (props.attr === 'last')
+                params._sort = 'createdAt';
+
+            try {
+                let response = await axios.get('/api/users/getGurusPreviews', {params});
+
+                if (response.data) {
+                    let users = R.map(user => {
+                        if (!user.avatarLocation)
+                            user.avatarLocation = defaultUserAvatar[user.gender];
+
+                        return user;
+                    }, response.data);
+
+                    setUsers(users);
+                } else {
+                    console.log('Get users: no users');
+                }
+            }catch (e) {
+                console.log('Show image grid error: ');
+                console.log(e);
+            }
+        }
+
         getGuruProfiles();
-    }, []);
+    }, [defaultUserAvatar, props]);
 
     return (
         <div className={classNames(classes.layout, classes.cardGrid)}>

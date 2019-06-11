@@ -85,8 +85,8 @@ module.exports = (sequelize, DataTypes) => {
 
     User.associate = models => {
         User.hasMany(models.File, {foreignKey: 'userId', as: 'files', onDelete: 'cascade', hooks: true });
-        User.hasMany(models.Message, {foreignKey: 'userId', as: 'messages'});
-        User.hasMany(models.Comment, {foreignKey: 'userId', as: 'comments'});
+        User.hasMany(models.Message, {foreignKey: 'senderId', as: 'messages'});
+        User.hasMany(models.Comment, {foreignKey: 'senderId', as: 'comments'});
         User.hasMany(models.Rating, {foreignKey: 'userId', as: 'ratings'});
     };
 

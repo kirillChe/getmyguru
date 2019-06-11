@@ -2,6 +2,8 @@ const express = require('express');
 const commentCtrl = require('../controllers/commentsController');
 const router = express.Router();
 
+/** GET /api/comments/commentsTree - Get a comments tree for specific user */
+router.route('/commentsTree').get(commentCtrl.commentsTree);
 
 router.route('/')
 /** GET /api/comments - Get list of comments */

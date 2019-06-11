@@ -5,17 +5,20 @@ const R = require('ramda');
 const {Message, User, File} = require('../models');
 
 const create = async (req, res, next) => {
-    let userId = req.session.passport && req.session.passport.user && req.session.passport.user.id;
-    if (!userId)
-        return res.sendStatus(400);
+    // the request is sending by sockets. You can find code in app.js
 
-    req.body.userId = userId;
 
-    let [err, message] = await on(Message.create(req.body));
-    if (err)
-        return next(err);
-
-    res.status(201).json(message);
+    // let userId = req.session.passport && req.session.passport.user && req.session.passport.user.id;
+    // if (!userId)
+    //     return res.sendStatus(400);
+    //
+    // req.body.senderId = userId;
+    //
+    // let [err, message] = await on(Message.create(req.body));
+    // if (err)
+    //     return next(err);
+    //
+    res.sendStatus(404);
 };
 
 const find = async (req, res, next) => {
@@ -48,11 +51,11 @@ const conversationsPartners = async (req, res, next) => {
             where: {
                 [Op.or]: [
                     {
-                        userId: ownerId,
+                        senderId: ownerId,
                         showToSender: true
                     },
                     {
-                        receiver: ownerId,
+                        receiverId: ownerId,
                         showToReceiver: true
                     }
                 ]
@@ -74,7 +77,7 @@ const conversationsPartners = async (req, res, next) => {
 
     // get uniq list of ids of all partners
     let partnersIds = R.pipe(
-        R.map(R.props(['userId', 'receiver'])),
+        R.map(R.props(['senderId', 'receiverId'])),
         R.flatten,
         R.uniq,
         R.reject(R.equals(Number(ownerId)))
@@ -114,7 +117,7 @@ const conversationsPartners = async (req, res, next) => {
     let result = R.map(id => {
         let user = R.find(R.propEq('id', id))(users);
 
-        let lastMessage = R.find(m => (m.userId === id && m.receiver === ownerId) || (m.userId === ownerId && m.receiver === id))(messages);
+        let lastMessage = R.find(m => (m.senderId === id && m.receiverId === ownerId) || (m.senderId === ownerId && m.receiverId === id))(messages);
 
         return {
             avatarLocation: (user.files && user.files[0] && user.files[0].location) || null,
@@ -137,13 +140,13 @@ const conversation = async (req, res, next) => {
         where: {
             [Op.or]: [
                 {
-                    userId: ownerId,
-                    receiver: partnerId,
+                    senderId: ownerId,
+                    receiverId: partnerId,
                     showToSender: true
                 },
                 {
-                    userId: partnerId,
-                    receiver: ownerId,
+                    senderId: partnerId,
+                    receiverId: ownerId,
                     showToReceiver: true
                 }
             ]
@@ -164,7 +167,7 @@ const conversation = async (req, res, next) => {
         id: message.id,
         text: message.text,
         createdAt: message.createdAt,
-        right: message.userId === ownerId
+        right: message.senderId === ownerId
     }), data);
 
     res.json(response);

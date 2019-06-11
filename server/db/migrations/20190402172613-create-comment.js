@@ -8,7 +8,15 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER(11).UNSIGNED
             },
-            userId: {
+            ownerId: {
+                allowNull: false,
+                type: Sequelize.INTEGER(11).UNSIGNED
+            },
+            parentId: {
+                allowNull: true,
+                type: Sequelize.INTEGER(11).UNSIGNED
+            },
+            senderId: {
                 allowNull: false,
                 type: Sequelize.INTEGER(11).UNSIGNED,
                 references: {
@@ -16,11 +24,7 @@ module.exports = {
                     key: 'id'
                 }
             },
-            parentId: {
-                allowNull: true,
-                type: Sequelize.INTEGER(11).UNSIGNED
-            },
-            receiver: {
+            receiverId: {
                 allowNull: false,
                 type: Sequelize.INTEGER(11).UNSIGNED
             },

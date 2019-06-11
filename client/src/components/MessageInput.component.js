@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import Grid from '@material-ui/core/Grid';
 import Input from '@material-ui/core/Input';
-import PeaIcon from '@material-ui/icons/AttachFile';
+// import PeaIcon from '@material-ui/icons/AttachFile';
 import EmojiIcon from '@material-ui/icons/InsertEmoticon';
 import Send from '@material-ui/icons/Send';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -28,7 +28,7 @@ const useStyles = makeStyles(() => ({
         },
     },
     inputRoot: {
-        borderRadius: 40,
+        borderRadius: 5,
         backgroundColor: '#F2F2F4',
         padding: '5px 10px',
         '& input': {
@@ -100,20 +100,23 @@ const PeaMessageInput = ({
                     </Grid>
                 </ClickAwayListener>
             )}
-            <Grid item>
-                <label htmlFor="pea-message-input-upload">
-                    <input
-                        className={classes.fileInput}
-                        id="pea-message-input-upload"
-                        type="file"
-                        accept="image/*"
-                        onChange={onUpload}
-                    />
-                    <PeaIcon className={classes.icon} />
-                </label>
-            </Grid>
+            {/*<Grid item>*/}
+            {/*    <label htmlFor="pea-message-input-upload">*/}
+            {/*        <input*/}
+            {/*            className={classes.fileInput}*/}
+            {/*            id="pea-message-input-upload"*/}
+            {/*            type="file"*/}
+            {/*            accept="image/*"*/}
+            {/*            onChange={onUpload}*/}
+            {/*        />*/}
+            {/*        <PeaIcon className={classes.icon} />*/}
+            {/*    </label>*/}
+            {/*</Grid>*/}
             <Grid item classes={{ item: classes.flex }} container>
                 <Input
+                    multiline={true}
+                    rows="3"
+                    rowsMax="8"
                     fullWidth
                     disableUnderline
                     classes={{ root: classes.inputRoot }}

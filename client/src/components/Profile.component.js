@@ -22,7 +22,7 @@ import { MainContext } from '../context';
 import axios from 'axios';
 import * as R from 'ramda';
 import socketIOClient from "socket.io-client";
-import {MessageInput} from ".";
+import {MessageInput, Comments} from ".";
 
 const styles = theme => ({
     editButton: {
@@ -100,23 +100,24 @@ const Profile = (props) => {
     function handleSubmitInput (text) {
         const socket = socketIOClient('/');
         let data = {
-            userId: user.id,
-            receiver: profileId,
+            senderId: user.id,
+            receiverId: profileId,
             text
         };
         socket.emit('NEW_MESSAGE', data);
         setShowMessageInput(false);
     }
 
-    async function getProfile(id) {
-        const response = await axios.get(`/api/users/userProfile/${id}`);
-        setProfile(response.data);
-        setAvatarLocation(response.data.avatarLocation || (response.data.gender === 'male' ? defaultUserAvatar.male : defaultUserAvatar.female));
-    }
 
     useEffect(() => {
+        async function getProfile(id) {
+            const response = await axios.get(`/api/users/userProfile/${id}`);
+            setProfile(response.data);
+            setAvatarLocation(response.data.avatarLocation || defaultUserAvatar[response.data.gender]);
+        }
+
         getProfile(profileId);
-    }, [profileId]);
+    }, [profileId, defaultUserAvatar]);
 
     return (
         <React.Fragment>
@@ -160,11 +161,6 @@ const Profile = (props) => {
                                     <Typography variant="h5">
                                         New message for {profile.firstName} {profile.lastName}
                                     </Typography>
-                                    {/*<div className={classes.signup}>*/}
-                                    {/*    <Typography>*/}
-                                    {/*        A reset password link has been sent to you via email. Go to the mail and click the link to enter a new password.*/}
-                                    {/*    </Typography>*/}
-                                    {/*</div>*/}
                                     <MessageInput
                                         onSubmit={handleSubmitInput}
                                     />
@@ -225,6 +221,11 @@ const Profile = (props) => {
                                 </Card>
                             </Grid>
                         ))}
+                    </Grid>
+                }
+                {tabIndex === 1 &&
+                    <Grid container spacing={4}>
+                        <Comments />
                     </Grid>
                 }
             </Box>

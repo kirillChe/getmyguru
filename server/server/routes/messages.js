@@ -1,13 +1,11 @@
 const express = require('express');
 const messageCtrl = require('../controllers/messagesController');
-// import auth from '../../config/jwt';
-
 const router = express.Router();
 
-/** GET /api/conversation - Get a conversation between two specific users */
+/** GET /api/messages/conversation - Get a conversation between two specific users */
 router.route('/conversation').get(messageCtrl.conversation);
 
-/** GET /api/conversationsPartners - Get list of conversations partners for specific user */
+/** GET /api/messages/conversationsPartners - Get list of conversations partners for specific user */
 router.route('/conversationsPartners').get(messageCtrl.conversationsPartners);
 
 router.route('/')

@@ -8,7 +8,7 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER(11).UNSIGNED
             },
-            userId: {
+            senderId: {
                 allowNull: false,
                 type: Sequelize.INTEGER(11).UNSIGNED,
                 references: {
@@ -16,7 +16,7 @@ module.exports = {
                     key: 'id'
                 }
             },
-            receiver: {
+            receiverId: {
                 allowNull: false,
                 type: Sequelize.INTEGER(11).UNSIGNED
             },

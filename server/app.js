@@ -92,8 +92,8 @@ const serverApp = async () => {
 
             try {
                 let message = await models.Message.create(data);
-                io.sockets.in(`room-${message.userId}`).emit('MESSAGE_SAVED', message.userId);
-                io.sockets.in(`room-${message.receiver}`).emit('GOT_NEW_MESSAGE', message.receiver);
+                io.sockets.in(`room-${message.senderId}`).emit('MESSAGE_SAVED');
+                io.sockets.in(`room-${message.receiverId}`).emit('GOT_NEW_MESSAGE');
                 // io.sockets.emit(`${data.userId}_MESSAGE_SAVED`, message.userId);
                 // io.sockets.emit(`${data.receiver}_GOT_NEW_MESSAGE`, message.receiver);
             }catch (e) {

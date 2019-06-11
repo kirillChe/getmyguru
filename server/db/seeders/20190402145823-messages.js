@@ -5,8 +5,8 @@ module.exports = {
         return queryInterface.bulkInsert('Messages', [
             {
                 id: 1,
-                userId: 6,
-                receiver: 1,
+                senderId: 6,
+                receiverId: 1,
                 showToReceiver: true,
                 showToSender: false,
                 text: 'Ti che derzish?',
@@ -14,8 +14,8 @@ module.exports = {
             },
             {
                 id: 2,
-                userId: 1,
-                receiver: 6,
+                senderId: 1,
+                receiverId: 6,
                 showToReceiver: true,
                 showToSender: true,
                 text: 'Do you know who do you speak with?',
@@ -23,8 +23,8 @@ module.exports = {
             },
             {
                 id: 3,
-                userId: 6,
-                receiver: 1,
+                senderId: 6,
+                receiverId: 1,
                 showToReceiver: true,
                 showToSender: true,
                 text: 'It doesn\'t matter',
@@ -32,8 +32,8 @@ module.exports = {
             },
             {
                 id: 4,
-                userId: 1,
-                receiver: 6,
+                senderId: 1,
+                receiverId: 6,
                 showToReceiver: true,
                 showToSender: true,
                 text: 'You should know',
@@ -41,8 +41,8 @@ module.exports = {
             },
             {
                 id: 5,
-                userId: 6,
-                receiver: 1,
+                senderId: 6,
+                receiverId: 1,
                 showToReceiver: true,
                 showToSender: true,
                 text: 'Sorry...',
@@ -50,8 +50,8 @@ module.exports = {
             },
             {
                 id: 6,
-                userId: 3,
-                receiver: 1,
+                senderId: 3,
+                receiverId: 1,
                 showToReceiver: true,
                 showToSender: true,
                 text: 'How r u?',

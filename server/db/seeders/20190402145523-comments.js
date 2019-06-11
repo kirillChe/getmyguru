@@ -5,17 +5,19 @@ module.exports = {
         return queryInterface.bulkInsert('Comments', [
             {
                 id: 1,
-                userId: 6,
+                ownerId: 2,
                 parentId: null,
-                receiver: 2,
+                senderId: 6,
+                receiverId: 2,
                 text: 'How much your program costs?',
                 createdAt: new Date()
             },
             {
                 id: 2,
-                userId: 2,
+                ownerId: 2,
                 parentId: 1,
-                receiver: 6,
+                senderId: 2,
+                receiverId: 6,
                 text: 'Too much for you!',
                 createdAt: new Date()
             }

@@ -88,7 +88,6 @@ const PeaMessageInput = ({
                         <Picker
                             set="emojione"
                             style={{
-                                position: 'absolute',
                                 bottom: 50,
                                 width: '100%',
                                 left: 0,

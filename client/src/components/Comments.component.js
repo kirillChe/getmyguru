@@ -4,14 +4,14 @@ import { withStyles } from '@material-ui/core/styles';
 import {
     List,
     ListItem,
-    ListItemText,
     ListItemAvatar,
     Avatar,
     TextField,
     Button,
     Typography,
     Collapse,
-    IconButton
+    IconButton,
+    Link
 } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -20,6 +20,7 @@ import axios from 'axios';
 import * as R from 'ramda';
 import * as moment from 'moment';
 import {MainContext} from '../context';
+import {MessageInput} from ".";
 
 
 const styles = theme => ({
@@ -45,11 +46,36 @@ const styles = theme => ({
 
 const Comments = (props) => {
     const { classes } = props;
-    const { defaultUserAvatar } = useContext(MainContext);
+    const { defaultUserAvatar, user } = useContext(MainContext);
     const [comments, setComments] = useState([]);
     const profileId = R.split('/', window.location.pathname)[3];
 
     const [openComments, setOpenComments] = React.useState({});
+
+    function handleSubmitInput (receiverId, parentId) {
+        return async (text) => {
+            let data = {
+                ownerId: profileId,
+                senderId: user.id,
+                receiverId: receiverId || profileId,
+                parentId: parentId || null,
+                text
+            };
+            try {
+                let response = await axios.post('/api/comments', data);
+
+                if (response.data) {
+                    getCommentsTree(profileId);
+
+                } else {
+                    console.log('Post comment: did not save');
+                }
+            }catch (e) {
+                console.log('Save comment error: ');
+                console.log(e);
+            }
+        }
+    }
 
     function handleClick(commentId) {
         return () => {
@@ -57,30 +83,28 @@ const Comments = (props) => {
         }
     }
 
-    useEffect(() => {
+    async function getCommentsTree(profileId) {
+        try {
+            let response = await axios.get(`/api/comments/commentsTree?ownerId=${profileId}`);
 
-        async function getCommentsTree(profileId) {
+            if (response.data) {
+                setComments(response.data);
 
-            try {
-                let response = await axios.get(`/api/comments/commentsTree?ownerId=${profileId}`);
+                setOpenComments(R.pipe(
+                    R.map(com => ({[com.id]: false})),
+                    R.mergeAll
+                )(response.data));
 
-                if (response.data) {
-                    setComments(response.data);
-
-                    setOpenComments(R.pipe(
-                        R.map(com => ({[com.id]: false})),
-                        R.mergeAll
-                    )(response.data));
-
-                } else {
-                    console.log('Get comments: no comments');
-                }
-            }catch (e) {
-                console.log('Show comments error: ');
-                console.log(e);
+            } else {
+                console.log('Get comments: no comments');
             }
+        }catch (e) {
+            console.log('Show comments error: ');
+            console.log(e);
         }
+    }
 
+    useEffect(() => {
         getCommentsTree(profileId);
     }, [profileId]);
 
@@ -98,17 +122,19 @@ const Comments = (props) => {
                     <div key={"comment-" + comment.id}>
                         <ListItem alignItems="flex-start">
                             <ListItemAvatar>
-                                <Avatar alt="Remy Sharp" src={comment.userAvatarLocation || defaultUserAvatar[comment.userGender]} />
+                                <Avatar alt={comment.userName} src={comment.userAvatarLocation || defaultUserAvatar[comment.userGender]} />
                             </ListItemAvatar>
-                            {/*<ListItemText*/}
-                            {/*    primary={comment.userName}*/}
-                            {/*    secondary={comment.text}*/}
-                            {/*/>*/}
                             <div className={classes.commentText}>
-                                <Typography>
-                                    {comment.userName} {moment(comment.date).format('LLLL')}
+                                <Link href={`/account/profile/${comment.userId}`} color="inherit" >
+                                    {comment.userName}
+                                </Link>
+                                <Typography variant={"subtitle2"} align={"right"}>
+                                    {moment(comment.date).format('LLLL')}
+                                </Typography>
+                                <Typography variant={"body2"}>
                                     {comment.text}
                                 </Typography>
+
                             </div>
                             {comment.children && comment.children.length > 0 &&
                                 <IconButton aria-label="Expand" onClick={handleClick(comment.id)}>
@@ -119,19 +145,25 @@ const Comments = (props) => {
 
                         {comment.children && comment.children.length > 0 &&
                             <Collapse in={openComments[comment.id]} timeout="auto" unmountOnExit>
-                                <List className={classes.root}>
+                                <List>
                                     {comment.children.map(childComment => (
                                         <div className={classes.comment} key={"comment-" + childComment.id}>
                                             <ListItem alignItems="flex-start">
                                                 <ListItemAvatar>
-                                                    <Avatar alt="Remy Sharp"
-                                                            src={childComment.userAvatarLocation || defaultUserAvatar[childComment.userGender]}/>
+                                                    <Avatar alt={childComment.userName} src={childComment.userAvatarLocation || defaultUserAvatar[childComment.userGender]} />
                                                 </ListItemAvatar>
-                                                <ListItemText
-                                                    primary={childComment.userName}
-                                                    secondary={childComment.text}
-                                                />
+                                                <div className={classes.commentText}>
+                                                    <Link href={`/account/profile/${childComment.userId}`} color="inherit">
+                                                        {childComment.userName}
+                                                    </Link>
+                                                    <Typography variant={"subtitle2"} align={"right"}>
+                                                        {moment(childComment.date).format('LLLL')}
+                                                    </Typography>
+                                                    <Typography variant={"body2"}>
+                                                        {childComment.text}
+                                                    </Typography>
 
+                                                </div>
                                             </ListItem>
                                         </div>
                                     ))}
@@ -142,20 +174,23 @@ const Comments = (props) => {
                 ))}
             </List>
             <form className={classes.textArea}>
-                <div className="field">
-                    <TextField
-                        id="reply"
-                        name="reply"
-                        variant="outlined"
-                        multiline={true}
-                        rows="5"
-                        rowsMax="7"
-                        fullWidth={true}
-                    />
-                </div>
-                <Button variant="contained" color="primary" className={classes.button}>
-                    Add Reply
-                </Button>
+                {/*<div className="field">*/}
+                {/*    <TextField*/}
+                {/*        id="reply"*/}
+                {/*        name="reply"*/}
+                {/*        variant="outlined"*/}
+                {/*        multiline={true}*/}
+                {/*        rows="5"*/}
+                {/*        rowsMax="7"*/}
+                {/*        fullWidth={true}*/}
+                {/*    />*/}
+                {/*</div>*/}
+                <MessageInput
+                    onSubmit={handleSubmitInput()}
+                />
+                {/*<Button variant="contained" color="primary" className={classes.button}>*/}
+                {/*    Add Reply*/}
+                {/*</Button>*/}
             </form>
         </div>
     );

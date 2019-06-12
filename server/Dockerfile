@@ -1,4 +1,4 @@
-FROM node:10.15.3-stretch
+FROM node:12.3.1-stretch
 RUN mkdir -p /app
 WORKDIR /app
 RUN npm install -g pm2

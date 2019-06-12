@@ -59,12 +59,13 @@ const commentsTree = async (req, res, next) => {
         //find child
         let children = R.filter(R.propEq('parentId', comment.id), comments);
         function getCommentData (c) {
-            let user = c.user;
+            let user = c.user || {};
             return {
                 id: c.id,
-                userAvatarLocation: (user && user.files && user.files[0] && user.files[0].location) || null,
-                userName: user && (`${user.firstName} ${user.lastName}`),
-                userGender: user && user.gender,
+                userId: user.id,
+                userAvatarLocation: (user.files && user.files[0] && user.files[0].location) || null,
+                userName: `${user.firstName} ${user.lastName}`,
+                userGender: user.gender,
                 text: c.text,
                 date: c.createdAt
             }

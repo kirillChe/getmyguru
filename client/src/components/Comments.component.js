@@ -36,7 +36,7 @@ const styles = theme => ({
         'margin-bottom': '6px',
     },
     list: {
-        width: '50%',
+        width: '60%',
         backgroundColor: theme.palette.background.paper,
     },
     comment: {
@@ -122,7 +122,10 @@ const Comments = (props) => {
                     <div key={"comment-" + comment.id}>
                         <ListItem alignItems="flex-start">
                             <ListItemAvatar>
-                                <Avatar alt={comment.userName} src={comment.userAvatarLocation || defaultUserAvatar[comment.userGender]} />
+                                <Avatar
+                                    alt={comment.userName}
+                                    src={comment.userAvatarLocation || defaultUserAvatar[comment.userGender]}
+                                />
                             </ListItemAvatar>
                             <div className={classes.commentText}>
                                 <Link href={`/account/profile/${comment.userId}`} color="inherit" >
@@ -134,7 +137,11 @@ const Comments = (props) => {
                                 <Typography variant={"body2"}>
                                     {comment.text}
                                 </Typography>
-
+                                {profileId === user.id && comment.userId !== user.id &&
+                                    <Link href="" color="primary" >
+                                        reply
+                                    </Link>
+                                }
                             </div>
                             {comment.children && comment.children.length > 0 &&
                                 <IconButton aria-label="Expand" onClick={handleClick(comment.id)}>
@@ -144,13 +151,20 @@ const Comments = (props) => {
                         </ListItem>
 
                         {comment.children && comment.children.length > 0 &&
-                            <Collapse in={openComments[comment.id]} timeout="auto" unmountOnExit>
+                            <Collapse
+                                in={openComments[comment.id]}
+                                timeout="auto"
+                                unmountOnExit
+                            >
                                 <List>
                                     {comment.children.map(childComment => (
                                         <div className={classes.comment} key={"comment-" + childComment.id}>
                                             <ListItem alignItems="flex-start">
                                                 <ListItemAvatar>
-                                                    <Avatar alt={childComment.userName} src={childComment.userAvatarLocation || defaultUserAvatar[childComment.userGender]} />
+                                                    <Avatar
+                                                        alt={childComment.userName}
+                                                        src={childComment.userAvatarLocation || defaultUserAvatar[childComment.userGender]}
+                                                    />
                                                 </ListItemAvatar>
                                                 <div className={classes.commentText}>
                                                     <Link href={`/account/profile/${childComment.userId}`} color="inherit">
@@ -162,7 +176,14 @@ const Comments = (props) => {
                                                     <Typography variant={"body2"}>
                                                         {childComment.text}
                                                     </Typography>
-
+                                                    {(
+                                                        (profileId === user.id && childComment.userId !== user.id) ||
+                                                        (comment.userId === user.id && childComment.userId !== user.id)
+                                                    ) &&
+                                                        <Link href="" color="primary" >
+                                                            reply
+                                                        </Link>
+                                                    }
                                                 </div>
                                             </ListItem>
                                         </div>

@@ -1,3 +1,10 @@
+export { default as ProfileComponent } from './Profile';
+
+
+
+
+
+
 export { default as Main } from './Main.component';
 export { default as ImageGrid } from './ImageGrid.component';
 export { default as Search } from './Search.component';
@@ -8,7 +15,7 @@ export { default as ProfileMenu } from './ProfileMenu.component';
 export { default as SignUp } from './SignUp.component';
 export { default as SignUpGuru } from './SignUpGuru.component';
 export { default as SignUpAdept } from './SignUpAdept.component';
-export { default as Profile } from './Profile.component';
+// export { default as Profile } from './Profile.component';
 export { default as EditProfile } from './EditProfile.component';
 export { default as SetNewPwd } from './SetNewPwd.component';
 export { default as MessagesList } from './MessagesList.component';
@@ -16,3 +23,4 @@ export { default as Chat } from './Chat.component';
 export { default as MessageInput } from './MessageInput.component';
 export { default as Comments } from './Comments.component';
 // export { default as ImageDropzone } from './imageDropzone.component';
+

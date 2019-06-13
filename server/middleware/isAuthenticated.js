@@ -7,6 +7,7 @@ module.exports = () => (req, res, next) => {
 
     //@todo remove 'true'
     //@todo add users/getGurusPreviews endpoint
+    //@todo add auth/isLoggedIn endpoint
     if (true ||
         (req.method === 'POST' && (R.startsWith('/auth/login', req.url) || R.startsWith('/api/users', req.url))) ||
         (req.method === 'GET' && R.startsWith('/api/public', req.url))

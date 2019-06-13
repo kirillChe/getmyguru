@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import MuiTab from '@material-ui/core/Tab';
@@ -17,12 +17,10 @@ import {
     Slide
 } from '@material-ui/core';
 import {Comment, PhotoLibrary} from '@material-ui/icons';
-import { MainContext } from '../context';
 
-import axios from 'axios';
-import * as R from 'ramda';
-import socketIOClient from "socket.io-client";
-import {MessageInput, Comments} from ".";
+import { MainContext } from 'context';
+import {MessageInput, Comments} from 'components';
+import messages from './Profile.messages';
 
 const styles = theme => ({
     editButton: {
@@ -88,36 +86,17 @@ class Transition extends React.Component {
 }
 
 const Profile = (props) => {
-    const [showMessageInput, setShowMessageInput] = React.useState(false);
-    const [tabIndex, setTabIndex] = React.useState(0);
-    const [profile, setProfile] = useState({});
-    const [avatarLocation, setAvatarLocation] = useState(null);
-    const { defaultUserAvatar, user } = useContext(MainContext);
-    const {classes} = props;
-    // "/account/profile/{profileId}"
-    const profileId = R.split('/', window.location.pathname)[3];
-
-    function handleSubmitInput (text) {
-        const socket = socketIOClient('/');
-        let data = {
-            senderId: user.id,
-            receiverId: profileId,
-            text
-        };
-        socket.emit('NEW_MESSAGE', data);
-        setShowMessageInput(false);
-    }
-
-
-    useEffect(() => {
-        async function getProfile(id) {
-            const response = await axios.get(`/api/users/userProfile/${id}`);
-            setProfile(response.data);
-            setAvatarLocation(response.data.avatarLocation || defaultUserAvatar[response.data.gender]);
-        }
-
-        getProfile(profileId);
-    }, [profileId, defaultUserAvatar]);
+    const { user } = useContext(MainContext);
+    const {
+        classes,
+        showMessageInput,
+        setShowMessageInput,
+        tabIndex,
+        setTabIndex,
+        profile,
+        avatarLocation,
+        handleSubmitInput
+    } = props;
 
     return (
         <React.Fragment>

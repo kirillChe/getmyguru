@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/styles";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/styles';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(({ palette, spacing }) => {
     const radius = spacing(2.5);

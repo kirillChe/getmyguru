@@ -5,7 +5,7 @@ import {withRouter} from 'react-router-dom';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import axios from 'axios';
 
-import { MainContext } from '../context';
+import { MainContext } from 'context';
 
 const ProfileMenu = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);

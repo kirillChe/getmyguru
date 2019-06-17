@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
-import Grid from '@material-ui/core/Grid';
-import Input from '@material-ui/core/Input';
 // import PeaIcon from '@material-ui/icons/AttachFile';
 import EmojiIcon from '@material-ui/icons/InsertEmoticon';
 import Send from '@material-ui/icons/Send';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import {
+    InputAdornment,
+    ClickAwayListener,
+    Grid,
+    Input
+} from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 
@@ -43,11 +45,7 @@ const useStyles = makeStyles(() => ({
 
 const noop = () => false;
 
-const PeaMessageInput = ({
-                             onChange,
-                             onSubmit,
-                             onUpload,
-                         }) => {
+const PeaMessageInput = ({ onChange, onSubmit, onUpload }) => {
     const classes = useStyles();
     const [inputValue, onInputChange] = useState('');
     const [showEmoji, setShowEmoji] = useState(false);

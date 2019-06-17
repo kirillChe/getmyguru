@@ -15,7 +15,7 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import * as R from 'ramda';
 import axios from 'axios';
 
-import {MainContext} from '../context';
+import {MainContext} from 'context';
 
 const styles = theme => ({
     cardGrid: {

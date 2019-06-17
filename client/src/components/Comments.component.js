@@ -6,8 +6,8 @@ import {
     ListItem,
     ListItemAvatar,
     Avatar,
-    TextField,
-    Button,
+    // TextField,
+    // Button,
     Typography,
     Collapse,
     IconButton,
@@ -19,8 +19,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import axios from 'axios';
 import * as R from 'ramda';
 import * as moment from 'moment';
-import {MainContext} from '../context';
-import {MessageInput} from ".";
+import {MainContext} from 'context';
+import {MessageInput} from '.';
 
 
 const styles = theme => ({

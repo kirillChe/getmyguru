@@ -16,7 +16,7 @@ import {
 } from '@material-ui/icons';
 import useForceUpdate from 'use-force-update';
 
-import { MainContext } from '../context';
+import { MainContext } from 'context';
 
 import axios from 'axios';
 

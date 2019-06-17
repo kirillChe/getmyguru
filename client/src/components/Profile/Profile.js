@@ -20,7 +20,7 @@ import {Comment, PhotoLibrary} from '@material-ui/icons';
 
 import { MainContext } from 'context';
 import {MessageInput, Comments} from 'components';
-import messages from './Profile.messages';
+// import messages from './Profile.messages';
 
 const styles = theme => ({
     editButton: {

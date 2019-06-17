@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import ReactRouterPropTypes from 'react-router-prop-types';
 
 import axios from 'axios';
 import * as R from 'ramda';
@@ -31,9 +32,14 @@ const Profile = ({children}) => {
 
     useEffect(() => {
         async function getProfile(id) {
-            const response = await axios.get(`/api/users/userProfile/${id}`);
-            setProfile(response.data);
-            setAvatarLocation(response.data.avatarLocation || defaultUserAvatar[response.data.gender]);
+            try {
+                const response = await axios.get(`/api/users/userProfile/${id}`);
+                setProfile(response.data);
+                setAvatarLocation(response.data.avatarLocation || defaultUserAvatar[response.data.gender]);
+            } catch (e) {
+                console.log('Profile.js :40', e);
+                throw e;
+            }
         }
 
         getProfile(profileId);
@@ -56,6 +62,7 @@ const Profile = ({children}) => {
 };
 
 Profile.propTypes = {
+    history: ReactRouterPropTypes.history.isRequired,
     children: PropTypes.node
 };
 

@@ -29,7 +29,7 @@ class Exception extends Component {
 
     render() {
         console.log('___________________');
-        console.log('___________________');
+        console.log('____Exception________');
         console.log(this.props);
         console.log('___________________');
         console.log('___________________');

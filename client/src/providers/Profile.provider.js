@@ -14,7 +14,7 @@ const Profile = ({children}) => {
     const [showMessageInput, setShowMessageInput] = useState(false);
     const [tabIndex, setTabIndex] = useState(0);
     const [profile, setProfile] = useState({});
-    const [avatarLocation, setAvatarLocation] = useState(null);
+    const [avatarLocation, setAvatarLocation] = useState('');
     const { defaultUserAvatar, user } = useContext(MainContext);
     // "/account/profile/{profileId}"
     const profileId = R.split('/', window.location.pathname)[3];
@@ -30,6 +30,29 @@ const Profile = ({children}) => {
         setShowMessageInput(false);
     }
 
+    function submitRateUser(value) {
+        return async() => {
+            try {
+                let data = {
+                    userId: profileId,
+                    raterId: user.id,
+                    value
+                };
+                const response = await axios.post('/api/ratings', data);
+                //@todo appear message that it is ok
+                console.log('___________________');
+                console.log('___________________');
+                console.log(response.data);
+                console.log('___________________');
+                console.log('___________________');
+
+            } catch (e) {
+                console.log('Profile.js : cannot rate user: ', e);
+                throw e;
+            }
+        }
+    }
+
     useEffect(() => {
         async function getProfile(id) {
             try {
@@ -37,7 +60,7 @@ const Profile = ({children}) => {
                 setProfile(response.data);
                 setAvatarLocation(response.data.avatarLocation || defaultUserAvatar[response.data.gender]);
             } catch (e) {
-                console.log('Profile.js :40', e);
+                console.log('Profile.js : cannot get profile: ', e);
                 throw e;
             }
         }
@@ -52,7 +75,8 @@ const Profile = ({children}) => {
         setTabIndex,
         profile,
         avatarLocation,
-        handleSubmitInput
+        handleSubmitInput,
+        submitRateUser
     };
 
     return (
@@ -62,7 +86,6 @@ const Profile = ({children}) => {
 };
 
 Profile.propTypes = {
-    history: ReactRouterPropTypes.history.isRequired,
     children: PropTypes.node
 };
 

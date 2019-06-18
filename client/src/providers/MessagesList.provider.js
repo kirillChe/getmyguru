@@ -20,6 +20,11 @@ class MessagesList extends Component{
 
 
     handleSubmitInput = text => {
+        if (R.isEmpty(R.trim(text))) {
+            //@todo handle it
+            console.log('You try to send empty message!');
+            return;
+        }
         let data = {
             senderId: this.context.user.id,
             receiverId: this.state.selectedPartnerId,
@@ -56,7 +61,6 @@ class MessagesList extends Component{
     async getConversationPartners() {
         try {
             let response = await axios.get('/api/messages/conversationsPartners');
-            console.log('_________________HERE: 59________________________', response.data);
 
             if (response.data) {
                 this.setState({partners: response.data});

@@ -5,7 +5,7 @@ module.exports = {
         return queryInterface.bulkInsert('Ratings', [{
             id: 1,
             userId: 2,
-            rated: 6,
+            raterId: 6,
             value: 1,
             createdAt: new Date()
         }], {});

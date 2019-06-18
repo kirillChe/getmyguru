@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { EditProfileProvider } from 'providers';
 import { EditProfileContext } from 'context';
-import { EditProfileComponent } from 'components';
+import { EditProfile as EditProfileComponent } from 'components/EditProfile';
 
-const EditProfile = props => {
+const EditProfile = () => {
     const {
         allowedLanguages,
         submitError,

@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
-    up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('Ratings', {
+    up: async (queryInterface, Sequelize) => {
+        await queryInterface.createTable('Ratings', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
@@ -16,7 +16,7 @@ module.exports = {
                     key: 'id'
                 }
             },
-            rated: {
+            raterId: {
                 allowNull: false,
                 type: Sequelize.INTEGER(11).UNSIGNED
             },
@@ -30,6 +30,14 @@ module.exports = {
                 defaultValue: Sequelize.NOW
             }
         });
+        return queryInterface.addIndex(
+            'Ratings',
+            ['userId', 'raterId'],
+            {
+                indexName: 'uniqRater',
+                unique: true
+            }
+        );
     },
     down: (queryInterface) => {
         return queryInterface.dropTable('Ratings');

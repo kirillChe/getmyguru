@@ -91,6 +91,8 @@ const Messages = props => {
                         </ThemeProvider>
                         <Divider className={classes.messageInputDivider} variant="fullWidth" />
                         <MessageInput
+                            rows={4}
+                            rowsMax={8}
                             onSubmit={handleSubmitInput}
                         />
                     </Grid>
@@ -101,7 +103,12 @@ const Messages = props => {
 };
 
 Messages.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    partners: PropTypes.array.isRequired,
+    dialog: PropTypes.array.isRequired,
+    selectedPartnerId: PropTypes.number.isRequired,
+    handleSubmitInput: PropTypes.func.isRequired,
+    handleClickPartner: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(Messages);

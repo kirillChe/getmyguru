@@ -171,15 +171,15 @@ const EditProfile = (props) => {
                     fullWidth
                 />
                 {submitError &&
-                <Button
-                    fullWidth
-                    variant="outlined"
-                    color="secondary"
-                    className={classes.submit}
-                    disabled
-                >
-                    <ErrorIcon/> Wrong data entered
-                </Button>
+                    <Button
+                        fullWidth
+                        variant="outlined"
+                        color="secondary"
+                        className={classes.submit}
+                        disabled
+                    >
+                        <ErrorIcon/> Wrong data entered
+                    </Button>
                 }
                 <Button
                     type="submit"
@@ -197,8 +197,16 @@ const EditProfile = (props) => {
 };
 
 EditProfile.propTypes = {
-    history: ReactRouterPropTypes.history.isRequired,
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    allowedLanguages: PropTypes.array.isRequired,
+    submitError: PropTypes.bool.isRequired,
+    values: PropTypes.object.isRequired,
+    avatarLocation: PropTypes.string.isRequired,
+    validateForm: PropTypes.func.isRequired,
+    handleInputChange: PropTypes.func.isRequired,
+    handleAvatarChange: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    ages: PropTypes.array.isRequired
 };
 
 export default withStyles(styles)(EditProfile);

@@ -1,10 +1,12 @@
-const {User, File} = require('../models');
+const {User, File, Rating} = require('../models');
 const on = require('await-handler');
 const R = require('ramda');
 const Busboy = require('busboy');
 const path = require('path');
 const fs = require('fs');
 const events = require('events');
+const sequelize = require('sequelize');
+const Op = sequelize.Op;
 
 const filePath = __dirname + '/../../public';
 
@@ -203,59 +205,96 @@ const setNewPassword = async (req, res, next) => {
 };
 
 const getGurusPreviews = async (req, res, next) => {
-    req.query.filter.attributes = ['id', 'firstName', 'lastName', 'avatar', 'rating', 'gender'];
-    req.query.filter.where = {
-        userType: 'guru'
-    };
+    if (!req.query.filter)
+        return res.sendStatus(400);
 
-    //@todo refactor
+    let filter = req.query.filter;
+
+    let users = [];
     try {
-        let users = await User.findAll(req.query.filter);
-        users = R.map(user => {
-            user.rating = R.divide(user.rating, 10);
-            return user;
-        }, users);
+        filter.where = {
+            userType: 'guru'
+        };
+        filter.include = [{
+            model: File,
+            as: 'files',
+            where: {
+                id: {
+                    [Op.col]: 'User.avatar'
+                }
+            },
+            required: false
+        }];
 
-        await Promise.all(users.map(async user => {
-            if (!user.avatar) {
-                user.setDataValue('avatarLocation', null);
-            } else {
-                let file = await File.findByPk(user.avatar);
-                user.setDataValue('avatarLocation', file.location);
-            }
-        }));
-
-        res.json(users);
+        users = await User.findAll(req.query.filter);
     } catch (e) {
         console.log('usersController.js :114', e);
-        next(e);
+        return next(e);
     }
+
+    let preview = R.map(user => {
+        return R.merge(
+            R.pickAll(['id', 'firstName', 'lastName', 'avatar', 'rating', 'gender'], user),
+            {
+                rating: user.rating / 10,
+                avatarLocation: (user.files && user.files[0] && user.files[0].location) || null
+            }
+        );
+    }, users);
+
+    res.json(preview);
 };
 
 const userProfile = async (req, res, next) => {
-    //@todo add error handler (try/catch)
     if (!req.params.id)
         return res.status(400);
+    
+    let user, ratersCount;
+    try {
+        let filter = {
+            where: {
+                id: req.params.id
+            },
+            include: ['files']
+        };
 
-    let [err, user] = await on(User.findByPk(req.params.id));
-    if (err)
-        return next(err);
+        user = await User.findOne(filter);
 
-    if (!user)
-        return res.sendStatus(404);
+        if (!user)
+            return res.sendStatus(404);
 
-    let filter = {
-        where: {
-            userId: user.id
-        }
+    }catch (e) {
+        return next(e);
+    }
+
+    try {
+        let filter = {
+            where: {
+                userId: req.params.id
+            },
+            attributes: [[sequelize.fn('COUNT', sequelize.col('id')), 'ratersCount']],
+            raw: true
+        };
+
+        let ratings = await Rating.findAll(filter);
+
+        ratersCount = ratings && ratings[0] && ratings[0].ratersCount || 0;
+
+    }catch (e) {
+        return next(e);
+    }
+
+    let result = {
+        avatarLocation: null,
+        rating: user.rating / 10,
+        ratersCount: ratersCount,
+        images: []
     };
 
-    let files = await File.findAll(filter);
-
-    let result = R.pickAll(['id', 'firstName', 'lastName', 'gender', 'email', 'language', 'phone', 'age', 'rating'], user);
-    result.avatarLocation = null;
-    result.rating = result.rating / 10;
-    result.images = [];
+    result = R.merge(
+        R.pickAll(['id', 'firstName', 'lastName', 'gender', 'email', 'language', 'phone', 'age'], user),
+        result
+    );
 
     R.forEach(file => {
         if (file.id === user.avatar) {
@@ -263,7 +302,7 @@ const userProfile = async (req, res, next) => {
         } else {
             result.images.push(file.location);
         }
-    }, files || []);
+    }, user.files || []);
 
     res.status(200).json(result);
 };

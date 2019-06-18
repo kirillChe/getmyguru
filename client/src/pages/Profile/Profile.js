@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { ProfileProvider } from 'providers';
 import { ProfileContext } from 'context';
-import { ProfileComponent } from 'components';
+import { Profile as ProfileComponent } from 'components/Profile';
 
-const Profile = props => {
+const Profile = () => {
     const {
         showMessageInput,
         setShowMessageInput,
@@ -11,7 +11,8 @@ const Profile = props => {
         setTabIndex,
         profile,
         avatarLocation,
-        handleSubmitInput
+        handleSubmitInput,
+        submitRateUser
     } = useContext(ProfileContext);
 
     return (
@@ -23,6 +24,7 @@ const Profile = props => {
             avatarLocation={avatarLocation}
             profile={profile}
             handleSubmitInput={handleSubmitInput}
+            submitRateUser={submitRateUser}
         />
     )
 };

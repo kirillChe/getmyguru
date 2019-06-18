@@ -45,7 +45,7 @@ const useStyles = makeStyles(() => ({
 
 const noop = () => false;
 
-const PeaMessageInput = ({ onChange, onSubmit, onUpload }) => {
+const MessageInput = ({ onChange, onSubmit, onUpload, rows, rowsMax }) => {
     const classes = useStyles();
     const [inputValue, onInputChange] = useState('');
     const [showEmoji, setShowEmoji] = useState(false);
@@ -112,8 +112,8 @@ const PeaMessageInput = ({ onChange, onSubmit, onUpload }) => {
             <Grid item classes={{ item: classes.flex }} container>
                 <Input
                     multiline={true}
-                    rows="3"
-                    rowsMax="8"
+                    rows={rows}
+                    rowsMax={rowsMax}
                     fullWidth
                     disableUnderline
                     classes={{ root: classes.inputRoot }}
@@ -139,20 +139,20 @@ const PeaMessageInput = ({ onChange, onSubmit, onUpload }) => {
     );
 };
 
-PeaMessageInput.propTypes = {
+MessageInput.propTypes = {
     onChange: PropTypes.func,
     onUpload: PropTypes.func,
     onSubmit: PropTypes.func,
 };
-PeaMessageInput.defaultProps = {
+MessageInput.defaultProps = {
     onChange: noop,
     onUpload: noop,
     onSubmit: noop,
 };
-PeaMessageInput.metadata = {
+MessageInput.metadata = {
     name: 'Pea Message input',
 };
-PeaMessageInput.getTheme = () => ({
+MessageInput.getTheme = () => ({
     'Mui{Component}': {
         // this object will be injected to 'overrides' section
         root: {},
@@ -160,4 +160,4 @@ PeaMessageInput.getTheme = () => ({
     },
 });
 
-export default PeaMessageInput;
+export default MessageInput;

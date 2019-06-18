@@ -1,8 +1,10 @@
-export { default as Main } from './Main';
-export { default as ProfileComponent } from './Profile';
-export { default as EditProfileComponent } from './EditProfile';
-export { default as MessagesComponent } from './Messages';
-export { default as Exception } from './Exception';
+// export { default as Main } from './Main';
+// export { default as ProfileComponent } from './Profile';
+// export { default as EditProfileComponent } from './EditProfile';
+// export { default as MessagesComponent } from './Messages';
+// export { default as Comments } from './Comments';
+// export { default as Exception } from './Exception';
+
 
 
 
@@ -21,7 +23,6 @@ export { default as SignUpAdept } from './SignUpAdept.component';
 export { default as SetNewPwd } from './SetNewPwd.component';
 export { default as Chat } from './Chat.component';
 export { default as MessageInput } from './MessageInput.component';
-export { default as Comments } from './Comments.component';
 export { default as ErrorHandler } from './ErrorHandler.component';
 export { default as ErrorBoundary } from './ErrorBoundary.component';
 // export { default as ImageDropzone } from './imageDropzone.component';

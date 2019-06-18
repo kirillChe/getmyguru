@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { MessagesProvider } from 'providers';
 import { MessagesContext } from 'context';
-import { MessagesComponent } from 'components';
+import { Messages as MessagesComponent } from 'components/Messages';
 
-const Messages = props => {
+const Messages = () => {
     const {
         partners,
         dialog,

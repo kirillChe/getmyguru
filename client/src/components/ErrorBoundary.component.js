@@ -31,6 +31,7 @@ export default class ErrorBoundaryComponent extends PureComponent {
         console.log('___________________');
         console.log('___________________');
         if (this.state.error) {
+            console.log('_________________HERE: 34________________________');
             // render fallback UI
             return (
                 <MainLayout>

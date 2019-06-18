@@ -12,7 +12,7 @@ module.exports = () => (req, res, next) => {
     if (isAllowed(req))
         return next();
     // return res.sendStatus(401);
-    return res.status(404).json({messages: "Idi nahuy"});
+    // return res.status(404).json({messages: "Idi nahuy"});
     // console.log('isAuthenticated.js :3', req.url);
     // console.log('isAuthenticated.js :4', req.session);
 

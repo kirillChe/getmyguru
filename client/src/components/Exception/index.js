@@ -1,1 +1,1 @@
-export { default } from './Exception';
+export { default as Exception} from './Exception';

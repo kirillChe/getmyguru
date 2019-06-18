@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import MuiTab from '@material-ui/core/Tab';
@@ -16,10 +16,12 @@ import {
     CardMedia,
     Slide
 } from '@material-ui/core';
+import Slider from '@material-ui/lab/Slider';
 import {Comment, PhotoLibrary} from '@material-ui/icons';
 
 import { MainContext } from 'context';
-import {MessageInput, Comments} from 'components';
+import { MessageInput } from 'components';
+import { Comments } from 'components/Comments';
 // import messages from './Profile.messages';
 
 const styles = theme => ({
@@ -42,6 +44,9 @@ const styles = theme => ({
         height: 1,
         transform: 'translateY(-53px)',
         backgroundColor: '#262626',
+    },
+    noPhotos: {
+        marginTop: 40,
     },
     fixed: {
         overflowX: 'visible',
@@ -86,7 +91,8 @@ class Transition extends React.Component {
 }
 
 const Profile = (props) => {
-    const { user } = useContext(MainContext);
+    const { user, defaultUserAvatar } = useContext(MainContext);
+    const [ rating, setRating ] = useState(8);
     const {
         classes,
         showMessageInput,
@@ -95,8 +101,13 @@ const Profile = (props) => {
         setTabIndex,
         profile,
         avatarLocation,
-        handleSubmitInput
+        handleSubmitInput,
+        submitRateUser
     } = props;
+
+    function onChangeRatingHandler(e, val) {
+        setRating(val);
+    }
 
     return (
         <React.Fragment>
@@ -141,6 +152,8 @@ const Profile = (props) => {
                                         New message for {profile.firstName} {profile.lastName}
                                     </Typography>
                                     <MessageInput
+                                        rows={3}
+                                        rowsMax={8}
                                         onSubmit={handleSubmitInput}
                                     />
                                 </DialogContent>
@@ -154,11 +167,33 @@ const Profile = (props) => {
                                     </Grid>
                                     <Grid item>
                                         <Typography variant="body1">
-                                            <b>325</b> raters
+                                            <b>{profile.ratersCount}</b> raters
                                         </Typography>
                                     </Grid>
                                 </Grid>
                             </Box>
+                            {user.id !== profile.id &&
+                                <Box mb="20px">
+                                    <Grid container spacing={5}>
+                                        <Grid item xs={4}>
+                                            <Slider
+                                                defaultValue={rating}
+                                                aria-label="discrete-slider"
+                                                valueLabelDisplay="auto"
+                                                min={1}
+                                                max={10}
+                                                onChangeCommitted={onChangeRatingHandler}
+                                                marks
+                                            />
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Button variant="outlined" onClick={submitRateUser(rating)}>
+                                                Rate
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            }
                             <Typography variant="body1" bold="true">
                                 Siriwat Kunaporn
                             </Typography>
@@ -187,24 +222,41 @@ const Profile = (props) => {
                     />
                 </MuiTabs>
                 {tabIndex === 0 &&
-                    <Grid container spacing={4}>
-                        {profile.images && profile.images.map(image => (
-                            <Grid item key={image} xs={4}>
-                                <Card className={classes.card}>
-                                    <CardActionArea>
-                                        <CardMedia
-                                            className={classes.cardMedia}
-                                            image={image}
-                                        />
-                                    </CardActionArea>
-                                </Card>
-                            </Grid>
-                        ))}
-                    </Grid>
+                    <div>
+                        <Grid container spacing={4} >
+                            {profile.images && profile.images.map(image => (
+                                <Grid item key={image} xs={4}>
+                                    <Card className={classes.card}>
+                                        <CardActionArea>
+                                            <CardMedia
+                                                className={classes.cardMedia}
+                                                image={image}
+                                            />
+                                        </CardActionArea>
+                                    </Card>
+                                </Grid>
+                            ))}
+                        </Grid>
+                        {(!profile.images || profile.images.length === 0) &&
+                            <Typography
+                                variant="h4"
+                                component="h4"
+                                gutterBottom
+                                align={'center'}
+                                className={classes.noPhotos}
+                            >
+                                User has no images yet.
+                            </Typography>
+                        }
+                    </div>
                 }
                 {tabIndex === 1 &&
                     <Grid container spacing={4}>
-                        <Comments />
+                        <Comments
+                            user={user}
+                            defaultUserAvatar={defaultUserAvatar}
+                            profileId={profile.id}
+                        />
                     </Grid>
                 }
             </Box>
@@ -213,7 +265,15 @@ const Profile = (props) => {
 };
 
 Profile.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    showMessageInput: PropTypes.bool.isRequired,
+    setShowMessageInput: PropTypes.func.isRequired,
+    tabIndex: PropTypes.number.isRequired,
+    setTabIndex: PropTypes.func.isRequired,
+    profile: PropTypes.object.isRequired,
+    avatarLocation: PropTypes.string.isRequired,
+    handleSubmitInput: PropTypes.func.isRequired,
+    submitRateUser: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(Profile);

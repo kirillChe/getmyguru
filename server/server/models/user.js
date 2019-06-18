@@ -81,7 +81,14 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.NOW,
             allowNull: false
         }
-    }, {});
+    }, {
+        indexes: [
+            {
+                unique: true,
+                fields: ['email', 'userType']
+            }
+        ]
+    });
 
     User.associate = models => {
         User.hasMany(models.File, {foreignKey: 'userId', as: 'files', onDelete: 'cascade', hooks: true });

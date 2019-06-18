@@ -2,7 +2,7 @@
 
 const on = require('await-handler');
 const R = require('ramda');
-const {User} = require('.');
+const {User} = require('../models');
 
 module.exports = (sequelize, DataTypes) => {
     const Rating = sequelize.define('Rating', {
@@ -40,22 +40,13 @@ module.exports = (sequelize, DataTypes) => {
     Rating.afterCreate(async rating => {
         try {
             let userRating = await Rating.calculate(rating.userId);
-            console.log('___________________');
-            console.log('____1_______________');
-            console.log(userRating);
-            console.log('___________________');
-            console.log('___________________');
+            let { User } = sequelize.models;
             let user = await User.findByPk(rating.userId);
-            console.log('___________________');
-            console.log('________2___________');
-            console.log(user.id);
-            console.log('___________________');
-            console.log('___________________');
             user.update({rating: R.multiply(10, userRating)});
 
         } catch (e) {
             //@todo send to some logger
-            console.log('Calculate user rating failed: ', err);
+            console.log('Calculate user rating failed: ', e);
             //throw err;
         }
     });
@@ -73,19 +64,14 @@ module.exports = (sequelize, DataTypes) => {
 
             ratings = await Rating.findAll(filter);
         } catch (e) {
-            console.log('_________________HERE: 75________________________');
             throw e;
         }
-
-        let m = R.map(R.prop('value'), ratings);
-        console.log('rating.js :79', m);
-
-        console.log('rating.js :79', R.mean(m));
 
         let getAverageValue = R.pipe(
             R.map(R.prop('value')),
             R.mean
         );
+
         return getAverageValue(ratings);
     };
 

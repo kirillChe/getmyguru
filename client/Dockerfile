@@ -5,7 +5,7 @@ RUN npm install -g pm2
 RUN apt-get update && apt-get install vim -y
 COPY package.json /app
 COPY package-lock.json /app
-RUN npm install
+RUN npm install -g
 
 
 

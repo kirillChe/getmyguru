@@ -1,8 +1,6 @@
 'use strict';
 
-const on = require('await-handler');
 const R = require('ramda');
-const {User} = require('../models');
 
 module.exports = (sequelize, DataTypes) => {
     const Rating = sequelize.define('Rating', {

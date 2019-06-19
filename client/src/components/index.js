@@ -1,19 +1,4 @@
-// export { default as Main } from './Main';
-// export { default as ProfileComponent } from './Profile';
-// export { default as EditProfileComponent } from './EditProfile';
-// export { default as MessagesComponent } from './Messages';
-// export { default as Comments } from './Comments';
-// export { default as Exception } from './Exception';
-
-
-
-
-
-
-
 export { default as ImageGrid } from './ImageGrid.component';
-export { default as Search } from './Search.component';
-export { default as Filter } from './Filter.component';
 export { default as Login } from './Login.component';
 export { default as ForgotPwd } from './ForgotPwd.component';
 export { default as ProfileMenu } from './ProfileMenu.component';

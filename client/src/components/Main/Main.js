@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
-import {ImageGrid, Search} from 'components';
+import {ImageGrid} from 'components';
+import {Search} from 'components/SearchArea';
 
 const styles = theme => ({
     heroUnit: {

@@ -41,9 +41,7 @@ const Profile = ({children}) => {
                 const response = await axios.post('/api/ratings', data);
                 //@todo appear message that it is ok
                 console.log('___________________');
-                console.log('___________________');
                 console.log(response.data);
-                console.log('___________________');
                 console.log('___________________');
 
             } catch (e) {

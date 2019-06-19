@@ -55,7 +55,6 @@ const ImageGrid = (props) => {
             console.log('ImageGrid.component.js :60', profileId);
             event.preventDefault();
             console.log('Go to profile');
-            // return <Redirect to='/profile' />
             props.history.push(`/account/profile/${profileId}`);
         }
     }
@@ -103,7 +102,6 @@ const ImageGrid = (props) => {
 
     return (
         <div className={classNames(classes.layout, classes.cardGrid)}>
-            {/* End hero unit */}
             <Grid container spacing={10}>
                 {users.map(user => (
                     <Grid item key={user.avatarLocation + '-' + user.id} sm={6} md={4} lg={3}>

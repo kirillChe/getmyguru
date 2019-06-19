@@ -138,7 +138,6 @@ class ToolbarLayout extends Component {
                         open={this.state.showEmailSent}
                         TransitionComponent={Transition}
                         onClose={this.handleClose('showEmailSent')}
-                        aria-labelledby="responsive-dialog-title"
                         className={classes.dialog}
                     >
                         <DialogContent className={classes.content}>
@@ -158,7 +157,6 @@ class ToolbarLayout extends Component {
                         open={this.state.showSignUp}
                         TransitionComponent={Transition}
                         onClose={this.handleClose('showSignUp')}
-                        aria-labelledby="responsive-dialog-title"
                         className={classes.dialog}
                     >
                         <DialogContent className={classes.content}>
@@ -186,7 +184,6 @@ class ToolbarLayout extends Component {
                         open={this.state.showSetNewPwd}
                         TransitionComponent={Transition}
                         onClose={this.handleClose('showSetNewPwd')}
-                        aria-labelledby="responsive-dialog-title"
                         className={classes.dialog}
                     >
                         <DialogContent className={classes.content}>
@@ -202,7 +199,6 @@ class ToolbarLayout extends Component {
                         open={this.state.showLogin}
                         TransitionComponent={Transition}
                         onClose={this.handleClose('showLogin')}
-                        aria-labelledby="responsive-dialog-title"
                         className={classes.dialog}
                     >
                         <DialogContent className={classes.content}>

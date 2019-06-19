@@ -81,6 +81,21 @@ const styles = theme => ({
         width: 152,
         height: 152,
     },
+    dialog: {
+        width: 'auto',
+        display: 'block', // Fix IE 11 issue.
+        marginLeft: theme.spacing(3),
+        marginRight: theme.spacing(3),
+        [theme.breakpoints.up(500 + theme.spacing(3) * 2)]: {
+            width: 500,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
+    },
+    content: {
+        marginTop: theme.spacing(2),
+        padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
+    },
 });
 
 class Transition extends React.Component {

@@ -13,12 +13,23 @@ import {
     Typography,
     Switch,
     Box,
-    Grid
+    Grid,
+    Input,
+    MenuItem,
+    Select,
+    FormControl,
+    InputLabel,
+    Checkbox
 } from '@material-ui/core';
 import Slider from '@material-ui/lab/Slider';
 import Tune from '@material-ui/icons/Tune';
 
 import axios from 'axios';
+
+let languages = [
+    'ru',
+    'en'
+];
 
 const styles = theme => ({
     root: {
@@ -76,11 +87,12 @@ const Search = (props) => {
     const {classes} = props;
 
     const [ageRange, setAgeRange] = useState([16, 100]);
+    const [genderNoMatter, setGenderNoMatter] = useState(false);
+    const [ratingRange, setRatingRange] = useState([1, 10]);
+    const [gender, setGender] = useState('male');
+    const [language, setLanguage] = useState([]);
     const [values, setValues] = useState({
-        gender: 'male',
         age: 20,
-        firstName: '',
-        lastName: '',
         email: '',
         phone: '',
         password: '',
@@ -89,9 +101,12 @@ const Search = (props) => {
 
     function handleChange (e) {
         let {name, value} = e.target;
-        if (name === 'gender')
-            value = e.target.checked ? 'female' : 'male';
         setValues({...values, [name]: value})
+    }
+
+    function clickGenderNoMatter (e) {
+        let { value} = e.target;
+        setGenderNoMatter(Boolean(value));
     }
 
     async function handleSubmit () {
@@ -142,26 +157,26 @@ const Search = (props) => {
                             justify={'space-around'}
                         >
                             <Grid item>
-                                <TextField
-                                    id="firstName"
-                                    name="firstName"
-                                    label="First Name"
-                                    value={values.firstName}
-                                    onChange={handleChange}
-                                    margin="normal"
-                                    variant="outlined"
-                                    className={classes.textField}
-                                />
-                                <TextField
-                                    id="lastName"
-                                    name="lastName"
-                                    label="Last Name"
-                                    value={values.lastName}
-                                    onChange={handleChange}
-                                    margin="normal"
-                                    variant="outlined"
-                                    className={classes.textField}
-                                />
+                                {/*<TextField*/}
+                                {/*    id="firstName"*/}
+                                {/*    name="firstName"*/}
+                                {/*    label="First Name"*/}
+                                {/*    value={values.firstName}*/}
+                                {/*    onChange={handleChange}*/}
+                                {/*    margin="normal"*/}
+                                {/*    variant="outlined"*/}
+                                {/*    className={classes.textField}*/}
+                                {/*/>*/}
+                                {/*<TextField*/}
+                                {/*    id="lastName"*/}
+                                {/*    name="lastName"*/}
+                                {/*    label="Last Name"*/}
+                                {/*    value={values.lastName}*/}
+                                {/*    onChange={handleChange}*/}
+                                {/*    margin="normal"*/}
+                                {/*    variant="outlined"*/}
+                                {/*    className={classes.textField}*/}
+                                {/*/>*/}
                                 <div className={classes.textField}>
                                     <Typography>
                                         Age range
@@ -175,21 +190,62 @@ const Search = (props) => {
                                         onChangeCommitted={(e, val) => setAgeRange(val)}
                                     />
                                 </div>
+                                <div className={classes.textField}>
+                                    <Typography>
+                                        Rating range
+                                    </Typography>
+                                    <Slider
+                                        defaultValue={ratingRange}
+                                        aria-label="range-slider"
+                                        min={1}
+                                        max={10}
+                                        valueLabelDisplay="auto"
+                                        onChangeCommitted={(e, val) => setRatingRange(val)}
+                                    />
+                                </div>
                                 <Typography component="div">
                                     <Grid component="label" container alignItems="center" spacing={1}>
                                         <Grid item>Male</Grid>
                                         <Grid item>
                                             <GenderSwitch
-                                                checked={values.gender === 'female'}
-                                                onChange={handleChange}
+                                                disabled={genderNoMatter}
+                                                checked={gender === 'female'}
+                                                onChange={e => setGender(e.target.checked ? 'female' : 'male')}
                                                 name="gender"
                                             />
                                         </Grid>
                                         <Grid item>Female</Grid>
+                                        <Grid item>
+                                            <Checkbox
+                                                color="default"
+                                                value={genderNoMatter}
+                                                onChange={clickGenderNoMatter}
+                                                inputProps={{
+                                                    'aria-label': 'checkbox with default color',
+                                                }}
+                                            />
+                                        </Grid>
                                     </Grid>
                                 </Typography>
                             </Grid>
                             <Grid item>
+                                <FormControl>
+                                    <InputLabel htmlFor="select-multiple">Language</InputLabel>
+                                    <Select
+                                        multiple
+                                        variant="outlined"
+                                        value={language}
+                                        className={classes.textField}
+                                        onChange={e => setLanguage(e.target.value)}
+                                        input={<Input id="select-multiple" />}
+                                    >
+                                        {languages.map(name => (
+                                            <MenuItem key={name} value={name} >
+                                                {name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                                 <TextField
                                     id="email"
                                     name="email"

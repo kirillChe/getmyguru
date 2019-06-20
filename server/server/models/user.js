@@ -19,12 +19,10 @@ const transporter = nodemailer.createTransport(mailerConfig);
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         firstName: {
-            type: DataTypes.STRING(30),
-            allowNull: false
+            type: DataTypes.STRING(30)
         },
         lastName: {
-            type: DataTypes.STRING(30),
-            allowNull: false
+            type: DataTypes.STRING(30)
         },
         userType: {
             type: DataTypes.ENUM,
@@ -37,31 +35,18 @@ module.exports = (sequelize, DataTypes) => {
         },
         gender: {
             type: DataTypes.ENUM,
-            values: ['male', 'female'],
-            allowNull: true
+            values: ['male', 'female']
         },
         email: {
             type: DataTypes.STRING(40),
             allowNull: false,
-            unique: true,
             validate: {
                 isEmail: true
             }
         },
-        language: {
-            type: DataTypes.STRING(2),
-            allowNull: false,
-            defaultValue: 'en'
-        },
         password: {
             type: DataTypes.STRING(100),
             allowNull: false
-        },
-        phone: {
-            type: DataTypes.STRING(20)
-        },
-        age: {
-            type: DataTypes.INTEGER(2)
         },
         rating: {
             type: DataTypes.TINYINT,
@@ -70,6 +55,9 @@ module.exports = (sequelize, DataTypes) => {
                 min: 10,
                 max: 100
             }
+        },
+        birthDate: {
+            type: DataTypes.DATE
         },
         updatedAt: {
             type: DataTypes.DATE,

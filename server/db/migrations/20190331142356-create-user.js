@@ -32,23 +32,15 @@ module.exports = {
                 type: Sequelize.STRING(40),
                 unique: true
             },
-            language: {
-                allowNull: false,
-                type: Sequelize.STRING(2),
-                defaultValue: 'en'
-            },
             password: {
                 allowNull: false,
                 type: Sequelize.STRING(100)
             },
-            phone: {
-                type: Sequelize.STRING(20)
-            },
-            age: {
-                type: Sequelize.INTEGER(2)
-            },
             rating: {
                 type: Sequelize.TINYINT
+            },
+            birthDate: {
+                type: Sequelize.DATE
             },
             createdAt: {
                 allowNull: false,

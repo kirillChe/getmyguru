@@ -2,14 +2,6 @@
 
 module.exports = (sequelize, DataTypes) => {
     const UserInfo = sequelize.define('UserInfo', {
-        age: {
-            type: DataTypes.INTEGER(2)
-        },
-        language: {
-            type: DataTypes.STRING(2),
-            allowNull: false,
-            defaultValue: 'en'
-        },
         description: {
             type: DataTypes.STRING(3000)
         },
@@ -25,6 +17,16 @@ module.exports = (sequelize, DataTypes) => {
         },
         site: {
             type: DataTypes.STRING(300)
+        },
+        languages: {
+            type: DataTypes.TEXT,
+            get: function () {
+                return JSON.parse(this.getDataValue('value'));
+            },
+            set: function (value) {
+                this.setDataValue('value', JSON.stringify(value));
+            },
+            allowNull: false
         },
         updatedAt: {
             type: DataTypes.DATE,

@@ -19,7 +19,8 @@ import {
     Select,
     FormControl,
     InputLabel,
-    Checkbox
+    Checkbox,
+    Chip
 } from '@material-ui/core';
 import Slider from '@material-ui/lab/Slider';
 import Tune from '@material-ui/icons/Tune';
@@ -37,6 +38,13 @@ const styles = theme => ({
         display: 'flex',
         alignItems: 'center',
         width: '100%',
+    },
+    chips: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    chip: {
+        margin: 2,
     },
     textField: {
         width: 200,
@@ -104,11 +112,6 @@ const Search = (props) => {
         setValues({...values, [name]: value})
     }
 
-    function clickGenderNoMatter (e) {
-        let { value} = e.target;
-        setGenderNoMatter(Boolean(value));
-    }
-
     async function handleSubmit () {
         let data = {
             params: {filter: values}
@@ -157,26 +160,6 @@ const Search = (props) => {
                             justify={'space-around'}
                         >
                             <Grid item>
-                                {/*<TextField*/}
-                                {/*    id="firstName"*/}
-                                {/*    name="firstName"*/}
-                                {/*    label="First Name"*/}
-                                {/*    value={values.firstName}*/}
-                                {/*    onChange={handleChange}*/}
-                                {/*    margin="normal"*/}
-                                {/*    variant="outlined"*/}
-                                {/*    className={classes.textField}*/}
-                                {/*/>*/}
-                                {/*<TextField*/}
-                                {/*    id="lastName"*/}
-                                {/*    name="lastName"*/}
-                                {/*    label="Last Name"*/}
-                                {/*    value={values.lastName}*/}
-                                {/*    onChange={handleChange}*/}
-                                {/*    margin="normal"*/}
-                                {/*    variant="outlined"*/}
-                                {/*    className={classes.textField}*/}
-                                {/*/>*/}
                                 <div className={classes.textField}>
                                     <Typography>
                                         Age range
@@ -216,14 +199,17 @@ const Search = (props) => {
                                         </Grid>
                                         <Grid item>Female</Grid>
                                         <Grid item>
-                                            <Checkbox
-                                                color="default"
-                                                value={genderNoMatter}
-                                                onChange={clickGenderNoMatter}
-                                                inputProps={{
-                                                    'aria-label': 'checkbox with default color',
-                                                }}
-                                            />
+                                            <Typography>
+                                                <Checkbox
+                                                    color="default"
+                                                    value={genderNoMatter}
+                                                    onChange={() => setGenderNoMatter(!genderNoMatter)}
+                                                    inputProps={{
+                                                        'aria-label': 'checkbox with default color',
+                                                    }}
+                                                />
+                                                Any gender
+                                            </Typography>
                                         </Grid>
                                     </Grid>
                                 </Typography>
@@ -238,6 +224,13 @@ const Search = (props) => {
                                         className={classes.textField}
                                         onChange={e => setLanguage(e.target.value)}
                                         input={<Input id="select-multiple" />}
+                                        renderValue={selected => (
+                                            <div className={classes.chips}>
+                                                {selected.map(value => (
+                                                    <Chip key={value} label={value} className={classes.chip} />
+                                                ))}
+                                            </div>
+                                        )}
                                     >
                                         {languages.map(name => (
                                             <MenuItem key={name} value={name} >
@@ -253,7 +246,6 @@ const Search = (props) => {
                                     value={values.email}
                                     onChange={handleChange}
                                     margin="normal"
-                                    variant="outlined"
                                     className={classes.textField}
                                 />
                                 <TextField
@@ -263,7 +255,6 @@ const Search = (props) => {
                                     value={values.phone}
                                     onChange={handleChange}
                                     margin="normal"
-                                    variant="outlined"
                                     className={classes.textField}
                                 />
                                 <Button

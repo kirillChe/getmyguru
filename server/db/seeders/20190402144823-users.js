@@ -13,6 +13,7 @@ module.exports = {
                 email: 'rambo@yopmail.com',
                 password: '$2y$12$ouhlGna5KSMaioCwSWmvOupENFD.ty896bhvwOztmjzLVSo9OcNce',
                 rating: 100,
+                language: 'en',
                 birthDate: new Date('1983-01-14'),
                 createdAt: new Date(),
                 updatedAt: new Date()
@@ -27,6 +28,7 @@ module.exports = {
                 email: 'trainer@yopmail.com',
                 password: '$2y$12$ouhlGna5KSMaioCwSWmvOupENFD.ty896bhvwOztmjzLVSo9OcNce',
                 rating: 79,
+                language: 'en',
                 birthDate: new Date('1975-03-11'),
                 createdAt: new Date(),
                 updatedAt: new Date()
@@ -41,6 +43,7 @@ module.exports = {
                 email: 'irka@yopmail.com',
                 password: '$2y$12$ouhlGna5KSMaioCwSWmvOupENFD.ty896bhvwOztmjzLVSo9OcNce',
                 rating: 84,
+                language: 'en',
                 birthDate: new Date('1987-11-12'),
                 createdAt: new Date(),
                 updatedAt: new Date()
@@ -55,6 +58,7 @@ module.exports = {
                 email: 'donny@yopmail.com',
                 password: '$2y$12$ouhlGna5KSMaioCwSWmvOupENFD.ty896bhvwOztmjzLVSo9OcNce',
                 rating: 61,
+                language: 'en',
                 birthDate: new Date('1959-08-02'),
                 createdAt: new Date(),
                 updatedAt: new Date()
@@ -69,6 +73,7 @@ module.exports = {
                 email: 'lee@yopmail.com',
                 password: '$2y$12$ouhlGna5KSMaioCwSWmvOupENFD.ty896bhvwOztmjzLVSo9OcNce',
                 rating: 90,
+                language: 'en',
                 birthDate: new Date('1990-10-14'),
                 createdAt: new Date(),
                 updatedAt: new Date()
@@ -83,6 +88,7 @@ module.exports = {
                 email: 'junior@yopmail.com',
                 password: '$2y$12$ouhlGna5KSMaioCwSWmvOupENFD.ty896bhvwOztmjzLVSo9OcNce',
                 rating: 32,
+                language: 'en',
                 birthDate: new Date('2003-12-12'),
                 createdAt: new Date(),
                 updatedAt: new Date()

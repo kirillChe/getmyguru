@@ -48,6 +48,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(100),
             allowNull: false
         },
+
+        language: {
+            type: DataTypes.STRING(2),
+            allowNull: false,
+            defaultValue: 'en'
+        },
         rating: {
             type: DataTypes.TINYINT,
             validate: {
@@ -83,7 +89,7 @@ module.exports = (sequelize, DataTypes) => {
         User.hasMany(models.Message, {foreignKey: 'senderId', as: 'messages', onDelete: 'cascade'});
         User.hasMany(models.Comment, {foreignKey: 'senderId', as: 'comments', onDelete: 'cascade'});
         User.hasMany(models.Rating, {foreignKey: 'userId', as: 'ratings', onDelete: 'cascade'});
-        User.hasOne(models.UserInfo, {foreignKey: 'userId', as: 'infos', onDelete: 'cascade'});
+        User.hasOne(models.UserInfo, {foreignKey: 'userId', as: 'info', onDelete: 'cascade'});
     };
 
     User.beforeSave(user => {

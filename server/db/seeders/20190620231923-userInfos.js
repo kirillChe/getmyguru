@@ -10,7 +10,6 @@ module.exports = {
                 phone: null,
                 country: 'IL',
                 site: null,
-                languages: '["ru", "il", "en"]',
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -21,7 +20,6 @@ module.exports = {
                 phone: '+972581234567',
                 country: 'IL',
                 site: null,
-                languages: '["ru", "en"]',
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -32,7 +30,6 @@ module.exports = {
                 phone: '+79164320111',
                 country: 'RU',
                 site: null,
-                languages: '["ru"]',
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -43,7 +40,6 @@ module.exports = {
                 phone: null,
                 country: 'US',
                 site: 'usa.gov',
-                languages: '["en"]',
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -54,7 +50,6 @@ module.exports = {
                 phone: null,
                 country: 'CH',
                 site: null,
-                languages: '["en"]',
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -65,7 +60,6 @@ module.exports = {
                 phone: null,
                 country: 'RU',
                 site: null,
-                languages: '["ru"]',
                 createdAt: new Date(),
                 updatedAt: new Date()
             }

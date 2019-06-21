@@ -18,16 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         site: {
             type: DataTypes.STRING(300)
         },
-        languages: {
-            type: DataTypes.TEXT,
-            get: function () {
-                return JSON.parse(this.getDataValue('value'));
-            },
-            set: function (value) {
-                this.setDataValue('value', JSON.stringify(value));
-            },
-            allowNull: false
-        },
         updatedAt: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,

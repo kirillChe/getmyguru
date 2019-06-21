@@ -28,10 +28,6 @@ module.exports = {
             site: {
                 type: Sequelize.STRING(300)
             },
-            languages: {
-                type: Sequelize.TEXT,
-                allowNull: false
-            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE,

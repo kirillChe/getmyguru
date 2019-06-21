@@ -255,7 +255,7 @@ const userProfile = async (req, res, next) => {
             where: {
                 id: req.params.id
             },
-            include: ['files', 'userInfos']
+            include: ['files', 'info']
         };
 
         user = await User.findOne(filter);
@@ -289,11 +289,11 @@ const userProfile = async (req, res, next) => {
         rating: user.rating / 10,
         ratersCount: ratersCount,
         images: [],
-        userInfo: user.userInfo
+        info: user.info
     };
 
     result = R.merge(
-        R.pickAll(['id', 'firstName', 'lastName', 'gender', 'email', 'birthDate'], user),
+        R.pickAll(['id', 'firstName', 'lastName', 'gender', 'email', 'language', 'birthDate'], user),
         result
     );
 

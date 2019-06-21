@@ -210,10 +210,9 @@ const Profile = (props) => {
                                 </Box>
                             }
                             <Typography variant="body1" bold="true">
-                                Siriwat Kunaporn
+                                {profile.info && profile.info.country} {profile.info && profile.info.phone}
                             </Typography>
-                            <Typography variant="body1">Bangkok Christian College</Typography>
-                            <Typography variant="body1">{user.phone}</Typography>
+                            <Typography variant="body1">{profile.info && profile.info.description}</Typography>
                         </Grid>
                     </Grid>
                 </Box>

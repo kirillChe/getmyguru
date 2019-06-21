@@ -39,6 +39,11 @@ module.exports = {
             rating: {
                 type: Sequelize.TINYINT
             },
+            language: {
+                allowNull: false,
+                type: Sequelize.STRING(2),
+                defaultValue: 'en'
+            },
             birthDate: {
                 type: Sequelize.DATE
             },

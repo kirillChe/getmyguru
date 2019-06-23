@@ -14,7 +14,7 @@ const redis = require("redis");
 const client = redis.createClient('redis://redis');
 
 //Models
-const models = require('./server/models');
+const models = require('./app/models');
 
 const middleware = require(__dirname + '/middleware');
 // set the port
@@ -65,7 +65,7 @@ const serverApp = async () => {
     app.use(middleware.queryParser());
 
     //Require routes into the application
-    require('./server/routes')(app);
+    require('./app/routes')(app);
 
     app.use(middleware.errorHandler());
 

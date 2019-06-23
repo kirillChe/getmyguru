@@ -46,35 +46,77 @@ const styles = theme => ({
 
 
 const ImageGrid = (props) => {
-    const { defaultUserAvatar } = useContext(MainContext);
+    const { defaultUserAvatar, loggedIn } = useContext(MainContext);
     const [users, setUsers] = useState([]);
-    const {classes} = props;
+    const {
+        classes,
+        filters,
+        customFilter,
+        attr
+    } = props;
 
     function handleClickCard (profileId) {
         return event => {
-            console.log('ImageGrid.component.js :60', profileId);
-            event.preventDefault();
-            console.log('Go to profile');
-            props.history.push(`/account/profile/${profileId}`);
+            if (loggedIn) {
+                console.log('ImageGrid.component.js :60', profileId);
+                event.preventDefault();
+                console.log('Go to profile');
+                props.history.push(`/account/profile/${profileId}`);
+            } else {
+                console.log('ImageGrid.js :61: user is not logged in');
+                //@todo add appearing flag
+            }
         }
     }
 
 
     useEffect(() => {
         async function getGuruProfiles() {
-            let params = {
-                _limit: 4,
-                _order: 'DESC',
-                _sort: 'rating',
-                filter: {
-                    where: {
-                        userType: 'guru'
-                    }
-                }
-            };
+            let params = {};
 
-            if (props.attr === 'last')
-                params._sort = 'createdAt';
+            if (customFilter) {
+
+                let whereFilter = {};
+
+                R.forEachObjIndexed((val, key) => {
+                    if (Array.isArray(val)) {
+                        whereFilter[key] = [
+                            {
+                                gte: R.head(val)
+                            },
+                            {
+                                lte: R.last(val)
+                            }
+                        ];
+                    } else if (key === 'withPhotoOnly') {
+                        whereFilter.avatar = {neq: null};
+                    } else {
+                        whereFilter[key] = val;
+                    }
+                }, filters);
+
+                params = {
+                    _limit: 20,
+                    _order: 'DESC',
+                    _sort: 'createdAt',
+                    _page: 1,
+                    filter: {
+                        where: whereFilter
+                    }
+                };
+            } else {
+                params = {
+                    _limit: 4,
+                    _order: 'DESC',
+                    _sort: attr === 'last' ? 'createdAt' : 'rating',
+                    _page: 1,
+                    filter: {
+                        where: {
+                            userType: 'guru'
+                        }
+                    }
+                };
+            }
 
             try {
                 let response = await axios.get('/api/users/getGurusPreviews', {params});
@@ -98,7 +140,7 @@ const ImageGrid = (props) => {
         }
 
         getGuruProfiles();
-    }, [defaultUserAvatar, props]);
+    }, [defaultUserAvatar, attr, customFilter]);
 
     return (
         <div className={classNames(classes.layout, classes.cardGrid)}>

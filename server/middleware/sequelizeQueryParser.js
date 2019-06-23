@@ -48,6 +48,15 @@ module.exports = () => {
                     case 'in':
                         key = Op.in;
                         break;
+                    case 'neq':
+                        key = Op.ne;
+                        break;
+                    case 'gte':
+                        key = Op.gte;
+                        break;
+                    case 'lte':
+                        key = Op.lte;
+                        break;
                 }
                 parsed[key] = parseQuery(value);
             });

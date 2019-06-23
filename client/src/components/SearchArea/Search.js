@@ -1,36 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
-    Button,
-    Paper,
-    InputBase,
-    Tooltip,
-    Divider,
-    Dialog,
-    DialogContent,
-    TextField,
-    Typography,
-    Switch,
-    Box,
-    Grid,
-    Input,
-    MenuItem,
-    Select,
-    FormControl,
-    InputLabel,
-    Checkbox,
-    Chip
+    Button, Paper, InputBase, Tooltip, Divider,
+    Dialog, DialogContent, Typography, Switch,
+    Box, Grid, Input, MenuItem, Select,
+    FormControl, InputLabel, Checkbox, Chip
 } from '@material-ui/core';
 import Slider from '@material-ui/lab/Slider';
 import Tune from '@material-ui/icons/Tune';
 
 import axios from 'axios';
-
-let languages = [
-    'ru',
-    'en'
-];
+import * as R from 'ramda';
 
 let experienceRange = [
     '0-1',
@@ -98,38 +79,77 @@ const GenderSwitch = withStyles({
 })(Switch);
 
 const Search = (props) => {
-    const [showFilters, setShowFilters] = useState(false);
-    const {classes} = props;
+    const {
+        classes,
+        setCustomFilter,
+        setFilters
+    } = props;
 
-    const [ageRange, setAgeRange] = useState([16, 100]);
+    const [filtersData, setFiltersData] = useState({});
+    const [showFilters, setShowFilters] = useState(false);
+    const [age, setAge] = useState([16, 100]);
     const [genderNoMatter, setGenderNoMatter] = useState(false);
     const [withPhotoOnly, setWithPhotoOnly] = useState(false);
-    const [ratingRange, setRatingRange] = useState([1, 10]);
+    const [rating, setRating] = useState([1, 10]);
     const [gender, setGender] = useState('male');
-    const [language, setLanguage] = useState([]);
+    const [languages, setLanguages] = useState([]);
     const [experience, setExperience] = useState([]);
     const [competitiveExperience, setCompetitiveExperience] = useState(false);
     const [trainingSystem, setTrainingSystem] = useState(false);
     const [nutritionScheme, setNutritionScheme] = useState(false);
     const [education, setEducation] = useState(false);
 
-    async function handleSubmit () {
-        let data = {
-            params: {filter: {}}
-        };
+    function handleSubmit() {
+        // remove false and empty parameters
+        let data = R.reject(v => v === false || R.isEmpty(v), state);
+
+        //check gender
+        if (genderNoMatter)
+            data = R.omit(['gender'], data);
 
         console.log(`Search form submitted:`);
-        console.log(data);
+        // console.log(data);
 
-        try {
-            let response = await axios.get('/api/users', data);
-            console.log('Search response: ');
-            console.log(response);
-        }catch (err) {
-            console.log('Search error: ');
-            console.log(err);
-        }
+        setCustomFilter(true);
+        setFilters(data);
+        setShowFilters(!showFilters);
+
+        // try {
+        //     // let response = await axios.get('/api/users', data);
+        //     console.log('Search response: ');
+        //     // console.log(response);
+        // }catch (err) {
+        //     console.log('Search error: ');
+        //     console.log(err);
+        // }
     }
+
+    useEffect(() => {
+        async function getFiltersData() {
+            try {
+                const response = await axios.get('/api/users/filtersData');
+                setFiltersData(response.data);
+            } catch (e) {
+                console.log('Profile.js : cannot get profile: ', e);
+                throw e;
+            }
+        }
+
+        getFiltersData();
+    }, []);
+
+    let state = {
+        age,
+        withPhotoOnly,
+        rating,
+        gender,
+        languages,
+        experience,
+        competitiveExperience,
+        trainingSystem,
+        nutritionScheme,
+        education
+    };
 
     return (
         <React.Fragment>
@@ -166,12 +186,12 @@ const Search = (props) => {
                                         Age range
                                     </Typography>
                                     <Slider
-                                        defaultValue={ageRange}
+                                        defaultValue={age}
                                         aria-label="range-slider"
                                         min={16}
                                         max={100}
                                         valueLabelDisplay="auto"
-                                        onChangeCommitted={(e, val) => setAgeRange(val)}
+                                        onChangeCommitted={(e, val) => setAge(val)}
                                     />
                                 </div>
                                 <div className={classes.textField}>
@@ -179,12 +199,12 @@ const Search = (props) => {
                                         Rating range
                                     </Typography>
                                     <Slider
-                                        defaultValue={ratingRange}
+                                        defaultValue={rating}
                                         aria-label="range-slider"
                                         min={1}
                                         max={10}
                                         valueLabelDisplay="auto"
-                                        onChangeCommitted={(e, val) => setRatingRange(val)}
+                                        onChangeCommitted={(e, val) => setRating(val)}
                                     />
                                 </div>
                                 <Typography component="div">
@@ -199,20 +219,18 @@ const Search = (props) => {
                                             />
                                         </Grid>
                                         <Grid item>Female</Grid>
-                                        <Grid item>
-                                            <Typography>
-                                                <Checkbox
-                                                    color="default"
-                                                    value={genderNoMatter}
-                                                    onChange={() => setGenderNoMatter(!genderNoMatter)}
-                                                    inputProps={{
-                                                        'aria-label': 'checkbox with default color',
-                                                    }}
-                                                />
-                                                Any gender
-                                            </Typography>
-                                        </Grid>
                                     </Grid>
+                                </Typography>
+                                <Typography>
+                                    <Checkbox
+                                        color="default"
+                                        value={genderNoMatter}
+                                        onChange={() => setGenderNoMatter(!genderNoMatter)}
+                                        inputProps={{
+                                            'aria-label': 'checkbox with default color',
+                                        }}
+                                    />
+                                    Any gender
                                 </Typography>
                                 <Typography>
                                     <Checkbox
@@ -243,9 +261,9 @@ const Search = (props) => {
                                     <Select
                                         multiple
                                         variant="outlined"
-                                        value={language}
+                                        value={languages}
                                         className={classes.textField}
-                                        onChange={e => setLanguage(e.target.value)}
+                                        onChange={e => setLanguages(e.target.value)}
                                         input={<Input id="select-multiple" />}
                                         renderValue={selected => (
                                             <div className={classes.chips}>
@@ -255,7 +273,7 @@ const Search = (props) => {
                                             </div>
                                         )}
                                     >
-                                        {languages.map(name => (
+                                        {filtersData.languages && filtersData.languages.map(name => (
                                             <MenuItem key={name} value={name} >
                                                 {name}
                                             </MenuItem>

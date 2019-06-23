@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
-import {ImageGrid} from 'components';
+import ImageGrid from './ImageGrid';
 import {Search} from 'components/SearchArea';
 
 const styles = theme => ({
@@ -17,8 +17,10 @@ const styles = theme => ({
     }
 });
 
-function Main(props) {
+const Main = (props) => {
     const { classes } = props;
+    const [customFilter, setCustomFilter] = useState(false);
+    const [filters, setFilters] = useState({});
 
     return (
         <React.Fragment>
@@ -30,20 +32,37 @@ function Main(props) {
                     <Typography variant="h6" align="center" color="textSecondary" paragraph>
                         Something short and leading about the site.
                     </Typography>
-                    <Search />
+                    <Search
+                        setCustomFilter={setCustomFilter}
+                        setFilters={setFilters}
+                    />
                 </div>
             </div>
-            <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                The most rated.
-            </Typography>
-            <ImageGrid attr={'rated'}/>
-            <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                Last joined.
-            </Typography>
-            <ImageGrid attr={'last'}/>
+            {customFilter ?
+                (<div>
+                    <Typography variant="h5" align="center" color="textSecondary" paragraph>
+                        We found somebody for you.
+                    </Typography>
+                    < ImageGrid
+                        customFilter={customFilter}
+                        filters={filters}
+                        attr={'rated'}
+                    />
+                </div>) :
+                (<div>
+                    <Typography variant="h5" align="center" color="textSecondary" paragraph>
+                        The most rated.
+                    </Typography>
+                    < ImageGrid attr={'rated'} customFilter={customFilter} />
+                    <Typography variant="h5" align="center" color="textSecondary" paragraph>
+                        Last joined.
+                    </Typography>
+                    <ImageGrid attr={'last'} customFilter={customFilter}/>
+                </div>)
+            }
         </React.Fragment>
     );
-}
+};
 
 Main.propTypes = {
     classes: PropTypes.object.isRequired,

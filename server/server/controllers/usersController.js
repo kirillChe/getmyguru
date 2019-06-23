@@ -1,4 +1,4 @@
-const {User, File, Rating} = require('../models');
+const {User, File, Rating, UserLanguage} = require('../models');
 const on = require('await-handler');
 const R = require('ramda');
 const Busboy = require('busboy');
@@ -308,6 +308,22 @@ const userProfile = async (req, res, next) => {
     res.status(200).json(result);
 };
 
+const filtersData = async (req, res, next) => {
+    let languages;
+    try {
+        languages = await UserLanguage.findAll({
+            attributes: [
+                [sequelize.fn('DISTINCT', sequelize.col('code')) ,'code'],
+            ],
+            raw: true
+        });
+        languages = R.map(R.prop('code'), languages);
+    } catch (e) {
+        return next(e);
+    }
+
+    return res.json({languages});
+};
 
 module.exports = {
     create,
@@ -318,5 +334,6 @@ module.exports = {
     resetPassword,
     setNewPassword,
     getGurusPreviews,
-    userProfile
+    userProfile,
+    filtersData
 };

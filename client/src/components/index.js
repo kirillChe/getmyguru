@@ -1,4 +1,3 @@
-export { default as ImageGrid } from './ImageGrid.component';
 export { default as Login } from './Login.component';
 export { default as ForgotPwd } from './ForgotPwd.component';
 export { default as ProfileMenu } from './ProfileMenu.component';

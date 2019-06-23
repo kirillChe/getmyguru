@@ -107,21 +107,28 @@ const Search = (props) => {
         if (genderNoMatter)
             data = R.omit(['gender'], data);
 
-        console.log(`Search form submitted:`);
-        // console.log(data);
+        let whereFilter = {};
+
+        R.forEachObjIndexed((val, key) => {
+            if (Array.isArray(val)) {
+                whereFilter[key] = [
+                    {
+                        gte: R.head(val)
+                    },
+                    {
+                        lte: R.last(val)
+                    }
+                ];
+            } else if (key === 'withPhotoOnly') {
+                whereFilter.avatar = {neq: null};
+            } else {
+                whereFilter[key] = val;
+            }
+        }, data);
 
         setCustomFilter(true);
-        setFilters(data);
+        setFilters(whereFilter);
         setShowFilters(!showFilters);
-
-        // try {
-        //     // let response = await axios.get('/api/users', data);
-        //     console.log('Search response: ');
-        //     // console.log(response);
-        // }catch (err) {
-        //     console.log('Search error: ');
-        //     console.log(err);
-        // }
     }
 
     useEffect(() => {

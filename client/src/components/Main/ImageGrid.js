@@ -72,36 +72,17 @@ const ImageGrid = (props) => {
 
     useEffect(() => {
         async function getGuruProfiles() {
+            console.log('_________________HERE: 75________________________');
             let params = {};
 
             if (customFilter) {
-
-                let whereFilter = {};
-
-                R.forEachObjIndexed((val, key) => {
-                    if (Array.isArray(val)) {
-                        whereFilter[key] = [
-                            {
-                                gte: R.head(val)
-                            },
-                            {
-                                lte: R.last(val)
-                            }
-                        ];
-                    } else if (key === 'withPhotoOnly') {
-                        whereFilter.avatar = {neq: null};
-                    } else {
-                        whereFilter[key] = val;
-                    }
-                }, filters);
-
                 params = {
                     _limit: 20,
                     _order: 'DESC',
                     _sort: 'createdAt',
                     _page: 1,
                     filter: {
-                        where: whereFilter
+                        where: filters
                     }
                 };
             } else {

@@ -209,6 +209,11 @@ const getGurusPreviews = async (req, res, next) => {
         return res.sendStatus(400);
 
     let filter = req.query.filter;
+    console.log('___________________');
+    console.log('___________________');
+    console.dir(filter, {colors: true, depth: 5});
+    console.log('___________________');
+    console.log('___________________');
 
     let users = [];
     try {

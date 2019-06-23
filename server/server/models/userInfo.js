@@ -5,6 +5,28 @@ module.exports = (sequelize, DataTypes) => {
         description: {
             type: DataTypes.STRING(3000)
         },
+        competitiveExperience: {
+            type: DataTypes.STRING(3000)
+        },
+        education: {
+            type: DataTypes.STRING(3000)
+        },
+        experience: {
+            type: DataTypes.ENUM,
+            values: ['0-1', '2-4', '5+'],
+            allowNull: false,
+            defaultValue: '0-1'
+        },
+        nutritionScheme: {
+            type: DataTypes.TINYINT(1),
+            allowNull: false,
+            defaultValue: false
+        },
+        trainingSystem: {
+            type: DataTypes.TINYINT(1),
+            allowNull: false,
+            defaultValue: false
+        },
         phone: {
             type: DataTypes.STRING(20)
         },
@@ -12,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(2),
             validate: {
                 isAlpha: true,
-                len: [2,10]
+                len: [2,2]
             }
         },
         site: {

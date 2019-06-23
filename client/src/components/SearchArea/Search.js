@@ -32,6 +32,13 @@ let languages = [
     'en'
 ];
 
+let experienceRange = [
+    '0-1',
+    '2-4',
+    '5-10',
+    '11+',
+];
+
 const styles = theme => ({
     root: {
         padding: '2px 4px',
@@ -96,25 +103,19 @@ const Search = (props) => {
 
     const [ageRange, setAgeRange] = useState([16, 100]);
     const [genderNoMatter, setGenderNoMatter] = useState(false);
+    const [withPhotoOnly, setWithPhotoOnly] = useState(false);
     const [ratingRange, setRatingRange] = useState([1, 10]);
     const [gender, setGender] = useState('male');
     const [language, setLanguage] = useState([]);
-    const [values, setValues] = useState({
-        age: 20,
-        email: '',
-        phone: '',
-        password: '',
-        userType: 'guru'
-    });
-
-    function handleChange (e) {
-        let {name, value} = e.target;
-        setValues({...values, [name]: value})
-    }
+    const [experience, setExperience] = useState([]);
+    const [competitiveExperience, setCompetitiveExperience] = useState(false);
+    const [trainingSystem, setTrainingSystem] = useState(false);
+    const [nutritionScheme, setNutritionScheme] = useState(false);
+    const [education, setEducation] = useState(false);
 
     async function handleSubmit () {
         let data = {
-            params: {filter: values}
+            params: {filter: {}}
         };
 
         console.log(`Search form submitted:`);
@@ -213,6 +214,28 @@ const Search = (props) => {
                                         </Grid>
                                     </Grid>
                                 </Typography>
+                                <Typography>
+                                    <Checkbox
+                                        color="default"
+                                        value={withPhotoOnly}
+                                        onChange={() => setWithPhotoOnly(!withPhotoOnly)}
+                                        inputProps={{
+                                            'aria-label': 'checkbox with default color',
+                                        }}
+                                    />
+                                    Only with photo
+                                </Typography>
+                                <Typography>
+                                    <Checkbox
+                                        color="default"
+                                        value={competitiveExperience}
+                                        onChange={() => setCompetitiveExperience(!competitiveExperience)}
+                                        inputProps={{
+                                            'aria-label': 'checkbox with default color',
+                                        }}
+                                    />
+                                    Has competitive experience
+                                </Typography>
                             </Grid>
                             <Grid item>
                                 <FormControl>
@@ -239,24 +262,63 @@ const Search = (props) => {
                                         ))}
                                     </Select>
                                 </FormControl>
-                                <TextField
-                                    id="email"
-                                    name="email"
-                                    label="Email"
-                                    value={values.email}
-                                    onChange={handleChange}
-                                    margin="normal"
-                                    className={classes.textField}
-                                />
-                                <TextField
-                                    id="phone"
-                                    name="phone"
-                                    label="Phone"
-                                    value={values.phone}
-                                    onChange={handleChange}
-                                    margin="normal"
-                                    className={classes.textField}
-                                />
+                                <FormControl>
+                                    <InputLabel htmlFor="select-multiple">Experience</InputLabel>
+                                    <Select
+                                        multiple
+                                        variant="outlined"
+                                        value={experience}
+                                        className={classes.textField}
+                                        onChange={e => setExperience(e.target.value)}
+                                        input={<Input id="select-multiple" />}
+                                        renderValue={selected => (
+                                            <div className={classes.chips}>
+                                                {selected.map(value => (
+                                                    <Chip key={value} label={value} className={classes.chip} />
+                                                ))}
+                                            </div>
+                                        )}
+                                    >
+                                        {experienceRange.map(name => (
+                                            <MenuItem key={name} value={name} >
+                                                {name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                                <Typography>
+                                    <Checkbox
+                                        color="default"
+                                        value={nutritionScheme}
+                                        onChange={() => setNutritionScheme(!nutritionScheme)}
+                                        inputProps={{
+                                            'aria-label': 'checkbox with default color',
+                                        }}
+                                    />
+                                    Prepare nutrition scheme
+                                </Typography>
+                                <Typography>
+                                    <Checkbox
+                                        color="default"
+                                        value={trainingSystem}
+                                        onChange={() => setTrainingSystem(!trainingSystem)}
+                                        inputProps={{
+                                            'aria-label': 'checkbox with default color',
+                                        }}
+                                    />
+                                    Prepare training system
+                                </Typography>
+                                <Typography>
+                                    <Checkbox
+                                        color="default"
+                                        value={education}
+                                        onChange={() => setEducation(!education)}
+                                        inputProps={{
+                                            'aria-label': 'checkbox with default color',
+                                        }}
+                                    />
+                                    Has specific education
+                                </Typography>
                                 <Button
                                     type="submit"
                                     onClick={handleSubmit}

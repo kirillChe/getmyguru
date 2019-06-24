@@ -20,7 +20,7 @@ const styles = theme => ({
 const Main = (props) => {
     const { classes } = props;
     const [customFilter, setCustomFilter] = useState(false);
-    const [filters, setFilters] = useState({});
+    const [rawFilters, setRawFilters] = useState({});
 
     return (
         <React.Fragment>
@@ -34,7 +34,7 @@ const Main = (props) => {
                     </Typography>
                     <Search
                         setCustomFilter={setCustomFilter}
-                        setFilters={setFilters}
+                        setRawFilters={setRawFilters}
                     />
                 </div>
             </div>
@@ -45,19 +45,18 @@ const Main = (props) => {
                     </Typography>
                     < ImageGrid
                         customFilter={customFilter}
-                        filters={filters}
-                        attr={'rated'}
+                        rawFilters={rawFilters}
                     />
                 </div>) :
                 (<div>
                     <Typography variant="h5" align="center" color="textSecondary" paragraph>
                         The most rated.
                     </Typography>
-                    < ImageGrid attr={'rated'} customFilter={customFilter} />
+                    < ImageGrid attr={'rated'} />
                     <Typography variant="h5" align="center" color="textSecondary" paragraph>
                         Last joined.
                     </Typography>
-                    <ImageGrid attr={'last'} customFilter={customFilter}/>
+                    <ImageGrid attr={'last'}/>
                 </div>)
             }
         </React.Fragment>

@@ -50,7 +50,7 @@ const ImageGrid = (props) => {
     const [users, setUsers] = useState([]);
     const {
         classes,
-        filters,
+        rawFilters,
         customFilter,
         attr
     } = props;
@@ -72,7 +72,6 @@ const ImageGrid = (props) => {
 
     useEffect(() => {
         async function getGuruProfiles() {
-            console.log('_________________HERE: 75________________________');
             let params = {};
 
             if (customFilter) {
@@ -81,21 +80,14 @@ const ImageGrid = (props) => {
                     _order: 'DESC',
                     _sort: 'createdAt',
                     _page: 1,
-                    filter: {
-                        where: filters
-                    }
+                    rawFilters
                 };
             } else {
                 params = {
                     _limit: 4,
                     _order: 'DESC',
                     _sort: attr === 'last' ? 'createdAt' : 'rating',
-                    _page: 1,
-                    filter: {
-                        where: {
-                            userType: 'guru'
-                        }
-                    }
+                    _page: 1
                 };
             }
 

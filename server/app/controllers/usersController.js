@@ -6,9 +6,10 @@ const path = require('path');
 const fs = require('fs');
 const events = require('events');
 const sequelize = require('sequelize');
-const Op = sequelize.Op;
+// const Op = sequelize.Op;
 
 const filePath = __dirname + '/../../public';
+const helper = require('./helpers/userHelpers');
 
 const create = async (req, res, next) => {
     let [err, user] = await on(User.create(req.body));
@@ -208,36 +209,17 @@ const getGurusPreviews = async (req, res, next) => {
     if (!req.query.filter)
         return res.sendStatus(400);
 
-    let filter = req.query.filter;
-    console.log('___________________');
-    console.log('___________________');
-    console.dir(filter, {colors: true, depth: 5});
-    console.log('___________________');
-    console.log('___________________');
-
     let users = [];
     try {
-        filter.where = {
-            userType: 'guru'
-        };
-        filter.include = [{
-            model: File,
-            as: 'files',
-            where: {
-                id: {
-                    [Op.col]: 'User.avatar'
-                }
-            },
-            required: false
-        }];
+        let filter = await helper.prepareGuruFilter(req.query);
+        users = await User.findAll(filter);
 
-        users = await User.findAll(req.query.filter);
     } catch (e) {
         console.log('usersController.js :114', e);
         return next(e);
     }
 
-    let preview = R.map(user => {
+    let previews = R.map(user => {
         return R.merge(
             R.pickAll(['id', 'firstName', 'lastName', 'avatar', 'rating', 'gender'], user),
             {
@@ -247,7 +229,7 @@ const getGurusPreviews = async (req, res, next) => {
         );
     }, users);
 
-    res.json(preview);
+    res.json(previews);
 };
 
 const userProfile = async (req, res, next) => {

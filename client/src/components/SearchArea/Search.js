@@ -12,6 +12,7 @@ import Tune from '@material-ui/icons/Tune';
 
 import axios from 'axios';
 import * as R from 'ramda';
+import * as moment from 'moment';
 
 let experienceRange = [
     '0-1',
@@ -82,7 +83,7 @@ const Search = (props) => {
     const {
         classes,
         setCustomFilter,
-        setFilters
+        setRawFilters
     } = props;
 
     const [filtersData, setFiltersData] = useState({});
@@ -95,9 +96,9 @@ const Search = (props) => {
     const [languages, setLanguages] = useState([]);
     const [experience, setExperience] = useState([]);
     const [competitiveExperience, setCompetitiveExperience] = useState(false);
+    const [education, setEducation] = useState(false);
     const [trainingSystem, setTrainingSystem] = useState(false);
     const [nutritionScheme, setNutritionScheme] = useState(false);
-    const [education, setEducation] = useState(false);
 
     function handleSubmit() {
         // remove false and empty parameters
@@ -107,27 +108,8 @@ const Search = (props) => {
         if (genderNoMatter)
             data = R.omit(['gender'], data);
 
-        let whereFilter = {};
-
-        R.forEachObjIndexed((val, key) => {
-            if (Array.isArray(val)) {
-                whereFilter[key] = [
-                    {
-                        gte: R.head(val)
-                    },
-                    {
-                        lte: R.last(val)
-                    }
-                ];
-            } else if (key === 'withPhotoOnly') {
-                whereFilter.avatar = {neq: null};
-            } else {
-                whereFilter[key] = val;
-            }
-        }, data);
-
+        setRawFilters(data);
         setCustomFilter(true);
-        setFilters(whereFilter);
         setShowFilters(!showFilters);
     }
 

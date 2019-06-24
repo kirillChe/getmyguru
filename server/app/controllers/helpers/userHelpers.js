@@ -3,33 +3,36 @@ const R = require('ramda');
 const moment = require('moment');
 const {User, UserInfo, UserLanguage, File} = require('../../models');
 
-const prepareGuruFilter = ({filter, rawFilters}) => {
-    filter.where = {
-        userType: 'guru'
-    };
-    //return simple object instead of model instance
-    filter.raw = false;
-    filter.include = [{
-        model: File,
-        as: 'files',
-        where: {
-            id: {
-                [Op.col]: 'User.avatar'
+function getBaseSearchFilter (filter, rawFilters) {
+    console.log('@@@@@@@@@@  ', rawFilters);
+
+    filter.where = R.merge(
+        filter.where,
+        {
+            firstName: {
+                [Op.in]: rawFilters.baseSearch
+            },
+            lastName: {
+                [Op.in]: rawFilters.baseSearch
             }
         },
-        required: false
-    }];
+    );
 
-    //if action wasn't called with custom filters
-    if (!rawFilters)
-        return filter;
+    filter.include.push(
+        {
+            model: UserInfo,
+            as: 'info',
+            where: {
+                country: {
+                    [Op.in]: rawFilters.baseSearch
+                }
+            }
+        }
+    );
+    return filter;
+}
 
-    try{
-        rawFilters = JSON.parse(rawFilters);
-    }catch (e) {
-        throw e;
-    }
-
+function getCustomSearchFilter(filter, rawFilters) {
     // declare supported filters
     let userWhereFilter = {};
     let userInfoWhereFilter = {};
@@ -105,6 +108,41 @@ const prepareGuruFilter = ({filter, rawFilters}) => {
         }
     );
     return filter;
+}
+
+const prepareGuruFilter = ({filter, rawFilters}) => {
+    filter.where = {
+        userType: 'guru'
+    };
+    //return simple object instead of model instance
+    filter.raw = false;
+    filter.include = [{
+        model: File,
+        as: 'files',
+        where: {
+            id: {
+                [Op.col]: 'User.avatar'
+            }
+        },
+        required: false
+    }];
+
+    //if action wasn't called with custom filters
+    if (!rawFilters)
+        return filter;
+
+    try{
+        rawFilters = JSON.parse(rawFilters);
+    }catch (e) {
+        throw e;
+    }
+
+    //free search by firstName/lastName/Country
+    if (rawFilters.baseSearch)
+        return getBaseSearchFilter(filter, rawFilters);
+
+    //search with custom filters
+    return getCustomSearchFilter(filter, rawFilters);
 };
 
 module.exports = {

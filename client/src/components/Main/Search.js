@@ -85,7 +85,7 @@ const Search = (props) => {
         setRawFilters
     } = props;
 
-    const [baseSearch, setBaseSearch] = useState(null);
+    const [baseSearch, setBaseSearch] = useState('');
     const [filtersData, setFiltersData] = useState({});
     const [showFilters, setShowFilters] = useState(false);
     const [age, setAge] = useState([16, 100]);
@@ -111,6 +111,14 @@ const Search = (props) => {
         setRawFilters(data);
         setCustomFilter(true);
         setShowFilters(!showFilters);
+    }
+
+    function handleBaseSearch() {
+        let data = baseSearch.match(/\b(\w+)\b/g);
+        if (data && data.length > 0) {
+            setRawFilters({baseSearch: data});
+            setCustomFilter(true);
+        }
     }
 
     useEffect(() => {
@@ -152,7 +160,7 @@ const Search = (props) => {
                 <Divider className={classes.divider} />
                 <Tooltip title="Search">
                     <Button
-                        onClick={handleSubmit}
+                        onClick={handleBaseSearch}
                         className={classes.searchButton}
                         color="primary"
                     >

@@ -8,11 +8,10 @@ import {
     FormControl, InputLabel, Checkbox, Chip
 } from '@material-ui/core';
 import Slider from '@material-ui/lab/Slider';
-import Tune from '@material-ui/icons/Tune';
+import {Tune, Search as SearchIcon} from '@material-ui/icons';
 
 import axios from 'axios';
 import * as R from 'ramda';
-import * as moment from 'moment';
 
 let experienceRange = [
     '0-1',
@@ -86,6 +85,7 @@ const Search = (props) => {
         setRawFilters
     } = props;
 
+    const [baseSearch, setBaseSearch] = useState(null);
     const [filtersData, setFiltersData] = useState({});
     const [showFilters, setShowFilters] = useState(false);
     const [age, setAge] = useState([16, 100]);
@@ -143,7 +143,22 @@ const Search = (props) => {
     return (
         <React.Fragment>
             <Paper className={classes.root} elevation={1}>
-                <InputBase className={classes.input} placeholder="Search placeholder" />
+                <InputBase
+                    className={classes.input}
+                    placeholder="Search placeholder"
+                    value={baseSearch}
+                    onChange={e => setBaseSearch(e.target.value)}
+                />
+                <Divider className={classes.divider} />
+                <Tooltip title="Search">
+                    <Button
+                        onClick={handleSubmit}
+                        className={classes.searchButton}
+                        color="primary"
+                    >
+                        <SearchIcon />
+                    </Button>
+                </Tooltip>
                 <Divider className={classes.divider} />
                 <Tooltip title="Filters">
                     <Button

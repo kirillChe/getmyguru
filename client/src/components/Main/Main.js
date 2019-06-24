@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
 import ImageGrid from './ImageGrid';
-import {Search} from 'components/SearchArea';
+import Search from './Search';
 
 const styles = theme => ({
     heroUnit: {

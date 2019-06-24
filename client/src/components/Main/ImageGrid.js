@@ -113,7 +113,7 @@ const ImageGrid = (props) => {
         }
 
         getGuruProfiles();
-    }, [defaultUserAvatar, attr, customFilter]);
+    }, [defaultUserAvatar, attr, customFilter, rawFilters]);
 
     return (
         <div className={classNames(classes.layout, classes.cardGrid)}>

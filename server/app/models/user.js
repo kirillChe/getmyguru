@@ -50,13 +50,10 @@ module.exports = (sequelize, DataTypes) => {
         },
 
         language: {
-            type: DataTypes.STRING(2),
+            type: DataTypes.ENUM,
+            values: ['en', 'ru'],
             allowNull: false,
-            defaultValue: 'en',
-            validate: {
-                isAlpha: true,
-                len: [2,2]
-            }
+            defaultValue: 'en'
         },
         rating: {
             type: DataTypes.TINYINT,

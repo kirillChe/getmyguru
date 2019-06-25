@@ -41,7 +41,7 @@ module.exports = {
             },
             language: {
                 allowNull: false,
-                type: Sequelize.STRING(2),
+                type: Sequelize.ENUM('en', 'ru'),
                 defaultValue: 'en'
             },
             birthDate: {

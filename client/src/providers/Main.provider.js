@@ -1,9 +1,15 @@
 import React, { PureComponent } from "react";
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import axios from 'axios';
-
 import { MainContext } from 'context';
+
+import axios from 'axios';
+import * as R from 'ramda';
+import countries from 'i18n-iso-countries';
+
+countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
+countries.registerLocale(require("i18n-iso-countries/langs/ru.json"));
+
 
 class Main extends PureComponent {
 
@@ -11,6 +17,10 @@ class Main extends PureComponent {
         children: PropTypes.node,
         history: PropTypes.object
     };
+
+    getBrowserLanguage = () => R.slice(0,2, navigator.language);
+
+    getCountriesList = lang => Object.entries(countries.getNames(lang));
 
     updateUser = (state) => {
         this.setState(state);
@@ -24,6 +34,8 @@ class Main extends PureComponent {
         if (response.status === 200 && response.data) {
             if (!this.state.loggedIn) {
                 this.setState({
+                    language: response.data.language,
+                    countriesList: this.getCountriesList(response.data.language),
                     loggedIn: true,
                     loading: false,
                     user: response.data
@@ -52,6 +64,8 @@ class Main extends PureComponent {
     }
 
     state = {
+        language: this.getBrowserLanguage(),
+        countriesList: this.getCountriesList(this.getBrowserLanguage()),
         loggedIn: false,
         user: {},
         updateUser: this.updateUser,

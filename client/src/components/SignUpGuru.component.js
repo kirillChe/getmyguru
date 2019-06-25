@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -21,6 +21,7 @@ import useForceUpdate from 'use-force-update';
 
 import axios from 'axios';
 import moment from 'moment';
+import { MainContext } from 'context';
 
 const styles = theme => ({
     form: {
@@ -50,12 +51,14 @@ const GenderSwitch = withStyles({
 })(Switch);
 
 const SignUpGuru = (props) => {
+    const { countriesList } = useContext(MainContext);
     const {classes} = props;
     const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
     const [submitError, setSubmitError] = useState(false);
 
     const [values, setValues] = useState({
+        country: '',
         gender: 'male',
         selectedDate: moment().startOf('day').subtract(30, 'years').calendar(),
         firstName: '',
@@ -110,6 +113,25 @@ const SignUpGuru = (props) => {
 
     return (
         <form className={classes.form} onSubmit={handleSubmit}>
+            <TextField
+                id="country"
+                name="country"
+                select
+                value={values.country}
+                onChange={handleChange}
+                SelectProps={{
+                    native: true
+                }}
+                margin="normal"
+                variant="outlined"
+                fullWidth
+            >
+                {countriesList.map(option => (
+                    <option key={option[0]} value={option[0]}>
+                        {option[1]}
+                    </option>
+                ))}
+            </TextField>
             <TextField
                 id="firstName"
                 name="firstName"

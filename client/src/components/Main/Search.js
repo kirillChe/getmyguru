@@ -88,8 +88,8 @@ const Search = (props) => {
     const [baseSearch, setBaseSearch] = useState('');
     const [filtersData, setFiltersData] = useState({});
     const [showFilters, setShowFilters] = useState(false);
-    const [age, setAge] = useState([16, 100]);
     const [genderNoMatter, setGenderNoMatter] = useState(false);
+    const [age, setAge] = useState([16, 99]);
     const [withPhotoOnly, setWithPhotoOnly] = useState(false);
     const [rating, setRating] = useState([1, 10]);
     const [gender, setGender] = useState('male');
@@ -113,11 +113,28 @@ const Search = (props) => {
         setShowFilters(!showFilters);
     }
 
+    function clearFilters() {
+        setAge([16, 99]);
+        setWithPhotoOnly(false);
+        setRating([1, 10]);
+        setGender('male');
+        setGenderNoMatter(false);
+        setLanguages([]);
+        setExperience([]);
+        setCompetitiveExperience(false);
+        setEducation(false);
+        setTrainingSystem(false);
+        setNutritionScheme(false);
+    }
+
     function handleBaseSearch() {
         let data = baseSearch.match(/\b(\w+)\b/g);
         if (data && data.length > 0) {
             setRawFilters({baseSearch: data});
             setCustomFilter(true);
+        } else {
+            clearFilters();
+            setCustomFilter(false);
         }
     }
 
@@ -156,6 +173,7 @@ const Search = (props) => {
                     placeholder="Search placeholder"
                     value={baseSearch}
                     onChange={e => setBaseSearch(e.target.value)}
+                    onKeyPress={e => e.key === 'Enter'? handleBaseSearch() : null}
                 />
                 <Divider className={classes.divider} />
                 <Tooltip title="Search">
@@ -198,10 +216,10 @@ const Search = (props) => {
                                         Age range
                                     </Typography>
                                     <Slider
-                                        defaultValue={age}
+                                        value={age}
                                         aria-label="range-slider"
                                         min={16}
-                                        max={100}
+                                        max={99}
                                         valueLabelDisplay="auto"
                                         onChangeCommitted={(e, val) => setAge(val)}
                                     />
@@ -211,7 +229,7 @@ const Search = (props) => {
                                         Rating range
                                     </Typography>
                                     <Slider
-                                        defaultValue={rating}
+                                        value={rating}
                                         aria-label="range-slider"
                                         min={1}
                                         max={10}
@@ -236,7 +254,7 @@ const Search = (props) => {
                                 <Typography>
                                     <Checkbox
                                         color="default"
-                                        value={genderNoMatter}
+                                        checked={genderNoMatter}
                                         onChange={() => setGenderNoMatter(!genderNoMatter)}
                                         inputProps={{
                                             'aria-label': 'checkbox with default color',
@@ -247,7 +265,7 @@ const Search = (props) => {
                                 <Typography>
                                     <Checkbox
                                         color="default"
-                                        value={withPhotoOnly}
+                                        checked={withPhotoOnly}
                                         onChange={() => setWithPhotoOnly(!withPhotoOnly)}
                                         inputProps={{
                                             'aria-label': 'checkbox with default color',
@@ -258,7 +276,7 @@ const Search = (props) => {
                                 <Typography>
                                     <Checkbox
                                         color="default"
-                                        value={competitiveExperience}
+                                        checked={competitiveExperience}
                                         onChange={() => setCompetitiveExperience(!competitiveExperience)}
                                         inputProps={{
                                             'aria-label': 'checkbox with default color',
@@ -319,7 +337,7 @@ const Search = (props) => {
                                 <Typography>
                                     <Checkbox
                                         color="default"
-                                        value={nutritionScheme}
+                                        checked={nutritionScheme}
                                         onChange={() => setNutritionScheme(!nutritionScheme)}
                                         inputProps={{
                                             'aria-label': 'checkbox with default color',
@@ -330,7 +348,7 @@ const Search = (props) => {
                                 <Typography>
                                     <Checkbox
                                         color="default"
-                                        value={trainingSystem}
+                                        checked={trainingSystem}
                                         onChange={() => setTrainingSystem(!trainingSystem)}
                                         inputProps={{
                                             'aria-label': 'checkbox with default color',
@@ -341,7 +359,7 @@ const Search = (props) => {
                                 <Typography>
                                     <Checkbox
                                         color="default"
-                                        value={education}
+                                        checked={education}
                                         onChange={() => setEducation(!education)}
                                         inputProps={{
                                             'aria-label': 'checkbox with default color',
@@ -350,7 +368,13 @@ const Search = (props) => {
                                     Has specific education
                                 </Typography>
                                 <Button
-                                    type="submit"
+                                    onClick={clearFilters}
+                                    variant="outlined"
+                                    color="primary"
+                                >
+                                    Clear filters
+                                </Button>
+                                <Button
                                     onClick={handleSubmit}
                                     variant="contained"
                                     color="primary"

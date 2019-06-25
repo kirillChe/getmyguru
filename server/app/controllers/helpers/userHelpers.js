@@ -4,30 +4,22 @@ const moment = require('moment');
 const {User, UserInfo, UserLanguage, File} = require('../../models');
 
 function getBaseSearchFilter (filter, rawFilters) {
-    console.log('@@@@@@@@@@  ', rawFilters);
-
     filter.where = R.merge(
         filter.where,
         {
-            firstName: {
-                [Op.in]: rawFilters.baseSearch
-            },
-            lastName: {
-                [Op.in]: rawFilters.baseSearch
-            }
-        },
-    );
-
-    filter.include.push(
-        {
-            model: UserInfo,
-            as: 'info',
-            where: {
-                country: {
-                    [Op.in]: rawFilters.baseSearch
+            [Op.or]: [
+                {
+                    firstName: {
+                        [Op.in]: rawFilters.baseSearch
+                    }
+                },
+                {
+                    lastName: {
+                        [Op.in]: rawFilters.baseSearch
+                    }
                 }
-            }
-        }
+            ]
+        },
     );
     return filter;
 }

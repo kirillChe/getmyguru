@@ -57,8 +57,8 @@ function getCustomSearchFilter(filter, rawFilters) {
                          * last => 1979-06-24
                          * first => 1999-06-24
                          */
-                        moment().subtract(R.last(val), 'years'),
-                        moment().subtract(R.head(val), 'years')
+                        moment().startOf('day').subtract(R.last(val), 'years'),
+                        moment().startOf('day').subtract(R.head(val), 'years')
                     ]
                 };
             } else if (key === 'rating') {
@@ -107,7 +107,6 @@ const prepareGuruFilter = ({filter, rawFilters}) => {
         userType: 'guru'
     };
     //return simple object instead of model instance
-    filter.raw = false;
     filter.include = [{
         model: File,
         as: 'files',

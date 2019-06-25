@@ -213,7 +213,6 @@ const getGurusPreviews = async (req, res, next) => {
     try {
         let filter = await helper.prepareGuruFilter(req.query);
         users = await User.findAll(filter);
-
     } catch (e) {
         console.log('usersController.js :114', e);
         return next(e);

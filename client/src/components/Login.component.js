@@ -65,7 +65,8 @@ const Login = (props) => {
         console.log(`Login Form submitted:`);
         let data = {
             email: values.email,
-            password: values.password
+            password: values.password,
+            remember
         };
 
         try {

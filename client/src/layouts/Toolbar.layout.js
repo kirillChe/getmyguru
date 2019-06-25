@@ -65,24 +65,17 @@ const styles = theme => ({
 
 const getPathComponents = path => R.split('/', path);
 
+const pathComponents = getPathComponents(window.location.pathname);
+
 class ToolbarLayout extends Component {
     static contextType = MainContext;
-
-    constructor(props) {
-        super(props);
-
-        let pathComponents = getPathComponents(window.location.pathname);
-
-        this.state = {
-            showSetNewPwd: pathComponents && pathComponents[1] === 'reset_password',
-            showEmailSent: false,
-            showLogin: false,
-            showSignUp: false,
-            showForgotPwd: false,
-            token: pathComponents && pathComponents[2]
-        };
-
-        this.handleClick = this.handleClick.bind(this);
+    state = {
+        showSetNewPwd: pathComponents && pathComponents[1] === 'reset_password',
+        showEmailSent: false,
+        showLogin: false,
+        showSignUp: false,
+        showForgotPwd: false,
+        token: pathComponents && pathComponents[2]
     };
 
     handleClose = function (state) {

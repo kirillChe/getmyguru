@@ -46,7 +46,10 @@ const serverApp = async () => {
         saveUninitialized: true,
         cookie: {
             // 2 hours
-            maxAge: 2 * 60 * 60 * 1000
+            // maxAge: 2 * 60 * 60 * 1000
+            //for testing 1 min
+            maxAge: 60 * 1000,
+            originalMaxAge: 60 * 1000
         }
     }));
 

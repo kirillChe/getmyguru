@@ -31,7 +31,10 @@ router.post(
             if (err)
                 return next(err);
 
-            res.send(R.omit(['password'], req.user.toJSON()));
+            if ( req.body.remember )
+                req.session.cookie.expires = false;
+
+            res.send(R.omit(['password'], req.user));
         })
     }
 );

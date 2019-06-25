@@ -1,23 +1,31 @@
 const LocalStrategy = require('passport-local').Strategy;
 const {User} = require('../models');
-const on = require('await-handler');
+const R = require('ramda');
 
 const strategy = new LocalStrategy(
     {
         usernameField: 'email'
     },
     async (email, password, done) => {
-        let [err, user] = await on(User.findOne({ where: {email: email} }));
-        if (err)
-            return done(err);
+        try{
+            let filter = {
+                where: { email }
+            };
+            let user = await User.findOne(filter);
 
-        if (!user)
-            return done(null, false, {message: 'Incorrect login'});
+            if (!user)
+                return done(null, false, {message: 'Incorrect login'});
 
-        if (!user.verifyPassword(password))
-            return done(null, false, {message: 'Incorrect password'});
+            if (!user.verifyPassword(password))
+                return done(null, false, {message: 'Incorrect password'});
+            
+            //transform user instance to plain object
+            user = user.get({ plain: true });
 
-        done(null, user);
+            done(null, R.omit(['password'], user));
+        } catch (e) {
+            return done(e);
+        }
     }
 );
 

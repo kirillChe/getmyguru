@@ -4,20 +4,23 @@ import { withStyles } from '@material-ui/core/styles';
 import {
     Button,
     TextField,
-    Radio,
-    RadioGroup,
-    FormControlLabel,
-    FormControl,
     IconButton,
-    InputAdornment
+    InputAdornment,
+    Typography,
+    Switch,
+    Grid
 } from '@material-ui/core';
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+    MuiPickersUtilsProvider,
+    DatePicker,
+} from '@material-ui/pickers';
 import { Visibility, VisibilityOff, Warning } from '@material-ui/icons';
 import useForceUpdate from 'use-force-update';
 
 import axios from 'axios';
-import * as R from 'ramda';
-
-const ages = R.range(14, 100);
+import moment from 'moment';
 
 const styles = theme => ({
     form: {
@@ -29,6 +32,23 @@ const styles = theme => ({
     }
 });
 
+const GenderSwitch = withStyles({
+    switchBase: {
+        '&$checked': {
+            color: 'white',
+            '& + $track': {
+                backgroundColor: '#f44336',
+                opacity: 1,
+            },
+        },
+    },
+    track: {
+        backgroundColor: '#3f51b5',
+        opacity: 1,
+    },
+    checked: {},
+})(Switch);
+
 const SignUpGuru = (props) => {
     const {classes} = props;
     const forceUpdate = useForceUpdate();
@@ -37,11 +57,10 @@ const SignUpGuru = (props) => {
 
     const [values, setValues] = useState({
         gender: 'male',
-        age: 20,
+        selectedDate: moment().startOf('day').subtract(30, 'years').calendar(),
         firstName: '',
         lastName: '',
         email: '',
-        phone: '',
         password: '',
         userType: 'guru'
     });
@@ -50,9 +69,14 @@ const SignUpGuru = (props) => {
         return values.email.length > 0 && values.password.length > 0;
     }
 
-    function handleChange (e) {
-        const {name, value} = e.target;
-        setValues({...values, [name]: value})
+    function handleChange (name, value) {
+        return e => {
+            if (!name || !value) {
+                name = e.target.name;
+                value = e.target.value;
+            }
+            setValues({...values, [name]: value})
+        };
     }
 
     function togglePasswordMask () {
@@ -91,7 +115,7 @@ const SignUpGuru = (props) => {
                 name="firstName"
                 label="First Name"
                 value={values.firstName}
-                onChange={handleChange}
+                onChange={handleChange()}
                 margin="normal"
                 variant="outlined"
                 fullWidth
@@ -101,68 +125,43 @@ const SignUpGuru = (props) => {
                 name="lastName"
                 label="Last Name"
                 value={values.lastName}
-                onChange={handleChange}
+                onChange={handleChange()}
                 margin="normal"
                 variant="outlined"
                 fullWidth
             />
-            <FormControl component="fieldset">
-                <RadioGroup
-                    aria-label="gender"
-                    name="gender"
-                    value={values.gender}
-                    onChange={handleChange}
-                >
-                    <FormControlLabel
-                        value="male"
-                        control={<Radio color="primary" />}
-                        label="Male"
-                        labelPlacement="start"
-                    />
-                    <FormControlLabel
-                        value="female"
-                        control={<Radio color="primary" />}
-                        label="Female"
-                        labelPlacement="start"
-                    />
-                </RadioGroup>
-            </FormControl>
-            <TextField
-                id="age"
-                name="age"
-                select
-                label="Age"
-                value={values.age}
-                onChange={handleChange}
-                SelectProps={{
-                    native: true
-                }}
-                margin="normal"
-                variant="outlined"
-                fullWidth
-            >
-                {ages.map(option => (
-                    <option key={option} value={option}>
-                        {option}
-                    </option>
-                ))}
-            </TextField>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <DatePicker
+                    disableFuture
+                    openTo="year"
+                    format="dd/MM/yyyy"
+                    label="Date of birth"
+                    views={["year", "month", "date"]}
+                    maxDate={moment().startOf('day').subtract(16, 'years').calendar()}
+                    minDate={moment().startOf('day').subtract(99, 'years').calendar()}
+                    value={values.selectedDate}
+                    onChange={date => handleChange('selectedDate', date)()}
+                />
+            </MuiPickersUtilsProvider>
+            <Typography component="div">
+                <Grid component="label" container alignItems="center" spacing={1}>
+                    <Grid item>Male</Grid>
+                    <Grid item>
+                        <GenderSwitch
+                            checked={values.gender === 'female'}
+                            onChange={e => handleChange('gender', e.target.checked ? 'female' : 'male')()}
+                            name="gender"
+                        />
+                    </Grid>
+                    <Grid item>Female</Grid>
+                </Grid>
+            </Typography>
             <TextField
                 id="email"
                 name="email"
                 label="Email"
                 value={values.email}
-                onChange={handleChange}
-                margin="normal"
-                variant="outlined"
-                fullWidth
-            />
-            <TextField
-                id="phone"
-                name="phone"
-                label="Phone"
-                value={values.phone}
-                onChange={handleChange}
+                onChange={handleChange()}
                 margin="normal"
                 variant="outlined"
                 fullWidth
@@ -173,7 +172,7 @@ const SignUpGuru = (props) => {
                 label="Password"
                 type={showPassword ? 'text' : 'password'}
                 value={values.password}
-                onChange={handleChange}
+                onChange={handleChange()}
                 margin="normal"
                 variant="outlined"
                 fullWidth

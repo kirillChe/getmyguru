@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 
 import {ToolbarLayout, FooterLayout} from './';
 import { MainContext } from '../context';
 
-const styles = theme => ({
+const styles = () => ({
     progress: {
         position: 'fixed',
         top: '50%',

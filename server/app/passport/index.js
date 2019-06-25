@@ -1,6 +1,5 @@
 const passport = require('passport');
 const {File} = require('../models');
-const R = require('ramda');
 const LocalStrategy = require('./localStrategy');
 const on = require('await-handler');
 
@@ -13,9 +12,6 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (user, done) => {
     // console.log('*** DeserializeUser called ***');
-    // let [err, user] = await on(User.findByPk(id));
-    // if (err || !user)
-    //     return done(err, false);
 
     [err, file] = await on(File.findByPk(user.avatar));
     if (err) {
@@ -24,7 +20,7 @@ passport.deserializeUser(async (user, done) => {
     }
     user.avatarLocation = file && file.location || null;
 
-    done(null, R.omit(['password'], user));
+    done(null, user);
 });
 
 //  Use Strategies

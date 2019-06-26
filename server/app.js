@@ -38,8 +38,8 @@ const serverApp = async () => {
     app.use(bodyParser.urlencoded({extended: true}));
 
     app.use(session({
-        store: new redisStore({client, ttl: 26000}),
-        secret: 'secretforsession',
+        store: new redisStore({client}),
+        secret: 'secretforsession'/*,
         resave: true,
         saveUninitialized: true,
         cookie: {
@@ -49,7 +49,7 @@ const serverApp = async () => {
             //for testing 1 min
             // maxAge: 60 * 1000,
             // originalMaxAge: 60 * 1000
-        }
+        } */
     }));
 
     app.use(passport.initialize());

@@ -36,7 +36,7 @@ passport.deserializeUser(async (userId, done) => {
         //transform user instance to plain object
         user = user.get({ plain: true });
         let userData = R.merge(
-            R.omit(['password', 'avatar', 'files'], user),
+            R.omit(['password', 'avatar', 'files', 'token'], user),
             { avatarLocation }
         );
 

@@ -22,7 +22,7 @@ const strategy = new LocalStrategy(
             //transform user instance to plain object
             user = user.get({ plain: true });
 
-            done(null, R.omit(['password', 'avatar'], user));
+            done(null, R.omit(['password', 'avatar', 'token'], user));
         } catch (e) {
             return done(e);
         }

@@ -1,6 +1,6 @@
-const LocalStrategy = require('passport-local').Strategy;
-const {User} = require('../models');
-const R = require('ramda');
+const LocalStrategy = require('passport-local').Strategy
+    , {User} = require('../models')
+    , R = require('ramda');
 
 const strategy = new LocalStrategy(
     {
@@ -9,7 +9,7 @@ const strategy = new LocalStrategy(
     async (email, password, done) => {
         try{
             let filter = {
-                where: { email }
+                where: { email },
             };
             let user = await User.findOne(filter);
 
@@ -22,7 +22,7 @@ const strategy = new LocalStrategy(
             //transform user instance to plain object
             user = user.get({ plain: true });
 
-            done(null, R.omit(['password'], user));
+            done(null, R.omit(['password', 'avatar'], user));
         } catch (e) {
             return done(e);
         }

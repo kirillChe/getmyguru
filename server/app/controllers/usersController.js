@@ -1,14 +1,15 @@
-const {User, File, Rating, UserLanguage} = require('../models');
-const on = require('await-handler');
-const R = require('ramda');
-const Busboy = require('busboy');
-const path = require('path');
-const fs = require('fs');
-const events = require('events');
-const sequelize = require('sequelize');
+const on = require('await-handler')
+    , R = require('ramda')
+    , Busboy = require('busboy')
+    , path = require('path')
+    , fs = require('fs')
+    , events = require('events')
+    , sequelize = require('sequelize');
 
-const filePath = __dirname + '/../../public';
-const helper = require('./helpers/userHelpers');
+//internal modules
+const filePath = __dirname + '/../../public'
+    , helper = require('./helpers/userHelpers')
+    , {User, File, Rating, UserLanguage} = require('../models');
 
 const create = async (req, res, next) => {
 

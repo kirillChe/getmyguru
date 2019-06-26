@@ -16,8 +16,6 @@ import {
 } from '@material-ui/icons';
 import useForceUpdate from 'use-force-update';
 
-import { MainContext } from 'context';
-
 import axios from 'axios';
 
 const styles = theme => ({
@@ -33,7 +31,6 @@ const styles = theme => ({
 const Login = (props) => {
     const {classes} = props;
     const forceUpdate = useForceUpdate();
-    const { updateUser } = useContext(MainContext);
     const [showPassword, setShowPassword] = useState(false);
     const [wrongCredentials, setWrongCredentials] = useState(false);
     const [remember, setRemember] = useState(false);
@@ -75,11 +72,6 @@ const Login = (props) => {
             console.log(response.data);
             // console.log(response.data);
             if (response.status === 200) {
-                // update main context state
-                updateUser({
-                    loggedIn: true,
-                    user: response.data
-                });
                 //@todo change it, add props to state
                 // refresh page
                 window.location.reload();

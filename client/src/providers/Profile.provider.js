@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
+import useForceUpdate from 'use-force-update';
 // import ReactRouterPropTypes from 'react-router-prop-types';
 
 import axios from 'axios';
@@ -11,6 +12,7 @@ import { ProfileContext, MainContext } from 'context';
 
 
 const Profile = ({children}) => {
+    const forceUpdate = useForceUpdate();
     const [showMessageInput, setShowMessageInput] = useState(false);
     const [tabIndex, setTabIndex] = useState(0);
     const [profile, setProfile] = useState({});
@@ -43,6 +45,7 @@ const Profile = ({children}) => {
                 console.log('___________________');
                 console.log(response.data);
                 console.log('___________________');
+                forceUpdate();
 
             } catch (e) {
                 console.log('Profile.js : cannot rate user: ', e);

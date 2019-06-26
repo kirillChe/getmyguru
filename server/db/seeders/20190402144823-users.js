@@ -15,6 +15,7 @@ module.exports = {
                 rating: 100,
                 language: 'en',
                 birthDate: new Date('1983-01-14'),
+                token: null,
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -30,6 +31,7 @@ module.exports = {
                 rating: 79,
                 language: 'en',
                 birthDate: new Date('1975-03-11'),
+                token: null,
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -45,6 +47,7 @@ module.exports = {
                 rating: 84,
                 language: 'en',
                 birthDate: new Date('1987-11-12'),
+                token: null,
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -60,6 +63,7 @@ module.exports = {
                 rating: 61,
                 language: 'en',
                 birthDate: new Date('1959-08-02'),
+                token: null,
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -75,6 +79,7 @@ module.exports = {
                 rating: 90,
                 language: 'en',
                 birthDate: new Date('1990-10-14'),
+                token: null,
                 createdAt: new Date(),
                 updatedAt: new Date()
             },
@@ -90,6 +95,7 @@ module.exports = {
                 rating: 32,
                 language: 'en',
                 birthDate: new Date('2003-12-12'),
+                token: null,
                 createdAt: new Date(),
                 updatedAt: new Date()
             }

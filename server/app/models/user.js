@@ -66,6 +66,9 @@ module.exports = (sequelize, DataTypes) => {
         birthDate: {
             type: DataTypes.DATE
         },
+        token: {
+            type: DataTypes.STRING(64)
+        },
         updatedAt: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,

@@ -95,11 +95,6 @@ const SignUpGuru = (props) => {
 
         console.log(`Sign up guru form submitted:`);
         try {
-            console.log('___________________');
-            console.log('___________________');
-            console.log(values);
-            console.log('___________________');
-            console.log('___________________');
             let response = await axios.post('/api/users', values);
             console.log('Sign up guru response: ');
             if (response.status === 201) {

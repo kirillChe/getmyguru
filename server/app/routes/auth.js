@@ -1,7 +1,8 @@
-const express = require('express');
-const R = require('ramda');
-const router = express.Router();
-const passport = require('../passport');
+const express = require('express')
+    , utils = require('../utils')
+    , router = express.Router()
+    , passport = require('../passport')
+    , {User} = require('../models');
 
 
 /** GET /auth/isLoggedIn - Checks is user logged in */
@@ -19,22 +20,26 @@ router.get(
 /** POST /auth/login - Login to App */
 router.post(
     '/login',
-    (req, res, next) => {
-        console.log('routes/user.js, login, req.body: ');
-        console.log(req.body);
-        next();
-    },
     passport.authenticate('local'),
     (req, res, next) => {
         console.log('logged in', req.user && req.user.id);
-        req.login(req.user, (err) => {
+        console.log('logged in', req.user);
+        req.login(req.user, async err => {
             if (err)
                 return next(err);
 
-            if ( req.body.remember )
-                req.session.cookie.expires = false;
+            if (!req.body.remember)
+                return res.sendStatus(200);
 
-            res.send(R.omit(['password'], req.user));
+
+            var token = utils.randomString(64);
+            try {
+                await User.update({token}, {where: {id: req.user.id}});
+                res.cookie('remember_me', token, { path: '/', httpOnly: true, maxAge: 604800000 });
+                res.sendStatus(200);
+            }catch (e) {
+                next(e);
+            }
         })
     }
 );
@@ -42,8 +47,14 @@ router.post(
 /** POST /auth/logout - Logout from the App */
 router.post(
     '/logout',
-    (req, res) => {
+    async (req, res) => {
         if (req.user) {
+            try {
+                await User.update({token: null}, {where: {id: req.user.id}});
+            }catch (e) {
+                console.log('WARN: User logout: failed to clear token: ', e);
+            }
+            res.clearCookie('remember_me');
             req.logout();
             req.session.destroy();
             res.send({msg: 'logging out'})

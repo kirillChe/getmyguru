@@ -1,25 +1,24 @@
-const express = require('express');
-const http = require('http');
-const socketIO = require('socket.io');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const morgan = require('morgan');
+const express = require('express')
+    , http = require('http')
+    , socketIO = require('socket.io')
+    , bodyParser = require('body-parser')
+    , cookieParser = require('cookie-parser')
+    , cors = require('cors')
+    , morgan = require('morgan');
 
 // for session
-const uuid = require('uuid/v4');
-const passport = require('passport');
-const session = require('express-session');
-const redisStore = require('connect-redis')(session);
-const redis = require("redis");
-const client = redis.createClient('redis://redis');
+const passport = require('passport')
+    , session = require('express-session')
+    , redisStore = require('connect-redis')(session)
+    , redis = require("redis")
+    , client = redis.createClient('redis://redis');
 
 //Models
 const models = require('./app/models');
-
+//Middleware
 const middleware = require(__dirname + '/middleware');
 // set the port
 const port = parseInt(process.env.PORT, 10) || 5000;
-
 // Set up the express app
 const app = express();
 
@@ -34,27 +33,28 @@ const serverApp = async () => {
     //HTTP request logger
     app.use(morgan('dev'));
 
+    app.use(cookieParser());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: true}));
 
-    // @TODO Add missing properties for cookies (maxAge, ...)
     app.use(session({
         store: new redisStore({client, ttl: 26000}),
-        secret: 'keyboard cat',
-        // genid: () => uuid(),
+        secret: 'secretforsession',
         resave: true,
         saveUninitialized: true,
         cookie: {
             // 2 hours
-            // maxAge: 2 * 60 * 60 * 1000
+            maxAge: 2 * 60 * 60 * 1000,
+            originalMaxAge: 2 * 60 * 60 * 1000
             //for testing 1 min
-            maxAge: 60 * 1000,
-            originalMaxAge: 60 * 1000
+            // maxAge: 60 * 1000,
+            // originalMaxAge: 60 * 1000
         }
     }));
 
     app.use(passport.initialize());
     app.use(passport.session());
+    app.use(passport.authenticate('remember-me'));
 
     try {
         await models.sequelize.sync();
@@ -87,18 +87,13 @@ const serverApp = async () => {
             socket.join(`room-${id}`);
         });
 
-        // just like on the client side, we have a socket.on method that takes a callback function
         socket.on('NEW_MESSAGE', async (data) => {
-            // once we get a 'change color' event from one of our clients, we will send it to the rest of the clients
-            // we make use of the socket.emit method again with the argument given to use from the callback function above
             console.log('Message created: ', data);
 
             try {
                 let message = await models.Message.create(data);
                 io.sockets.in(`room-${message.senderId}`).emit('MESSAGE_SAVED');
                 io.sockets.in(`room-${message.receiverId}`).emit('GOT_NEW_MESSAGE');
-                // io.sockets.emit(`${data.userId}_MESSAGE_SAVED`, message.userId);
-                // io.sockets.emit(`${data.receiver}_GOT_NEW_MESSAGE`, message.receiver);
             }catch (e) {
                 console.log('app.js :91', e);
             }

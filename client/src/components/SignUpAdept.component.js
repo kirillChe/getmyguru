@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Button, TextField, IconButton, InputAdornment } from '@material-ui/core';
@@ -6,6 +6,7 @@ import { Visibility, VisibilityOff, Warning } from '@material-ui/icons';
 import useForceUpdate from 'use-force-update';
 
 import axios from 'axios';
+import {MainContext} from "../context";
 
 const styles = theme => ({
     form: {
@@ -20,6 +21,7 @@ const styles = theme => ({
 const SignUpAdept = (props) => {
     const {classes} = props;
     const forceUpdate = useForceUpdate();
+    const { language, countryCode } = useContext(MainContext);
     const [showPassword, setShowPassword] = useState(false);
     const [submitError, setSubmitError] = useState(false);
 
@@ -28,7 +30,9 @@ const SignUpAdept = (props) => {
         lastName: '',
         email: '',
         password: '',
-        userType: 'adept'
+        userType: 'adept',
+        language,
+        country: countryCode
     });
 
     function validateForm() {

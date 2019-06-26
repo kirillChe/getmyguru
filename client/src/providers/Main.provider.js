@@ -27,6 +27,17 @@ class Main extends PureComponent {
         console.log('Main.js :18', this.state.user, state);
     };
 
+    getUserCountry = async () => {
+        try {
+            let response = await axios.get('https://ipinfo.io/');
+            this.setState({
+                countryCode: response.data.country
+            });
+        } catch (e) {
+            console.log('Cannot get user country code', e);
+        }
+    };
+
     getUserData = async () => {
         let response = await axios.get('/auth/isLoggedIn');
         console.log('Get User: There is a user saved in the server session: ', response && response.data);
@@ -52,6 +63,7 @@ class Main extends PureComponent {
 
     async componentDidMount() {
         try {
+            await this.getUserCountry();
             await this.getUserData();
         } catch (error) {
             console.log('Get user: no user: ', error);
@@ -64,6 +76,7 @@ class Main extends PureComponent {
     }
 
     state = {
+        countryCode: '',
         language: this.getBrowserLanguage(),
         countriesList: this.getCountriesList(this.getBrowserLanguage()),
         loggedIn: false,

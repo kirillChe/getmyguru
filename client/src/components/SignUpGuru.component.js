@@ -20,6 +20,7 @@ import { Visibility, VisibilityOff, Warning } from '@material-ui/icons';
 import useForceUpdate from 'use-force-update';
 
 import axios from 'axios';
+import * as R from 'ramda';
 import moment from 'moment';
 import { MainContext } from 'context';
 
@@ -30,7 +31,7 @@ const styles = theme => ({
     },
     submit: {
         marginTop: theme.spacing(3),
-    }
+    },
 });
 
 const GenderSwitch = withStyles({
@@ -51,21 +52,23 @@ const GenderSwitch = withStyles({
 })(Switch);
 
 const SignUpGuru = (props) => {
-    const { countriesList } = useContext(MainContext);
+    const { language, countryCode } = useContext(MainContext);
     const {classes} = props;
     const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
     const [submitError, setSubmitError] = useState(false);
 
     const [values, setValues] = useState({
-        country: '',
+        // countries: [],
         gender: 'male',
-        selectedDate: moment().startOf('day').subtract(30, 'years').calendar(),
+        birthDate: moment().startOf('day').subtract(30, 'years').calendar(),
         firstName: '',
         lastName: '',
         email: '',
         password: '',
-        userType: 'guru'
+        userType: 'guru',
+        language,
+        country: countryCode
     });
 
     function validateForm() {
@@ -78,6 +81,7 @@ const SignUpGuru = (props) => {
                 name = e.target.name;
                 value = e.target.value;
             }
+
             setValues({...values, [name]: value})
         };
     }
@@ -89,13 +93,15 @@ const SignUpGuru = (props) => {
     async function handleSubmit (event) {
         event.preventDefault();
 
-        console.log(`Sign up adept form submitted:`);
-        console.log(values);
-
+        console.log(`Sign up guru form submitted:`);
         try {
+            console.log('___________________');
+            console.log('___________________');
+            console.log(values);
+            console.log('___________________');
+            console.log('___________________');
             let response = await axios.post('/api/users', values);
-            console.log('Sign up adept response: ');
-            console.log(response);
+            console.log('Sign up guru response: ');
             if (response.status === 201) {
                 props.dialogClick();
             } else {
@@ -113,25 +119,25 @@ const SignUpGuru = (props) => {
 
     return (
         <form className={classes.form} onSubmit={handleSubmit}>
-            <TextField
-                id="country"
-                name="country"
-                select
-                value={values.country}
-                onChange={handleChange}
-                SelectProps={{
-                    native: true
-                }}
-                margin="normal"
-                variant="outlined"
-                fullWidth
-            >
-                {countriesList.map(option => (
-                    <option key={option[0]} value={option[0]}>
-                        {option[1]}
-                    </option>
-                ))}
-            </TextField>
+            {/*<TextField*/}
+            {/*    id="country"*/}
+            {/*    name="country"*/}
+            {/*    select*/}
+            {/*    value={values.country}*/}
+            {/*    onChange={handleChange()}*/}
+            {/*    SelectProps={{*/}
+            {/*        native: true*/}
+            {/*    }}*/}
+            {/*    margin="normal"*/}
+            {/*    variant="outlined"*/}
+            {/*    fullWidth*/}
+            {/*>*/}
+            {/*    {countriesList.map(option => (*/}
+            {/*        <option key={option[0]} value={option[0]}>*/}
+            {/*            {option[1]}*/}
+            {/*        </option>*/}
+            {/*    ))}*/}
+            {/*</TextField>*/}
             <TextField
                 id="firstName"
                 name="firstName"
@@ -161,8 +167,8 @@ const SignUpGuru = (props) => {
                     views={["year", "month", "date"]}
                     maxDate={moment().startOf('day').subtract(16, 'years').calendar()}
                     minDate={moment().startOf('day').subtract(99, 'years').calendar()}
-                    value={values.selectedDate}
-                    onChange={date => handleChange('selectedDate', date)()}
+                    value={values.birthDate}
+                    onChange={date => handleChange('birthDate', date)()}
                 />
             </MuiPickersUtilsProvider>
             <Typography component="div">

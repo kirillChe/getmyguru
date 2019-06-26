@@ -6,13 +6,38 @@ const path = require('path');
 const fs = require('fs');
 const events = require('events');
 const sequelize = require('sequelize');
-// const Op = sequelize.Op;
 
 const filePath = __dirname + '/../../public';
 const helper = require('./helpers/userHelpers');
 
 const create = async (req, res, next) => {
-    let [err, user] = await on(User.create(req.body));
+
+    let userData = R.merge(
+        R.omit(['country'], req.body),
+        {
+            info: {
+                country: req.body.country
+            },
+            languages: [
+                {
+                    code: req.body.language
+                }
+            ]
+        }
+    );
+
+    let [err, user] = await on(User.create(userData, {
+        include: [
+            {
+                association: User.associations.languages,
+                as: 'languages'
+            },
+            {
+                association: User.associations.info,
+                as: 'info'
+            }
+        ]
+    }));
     if (err)
         return next(err);
 
@@ -220,7 +245,7 @@ const getGurusPreviews = async (req, res, next) => {
 
     let previews = R.map(user => {
         return R.merge(
-            R.pickAll(['id', 'firstName', 'lastName', 'avatar', 'rating', 'gender'], user),
+            R.pickAll(['id', 'firstName', 'lastName', 'gender'], user),
             {
                 rating: user.rating / 10,
                 avatarLocation: (user.files && user.files[0] && user.files[0].location) || null

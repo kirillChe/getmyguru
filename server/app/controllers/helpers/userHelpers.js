@@ -106,7 +106,7 @@ const prepareGuruFilter = ({filter, rawFilters}) => {
     filter.where = {
         userType: 'guru'
     };
-    //return simple object instead of model instance
+
     filter.include = [{
         model: File,
         as: 'files',

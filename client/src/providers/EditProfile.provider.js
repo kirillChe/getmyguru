@@ -7,35 +7,140 @@ import * as R from 'ramda';
 
 import { MainContext, EditProfileContext } from 'context';
 
-const ages = R.range(14, 100);
+// const ages = R.range(14, 99);
 
-const EditProfile = ({children, history}) => {
-    const { allowedLanguages, defaultUserAvatar, user } = useContext(MainContext);
+const EditProfile = ({children, history, location}) => {
+    const { defaultUserAvatar, user } = useContext(MainContext);
     const [submitError, setSubmitError] = useState(false);
-    const [values, setValues] = useState({
-        phone: user.phone || '',
-        language: user.language || 'en',
-        age: user.age,
-        gender: user.gender || 'male',
-        firstName: user.firstName || '',
-        lastName: user.lastName || '',
-        email: user.email || ''
-    });
+    const profile = location.state;
 
     const [file, setFile] = useState(null);
-    const [avatarLocation, setAvatarLocation] = useState(defaultUserAvatar[user.gender]);
+    const [avatarLocation, setAvatarLocation] = useState(profile.avatarLocation || defaultUserAvatar[profile.gender]);
+
+    const [state, setState] = React.useState({
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        gender: profile.gender || 'male',
+        email: profile.email || '',
+        birthDate: profile.birthDate || '',
+        description: profile.info.description || '',
+        competitiveExperience: profile.info.competitiveExperience || '',
+        education: profile.info.education || '',
+        experience: profile.info.experience || '',
+        nutritionScheme: profile.info.nutritionScheme || false,
+        trainingSystem: profile.info.trainingSystem || false,
+        country: profile.info.country || '',
+        phone: profile.info.phone || '',
+        site: profile.info.site || '',
+        languages: profile.languages || [],
+    });
+
+    // const {
+    //     firstName,
+    //     lastName,
+    //     gender,
+    //     email,
+    //     birthDate,
+    //     description,
+    //     competitiveExperience,
+    //     education,
+    //     experience,
+    //     nutritionScheme,
+    //     trainingSystem,
+    //     country,
+    //     phone,
+    //     site,
+    //     languages,
+    // } = state;
+
+    const handleChangeDate = name => date => {
+        setState({ ...state, [name]: date });
+    };
+
+    const handleChangeTextField = e => {
+        let {name, value} = e.target;
+        setState({...state, [name]: value})
+    };
+
+    const handleChangeSwitch = name => e => {
+        setState({ ...state, [name]: e.target.checked ? 'female' : 'male' });
+    };
+
+    // const handleChangeSlider = name => (e, value) => {
+    //     setState({ ...state, [name]: value });
+    // };
+
+    const handleChangeSelect = name => event => {
+        setState({ ...state, [name]: event.target.value });
+    };
+
+    const handleChangeCheckbox = name => event => {
+        setState({ ...state, [name]: event.target.checked });
+    };
+
+
+
+    // const [values, setValues] = useState({
+    //     phone: profile.phone || '',
+    //     language: profile.language || 'en',
+    //     age: profile.age,
+    //     gender: profile.gender || 'male',
+    //     firstName: profile.firstName || '',
+    //     lastName: profile.lastName || '',
+    //     email: profile.email || ''
+    // });
+
+    // const [firstName, setFirstName] = useState(profile.firstName || '');
+    // const [lastName, setLastName] = useState(profile.lastName || '');
+    // const [gender, setGender] = useState(profile.gender || 'male');
+    // const [email, setEmail] = useState(profile.email || '');
+    // const [birthDate, setBirthDate] = useState(profile.birthDate || '');
+    // const [description, setDescription] = useState(profile.info.description || '');
+    // const [competitiveExperience, setCompetitiveExperience] = useState(profile.info.competitiveExperience || '');
+    // const [education, setEducation] = useState(profile.info.education || '');
+    // const [experience, setExperience] = useState(profile.info.experience || '');
+    // const [nutritionScheme, setNutritionScheme] = useState(profile.info.nutritionScheme || false);
+    // const [trainingSystem, setTrainingSystem] = useState(profile.info.trainingSystem || false);
+    // const [country, setCountry] = useState(profile.info.country || '');
+    // const [phone, setPhone] = useState(profile.info.phone || '');
+    // const [site, setSite] = useState(profile.info.site || '');
+    // const [languages, setLanguages] = useState(profile.languages || []);
+
+
+
+    // const [file, setFile] = useState(null);
+    // const [avatarLocation, setAvatarLocation] = useState(profile.avatarLocation || defaultUserAvatar[profile.gender]);
+
+
+    // const setStatesValues = {
+    //     firstName: setFirstName,
+    //     lastName: setLastName,
+    //     gender: setGender,
+    //     email: setEmail,
+    //     birthDate: setBirthDate,
+    //     description: setDescription,
+    //     competitiveExperience: setCompetitiveExperience,
+    //     education: setEducation,
+    //     experience: setExperience,
+    //     nutritionScheme: setNutritionScheme,
+    //     trainingSystem: setTrainingSystem,
+    //     country: setCountry,
+    //     phone: setPhone,
+    //     site: setSite,
+    //     languages: setLanguages
+    // };
 
     function validateForm () {
         //@todo add required validator
-        return values.firstName.length > 0 &&
-            values.lastName.length > 0 &&
-            values.email.length > 0;
+        return state.firstName.length > 0 &&
+            state.lastName.length > 0 &&
+            state.email.length > 0;
     }
 
-    function handleInputChange (e) {
-        const {name, value} = e.target;
-        setValues({...values, [name]: value})
-    }
+    // function handleInputChange (e) {
+    //     const {name, value} = e.target;
+    //     setValues({...values, [name]: value})
+    // }
 
     function handleAvatarChange (e) {
         setFile(e.target.files[0]);
@@ -53,7 +158,7 @@ const EditProfile = ({children, history}) => {
 
         R.forEachObjIndexed((val, key) => {
             data.append(key, val);
-        }, values);
+        }, state);
         data.append('file', file);
 
         try {
@@ -70,20 +175,24 @@ const EditProfile = ({children, history}) => {
         }
     }
 
-    const state = {
-        allowedLanguages,
-        submitError,
-        values,
-        avatarLocation,
+    const valueState = {
+        state,
+        handleChangeSwitch,
+        // handleChangeSlider,
+        handleChangeSelect,
+        handleChangeCheckbox,
+        handleChangeTextField,
+        handleChangeDate,
         validateForm,
-        handleInputChange,
         handleAvatarChange,
         handleSubmit,
-        ages
+        avatarLocation,
+        submitError,
+        profile,
     };
 
     return (
-        <EditProfileContext.Provider value={state}>
+        <EditProfileContext.Provider value={valueState}>
             {children}
         </EditProfileContext.Provider>
     );

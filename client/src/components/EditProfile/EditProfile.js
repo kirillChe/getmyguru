@@ -1,25 +1,35 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
+    Box,
     Button,
     TextField,
-    Radio,
-    RadioGroup,
     Avatar,
-    FormControlLabel,
-    FormControl
+    Grid,
 } from '@material-ui/core';
-// import {withRouter} from 'react-router-dom';
 import ErrorIcon from '@material-ui/icons/Warning';
-// import ReactRouterPropTypes from 'react-router-prop-types';
+import moment from 'moment';
+import { MainContext } from 'context';
+
+import {Checkbox, MultiSelect, Switch, DatePicker, Select} from 'components/Form';
+
+const experienceRange = [
+    '0-1',
+    '2-4',
+    '5-10',
+    '11+',
+];
+
+const languagesRange = [
+    'en',
+    'ru',
+    'es',
+    'il',
+];
 
 
 const styles = theme => ({
-    form: {
-        width: '300px', // Fix IE 11 issue.
-        // marginTop: theme.spacing.unit,
-    },
     submit: {
         marginTop: theme.spacing(3),
     },
@@ -29,184 +39,277 @@ const styles = theme => ({
         alignItems: 'center',
     },
     bigAvatar: {
-        margin: 10,
-        width: 60,
-        height: 60,
+        margin: 30,
+        width: 200,
+        height: 200,
+    },
+    flexCenter: {
+        display: 'flex',
+        alignItems: 'center',
     },
     input: {
         display: 'none',
-    }
+    },
 });
 
 const EditProfile = (props) => {
+    const { countriesList } = useContext(MainContext);
     const {
         classes,
-        allowedLanguages,
-        submitError,
-        values,
-        avatarLocation,
+        state,
+        handleChangeSwitch,
+        handleChangeSelect,
+        handleChangeCheckbox,
+        handleChangeTextField,
+        handleChangeDate,
         validateForm,
-        handleInputChange,
         handleAvatarChange,
         handleSubmit,
-        ages
+        avatarLocation,
+        submitError,
+        profile,
     } = props;
+
+    const {
+        firstName,
+        lastName,
+        gender,
+        email,
+        birthDate,
+        description,
+        competitiveExperience,
+        education,
+        experience,
+        nutritionScheme,
+        trainingSystem,
+        country,
+        phone,
+        site,
+        languages,
+    } = state;
 
     return (
         <div className={classes.container}>
-            <form className={classes.form} onSubmit={handleSubmit}>
-                <Avatar alt="avatar" src={avatarLocation} className={classes.bigAvatar} />
-                <input
-                    id="raised-button-file"
-                    name="myFile"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatarChange}
-                    className={classes.input}
-                />
-                <label htmlFor="raised-button-file">
-                    <Button component="span" >
-                        Upload
-                    </Button>
-                </label>
-                <TextField
-                    id="firstName"
-                    name="firstName"
-                    label="First Name"
-                    value={values.firstName}
-                    onChange={handleInputChange}
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                />
-                <TextField
-                    id="lastName"
-                    name="lastName"
-                    label="Last Name"
-                    value={values.lastName}
-                    onChange={handleInputChange}
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                />
-                <FormControl component="fieldset">
-                    <RadioGroup
-                        aria-label="gender"
-                        name="gender"
-                        value={values.gender}
-                        onChange={handleInputChange}
-                    >
-                        <FormControlLabel
-                            value="male"
-                            control={<Radio color="primary" />}
-                            label="Male"
-                            labelPlacement="start"
+            <Box component="main" maxWidth={935} margin="auto" padding="60px 20px 0">
+                <Grid
+                    container
+                    spacing={5}
+                    wrap={'nowrap'}
+                    alignContent={'space-around'}
+                    alignItems={'center'}
+                    justify={'space-around'}
+                >
+                    <Grid item xs={6}>
+                        <div className={classes.flexCenter}>
+                            <Avatar alt="avatar" src={avatarLocation} className={classes.bigAvatar} />
+                            <input
+                                id="raised-button-file"
+                                name="myFile"
+                                type="file"
+                                accept="image/*"
+                                onChange={handleAvatarChange}
+                                className={classes.input}
+                            />
+                            <label htmlFor="raised-button-file">
+                                <Button component="span" variant={'outlined'} color={'primary'}>
+                                    Upload
+                                </Button>
+                            </label>
+                        </div>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            multiline={true}
+                            rows={5}
+                            rowsMax={7}
+                            id="description"
+                            name="description"
+                            label="Description"
+                            value={description}
+                            onChange={handleChangeTextField}
+                            margin="normal"
+                            variant="outlined"
+                            fullWidth
                         />
-                        <FormControlLabel
-                            value="female"
-                            control={<Radio color="primary" />}
-                            label="Female"
-                            labelPlacement="start"
+                    </Grid>
+                </Grid>
+                <Grid
+                    container
+                    spacing={5}
+                    wrap={'nowrap'}
+                    justify={'space-around'}
+                >
+                    <Grid item xs={6}>
+                        <div className={classes.flexCenter}>
+                            <DatePicker
+                                maxDate={moment().startOf('day').subtract(16, 'years').calendar()}
+                                minDate={moment().startOf('day').subtract(99, 'years').calendar()}
+                                state={birthDate}
+                                label={'Date of birth'}
+                                name={'birthDate'}
+                                onChange={handleChangeDate('birthDate')}
+                            />
+                            <Switch
+                                firstLabel={'Male'}
+                                secondLabel={'Female'}
+                                checked={gender === 'female'}
+                                name={'gender'}
+                                onChange={handleChangeSwitch('gender')}
+                            />
+                        </div>
+                        <TextField
+                            id="firstName"
+                            name="firstName"
+                            label="First Name"
+                            value={firstName}
+                            onChange={handleChangeTextField}
+                            margin="normal"
+                            variant="outlined"
+                            fullWidth
                         />
-                    </RadioGroup>
-                </FormControl>
-                <TextField
-                    id="age"
-                    name="age"
-                    select
-                    label="Age"
-                    value={values.age}
-                    onChange={handleInputChange}
-                    SelectProps={{
-                        native: true
-                    }}
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                >
-                    {ages.map(option => (
-                        <option key={option} value={option}>
-                            {option}
-                        </option>
-                    ))}
-                </TextField>
-                <TextField
-                    id="language"
-                    name="language"
-                    select
-                    label="Language"
-                    value={values.language}
-                    onChange={handleInputChange}
-                    SelectProps={{
-                        native: true
-                    }}
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                >
-                    {allowedLanguages.map(option => (
-                        <option key={option} value={option}>
-                            {option}
-                        </option>
-                    ))}
-                </TextField>
-                <TextField
-                    id="email"
-                    name="email"
-                    label="Email"
-                    value={values.email}
-                    onChange={handleInputChange}
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                />
-                <TextField
-                    id="phone"
-                    name="phone"
-                    label="Phone"
-                    value={values.phone}
-                    onChange={handleInputChange}
-                    margin="normal"
-                    variant="outlined"
-                    fullWidth
-                />
-                {submitError &&
-                    <Button
-                        fullWidth
-                        variant="outlined"
-                        color="secondary"
-                        className={classes.submit}
-                        disabled
-                    >
-                        <ErrorIcon/> Wrong data entered
-                    </Button>
-                }
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                    disabled={!validateForm()}
-                >
-                    Save
-                </Button>
-            </form>
+                        <TextField
+                            id="lastName"
+                            name="lastName"
+                            label="Last Name"
+                            value={lastName}
+                            onChange={handleChangeTextField}
+                            margin="normal"
+                            variant="outlined"
+                            fullWidth
+                        />
+                        <MultiSelect
+                            name={'languages'}
+                            state={languages}
+                            label={'Languages'}
+                            onChange={handleChangeSelect('languages')}
+                            selectValues={languagesRange}
+                        />
+                        <Select
+                            selectValues={Object.entries(countriesList)}
+                            label={'Country'}
+                            onChange={handleChangeTextField}
+                            name={'country'}
+                            state={country}
+                        />
+                        <TextField
+                            id="email"
+                            name="email"
+                            label="Email"
+                            value={email}
+                            onChange={handleChangeTextField}
+                            margin="normal"
+                            variant="outlined"
+                            fullWidth
+                        />
+                        <TextField
+                            id="phone"
+                            name="phone"
+                            label="Phone"
+                            value={phone}
+                            onChange={handleChangeTextField}
+                            margin="normal"
+                            variant="outlined"
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            id="site"
+                            name="site"
+                            label="Site"
+                            value={site}
+                            onChange={handleChangeTextField}
+                            margin="normal"
+                            variant="outlined"
+                            fullWidth
+                        />
+                        <Select
+                            selectValues={experienceRange}
+                            label={'Experience'}
+                            onChange={handleChangeTextField}
+                            name={'experience'}
+                            state={experience}
+                        />
+                        <TextField
+                            multiline={true}
+                            rows={3}
+                            rowsMax={5}
+                            id="competitiveExperience"
+                            name="competitiveExperience"
+                            label="Competitive Experience"
+                            value={competitiveExperience}
+                            onChange={handleChangeTextField}
+                            margin="normal"
+                            variant="outlined"
+                            fullWidth
+                        />
+                        <TextField
+                            multiline={true}
+                            rows={3}
+                            rowsMax={5}
+                            id="education"
+                            name="education"
+                            label="Education"
+                            value={education}
+                            onChange={handleChangeTextField}
+                            margin="normal"
+                            variant="outlined"
+                            fullWidth
+                        />
+                        <Checkbox
+                            name="nutritionScheme"
+                            state={nutritionScheme}
+                            onChange={handleChangeCheckbox('nutritionScheme')}
+                            label={'Prepare nutrition scheme'}
+                        />
+                        <Checkbox
+                            name="trainingSystem"
+                            state={trainingSystem}
+                            onChange={handleChangeCheckbox('trainingSystem')}
+                            label={'Prepare training system'}
+                        />
+                        {submitError &&
+                            <Button
+                                fullWidth
+                                variant="outlined"
+                                color="secondary"
+                                className={classes.submit}
+                                disabled
+                            >
+                                <ErrorIcon/> Wrong data entered
+                            </Button>
+                        }
+                        <Button
+                            onSubmit={handleSubmit}
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                            disabled={!validateForm()}
+                        >
+                            Save
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Box>
         </div>
     );
 };
 
 EditProfile.propTypes = {
     classes: PropTypes.object.isRequired,
-    allowedLanguages: PropTypes.array.isRequired,
-    submitError: PropTypes.bool.isRequired,
-    values: PropTypes.object.isRequired,
-    avatarLocation: PropTypes.string.isRequired,
+    state: PropTypes.object.isRequired,
+    handleChangeSwitch: PropTypes.func.isRequired,
+    handleChangeSelect: PropTypes.func.isRequired,
+    handleChangeCheckbox: PropTypes.func.isRequired,
+    handleChangeTextField: PropTypes.func.isRequired,
+    handleChangeDate: PropTypes.func.isRequired,
     validateForm: PropTypes.func.isRequired,
-    handleInputChange: PropTypes.func.isRequired,
     handleAvatarChange: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
-    ages: PropTypes.array.isRequired
+    avatarLocation: PropTypes.string.isRequired,
+    submitError: PropTypes.bool.isRequired,
+    profile: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(EditProfile);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -11,6 +11,7 @@ import axios from 'axios';
 import * as R from 'ramda';
 import { MessageInput } from 'components';
 import SingleComment from './SingleComment';
+import {MainContext} from 'context';
 
 
 const styles = theme => ({
@@ -31,10 +32,9 @@ const styles = theme => ({
 });
 
 const Comments = (props) => {
+    const { user } = useContext(MainContext);
     const {
         classes,
-        defaultUserAvatar,
-        user,
         profileId
     } = props;
     const [comments, setComments] = useState([]);
@@ -117,9 +117,7 @@ const Comments = (props) => {
                             handleSubmitInput={handleSubmitInput(comment.senderId, comment.id)}
                             handleClickExpand={handleClickExpand}
                             comment={comment}
-                            userId={user.id}
                             profileId={profileId}
-                            defaultUserAvatar={defaultUserAvatar}
                             openComments={openComments}
                         />
 
@@ -136,9 +134,7 @@ const Comments = (props) => {
                                             handleSubmitInput={handleSubmitInput(childComment.senderId, comment.id)}
                                             handleClickExpand={handleClickExpand}
                                             comment={childComment}
-                                            userId={user.id}
                                             profileId={profileId}
-                                            defaultUserAvatar={defaultUserAvatar}
                                             openComments={openComments}
                                         />
                                     </div>
@@ -164,9 +160,7 @@ const Comments = (props) => {
 
 Comments.propTypes = {
     classes: PropTypes.object.isRequired,
-    profileId: PropTypes.number.isRequired,
-    defaultUserAvatar: PropTypes.object.isRequired,
-    user: PropTypes.object.isRequired,
+    profileId: PropTypes.number.isRequired
 };
 
 export default withStyles(styles)(Comments);

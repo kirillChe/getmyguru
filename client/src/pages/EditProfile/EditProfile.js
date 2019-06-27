@@ -5,28 +5,34 @@ import { EditProfile as EditProfileComponent } from 'components/EditProfile';
 
 const EditProfile = () => {
     const {
-        allowedLanguages,
-        submitError,
-        values,
-        avatarLocation,
+        state,
+        handleChangeSwitch,
+        handleChangeSelect,
+        handleChangeCheckbox,
+        handleChangeTextField,
+        handleChangeDate,
         validateForm,
-        handleInputChange,
         handleAvatarChange,
         handleSubmit,
-        ages
+        avatarLocation,
+        submitError,
+        profile,
     } = useContext(EditProfileContext);
 
     return (
         <EditProfileComponent
-            allowedLanguages={allowedLanguages}
-            submitError={submitError}
-            values={values}
-            avatarLocation={avatarLocation}
+            state={state}
+            handleChangeSwitch={handleChangeSwitch}
+            handleChangeSelect={handleChangeSelect}
+            handleChangeCheckbox={handleChangeCheckbox}
+            handleChangeTextField={handleChangeTextField}
+            handleChangeDate={handleChangeDate}
             validateForm={validateForm}
-            handleInputChange={handleInputChange}
             handleAvatarChange={handleAvatarChange}
             handleSubmit={handleSubmit}
-            ages={ages}
+            avatarLocation={avatarLocation}
+            submitError={submitError}
+            profile={profile}
         />
     )
 };

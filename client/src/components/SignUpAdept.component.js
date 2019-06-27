@@ -1,63 +1,70 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { Button, TextField, IconButton, InputAdornment } from '@material-ui/core';
-import { Visibility, VisibilityOff, Warning } from '@material-ui/icons';
+import {
+    Button,
+    TextField
+} from '@material-ui/core';
+import { Warning } from '@material-ui/icons';
 import useForceUpdate from 'use-force-update';
 
 import axios from 'axios';
-import {MainContext} from "../context";
+import { MainContext } from 'context';
+import { PasswordField} from 'components/Form';
 
 const styles = theme => ({
-    form: {
+    root: {
         width: '100%', // Fix IE 11 issue.
         // marginTop: theme.spacing.unit,
     },
     submit: {
         marginTop: theme.spacing(3),
-    }
+    },
 });
 
 const SignUpAdept = (props) => {
+    const { language: userLanguage } = useContext(MainContext);
     const {classes} = props;
     const forceUpdate = useForceUpdate();
-    const { language, countryCode } = useContext(MainContext);
     const [showPassword, setShowPassword] = useState(false);
     const [submitError, setSubmitError] = useState(false);
 
-    const [values, setValues] = useState({
+    const [state, setState] = React.useState({
         firstName: '',
         lastName: '',
         email: '',
         password: '',
         userType: 'adept',
-        language,
-        country: countryCode
+        language: userLanguage,
     });
 
-    function validateForm() {
-        return values.email.length > 0 && values.password.length > 0;
-    }
+    const {
+        firstName,
+        lastName,
+        email,
+        password,
+    } = state;
 
     function handleChange (e) {
-        const {name, value} = e.target;
-        setValues({...values, [name]: value})
+        let name = e.target.name;
+        let value = e.target.value;
+
+        setState({...state, [name]: value})
+    }
+
+    function validateForm() {
+        return email.length > 0 && password.length > 0;
     }
 
     function togglePasswordMask () {
         setShowPassword(!showPassword);
     }
 
-    async function handleSubmit (event) {
-        event.preventDefault();
-
+    async function handleSubmit () {
         console.log(`Sign up adept form submitted:`);
-        console.log(values);
-
         try {
-            let response = await axios.post('/api/users', values);
+            let response = await axios.post('/api/users', state);
             console.log('Sign up adept response: ');
-            console.log(response);
             if (response.status === 201) {
                 props.dialogClick();
             } else {
@@ -74,12 +81,12 @@ const SignUpAdept = (props) => {
     }
 
     return (
-        <form className={classes.form} onSubmit={handleSubmit}>
+        <div className={classes.root}>
             <TextField
                 id="firstName"
                 name="firstName"
                 label="First Name"
-                value={values.firstName}
+                value={firstName}
                 onChange={handleChange}
                 margin="normal"
                 variant="outlined"
@@ -89,7 +96,7 @@ const SignUpAdept = (props) => {
                 id="lastName"
                 name="lastName"
                 label="Last Name"
-                value={values.lastName}
+                value={lastName}
                 onChange={handleChange}
                 margin="normal"
                 variant="outlined"
@@ -99,34 +106,19 @@ const SignUpAdept = (props) => {
                 id="email"
                 name="email"
                 label="Email"
-                value={values.email}
+                value={email}
                 onChange={handleChange}
                 margin="normal"
                 variant="outlined"
                 fullWidth
             />
-            <TextField
-                id="password"
-                name="password"
-                label="Password"
-                type={showPassword ? 'text' : 'password'}
-                value={values.password}
+            <PasswordField
+                showPassword={showPassword}
+                name={'password'}
+                value={password}
+                label={'Password'}
+                togglePasswordMask={togglePasswordMask}
                 onChange={handleChange}
-                margin="normal"
-                variant="outlined"
-                fullWidth
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="Toggle password visibility"
-                                onClick={togglePasswordMask}
-                            >
-                                {showPassword ? <Visibility/> : <VisibilityOff/>}
-                            </IconButton>
-                        </InputAdornment>
-                    )
-                }}
             />
             {submitError &&
             <Button
@@ -146,10 +138,11 @@ const SignUpAdept = (props) => {
                 color="primary"
                 className={classes.submit}
                 disabled={!validateForm()}
+                onClick={handleSubmit}
             >
                 Sign Up
             </Button>
-        </form>
+        </div>
     );
 };
 

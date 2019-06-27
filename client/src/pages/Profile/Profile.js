@@ -10,6 +10,7 @@ const Profile = () => {
         tabIndex,
         setTabIndex,
         profile,
+        handleClickEdit,
         avatarLocation,
         handleSubmitInput,
         submitRateUser
@@ -23,6 +24,7 @@ const Profile = () => {
             setTabIndex={setTabIndex}
             avatarLocation={avatarLocation}
             profile={profile}
+            handleClickEdit={handleClickEdit}
             handleSubmitInput={handleSubmitInput}
             submitRateUser={submitRateUser}
         />

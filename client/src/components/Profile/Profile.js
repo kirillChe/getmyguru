@@ -106,7 +106,7 @@ class Transition extends React.Component {
 }
 
 const Profile = (props) => {
-    const { user, defaultUserAvatar } = useContext(MainContext);
+    const { user, countriesList } = useContext(MainContext);
     const [ rating, setRating ] = useState(8);
     const {
         classes,
@@ -117,7 +117,8 @@ const Profile = (props) => {
         profile,
         avatarLocation,
         handleSubmitInput,
-        submitRateUser
+        submitRateUser,
+        handleClickEdit
     } = props;
 
     function onChangeRatingHandler(e, val) {
@@ -144,7 +145,7 @@ const Profile = (props) => {
                                         {profile.firstName} {profile.lastName}
                                     </Typography>
                                     {user.id === profile.id &&
-                                        <Button className={classes.editButton} variant="outlined" href={`/account/profile/${user.id}/edit`}>
+                                        <Button className={classes.editButton} variant="outlined" onClick={handleClickEdit}>
                                             Edit Profile
                                         </Button>
                                     }
@@ -210,7 +211,7 @@ const Profile = (props) => {
                                 </Box>
                             }
                             <Typography variant="body1" bold="true">
-                                {profile.info && profile.info.country} {profile.info && profile.info.phone}
+                                {countriesList[profile.info && profile.info.country]} {profile.info && profile.info.phone}
                             </Typography>
                             <Typography variant="body1">{profile.info && profile.info.description}</Typography>
                         </Grid>
@@ -267,8 +268,6 @@ const Profile = (props) => {
                 {tabIndex === 1 &&
                     <Grid container spacing={4}>
                         <Comments
-                            user={user}
-                            defaultUserAvatar={defaultUserAvatar}
                             profileId={profile.id}
                         />
                     </Grid>
@@ -286,8 +285,9 @@ Profile.propTypes = {
     setTabIndex: PropTypes.func.isRequired,
     profile: PropTypes.object.isRequired,
     avatarLocation: PropTypes.string.isRequired,
+    handleClickEdit: PropTypes.func.isRequired,
     handleSubmitInput: PropTypes.func.isRequired,
-    submitRateUser: PropTypes.func.isRequired
+    submitRateUser: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(Profile);

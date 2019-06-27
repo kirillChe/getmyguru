@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
 import useForceUpdate from 'use-force-update';
-// import ReactRouterPropTypes from 'react-router-prop-types';
+import {withRouter} from 'react-router-dom';
+import ReactRouterPropTypes from 'react-router-prop-types';
 
 import axios from 'axios';
 import * as R from 'ramda';
@@ -11,7 +11,7 @@ import socketIOClient from "socket.io-client";
 import { ProfileContext, MainContext } from 'context';
 
 
-const Profile = ({children}) => {
+const Profile = ({children, history}) => {
     const forceUpdate = useForceUpdate();
     const [showMessageInput, setShowMessageInput] = useState(false);
     const [tabIndex, setTabIndex] = useState(0);
@@ -20,6 +20,15 @@ const Profile = ({children}) => {
     const { defaultUserAvatar, user } = useContext(MainContext);
     // "/account/profile/{profileId}"
     const profileId = R.split('/', window.location.pathname)[3];
+
+    function handleClickEdit () {
+        // event.preventDefault();
+        console.log('Go to edit profile');
+        history.push({
+            pathname: `/account/profile/${user.id}/edit`,
+            state: profile
+        });
+    }
 
     function handleSubmitInput (text) {
         const socket = socketIOClient('/');
@@ -76,8 +85,9 @@ const Profile = ({children}) => {
         setTabIndex,
         profile,
         avatarLocation,
+        handleClickEdit,
         handleSubmitInput,
-        submitRateUser
+        submitRateUser,
     };
 
     return (
@@ -87,6 +97,7 @@ const Profile = ({children}) => {
 };
 
 Profile.propTypes = {
+    history: ReactRouterPropTypes.history.isRequired,
     children: PropTypes.node
 };
 

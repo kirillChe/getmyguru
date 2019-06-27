@@ -267,7 +267,7 @@ const userProfile = async (req, res, next) => {
             where: {
                 id: req.params.id
             },
-            include: ['files', 'info']
+            include: ['files', 'info', 'languages']
         };
 
         user = await User.findOne(filter);
@@ -301,7 +301,8 @@ const userProfile = async (req, res, next) => {
         rating: user.rating / 10,
         ratersCount: ratersCount,
         images: [],
-        info: user.info
+        info: user.info,
+        languages: R.map(R.prop('code'), user.languages)
     };
 
     result = R.merge(

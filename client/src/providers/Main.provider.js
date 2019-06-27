@@ -20,7 +20,8 @@ class Main extends PureComponent {
 
     getBrowserLanguage = () => R.slice(0,2, navigator.language);
 
-    getCountriesList = lang => Object.entries(countries.getNames(lang));
+    // getCountriesList = lang => Object.entries(countries.getNames(lang));
+    getCountriesList = lang => countries.getNames(lang);
 
     updateUser = (state) => {
         this.setState(state);

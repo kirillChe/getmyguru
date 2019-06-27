@@ -3,29 +3,18 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
     Button,
-    TextField,
-    IconButton,
-    InputAdornment,
-    Typography,
-    Switch,
-    Grid
+    TextField
 } from '@material-ui/core';
-import 'date-fns';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-    MuiPickersUtilsProvider,
-    DatePicker,
-} from '@material-ui/pickers';
-import { Visibility, VisibilityOff, Warning } from '@material-ui/icons';
+import { Warning } from '@material-ui/icons';
 import useForceUpdate from 'use-force-update';
 
 import axios from 'axios';
-import * as R from 'ramda';
 import moment from 'moment';
 import { MainContext } from 'context';
+import {DatePicker, Switch, PasswordField} from 'components/Form';
 
 const styles = theme => ({
-    form: {
+    root: {
         width: '100%', // Fix IE 11 issue.
         // marginTop: theme.spacing.unit,
     },
@@ -34,32 +23,14 @@ const styles = theme => ({
     },
 });
 
-const GenderSwitch = withStyles({
-    switchBase: {
-        '&$checked': {
-            color: 'white',
-            '& + $track': {
-                backgroundColor: '#f44336',
-                opacity: 1,
-            },
-        },
-    },
-    track: {
-        backgroundColor: '#3f51b5',
-        opacity: 1,
-    },
-    checked: {},
-})(Switch);
-
 const SignUpGuru = (props) => {
-    const { language, countryCode } = useContext(MainContext);
+    const { language: userLanguage } = useContext(MainContext);
     const {classes} = props;
     const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
     const [submitError, setSubmitError] = useState(false);
 
-    const [values, setValues] = useState({
-        // countries: [],
+    const [state, setState] = React.useState({
         gender: 'male',
         birthDate: moment().startOf('day').subtract(30, 'years').calendar(),
         firstName: '',
@@ -67,35 +38,45 @@ const SignUpGuru = (props) => {
         email: '',
         password: '',
         userType: 'guru',
-        language,
-        country: countryCode
+        language: userLanguage,
     });
 
-    function validateForm() {
-        return values.email.length > 0 && values.password.length > 0;
+    const {
+        gender,
+        birthDate,
+        firstName,
+        lastName,
+        email,
+        password,
+    } = state;
+
+    const handleChangeSwitch = name => e => {
+        setState({ ...state, [name]: e.target.checked ? 'female' : 'male' });
+    };
+
+    const handleChangeDate = name => date => {
+        setState({ ...state, [name]: date });
+    };
+
+    function handleChange (e) {
+        let name = e.target.name;
+        let value = e.target.value;
+
+        setState({...state, [name]: value})
     }
 
-    function handleChange (name, value) {
-        return e => {
-            if (!name || !value) {
-                name = e.target.name;
-                value = e.target.value;
-            }
-
-            setValues({...values, [name]: value})
-        };
+    function validateForm() {
+        return email.length > 0 && password.length > 0;
     }
 
     function togglePasswordMask () {
         setShowPassword(!showPassword);
     }
 
-    async function handleSubmit (event) {
-        event.preventDefault();
-
+    async function handleSubmit () {
         console.log(`Sign up guru form submitted:`);
         try {
-            let response = await axios.post('/api/users', values);
+            let response = await axios.post('/api/users', state);
             console.log('Sign up guru response: ');
             if (response.status === 201) {
                 props.dialogClick();
@@ -113,32 +94,13 @@ const SignUpGuru = (props) => {
     }
 
     return (
-        <form className={classes.form} onSubmit={handleSubmit}>
-            {/*<TextField*/}
-            {/*    id="country"*/}
-            {/*    name="country"*/}
-            {/*    select*/}
-            {/*    value={values.country}*/}
-            {/*    onChange={handleChange()}*/}
-            {/*    SelectProps={{*/}
-            {/*        native: true*/}
-            {/*    }}*/}
-            {/*    margin="normal"*/}
-            {/*    variant="outlined"*/}
-            {/*    fullWidth*/}
-            {/*>*/}
-            {/*    {countriesList.map(option => (*/}
-            {/*        <option key={option[0]} value={option[0]}>*/}
-            {/*            {option[1]}*/}
-            {/*        </option>*/}
-            {/*    ))}*/}
-            {/*</TextField>*/}
+        <div className={classes.root}>
             <TextField
                 id="firstName"
                 name="firstName"
                 label="First Name"
-                value={values.firstName}
-                onChange={handleChange()}
+                value={firstName}
+                onChange={handleChange}
                 margin="normal"
                 variant="outlined"
                 fullWidth
@@ -147,70 +109,44 @@ const SignUpGuru = (props) => {
                 id="lastName"
                 name="lastName"
                 label="Last Name"
-                value={values.lastName}
-                onChange={handleChange()}
+                value={lastName}
+                onChange={handleChange}
                 margin="normal"
                 variant="outlined"
                 fullWidth
             />
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <DatePicker
-                    disableFuture
-                    openTo="year"
-                    format="dd/MM/yyyy"
-                    label="Date of birth"
-                    views={["year", "month", "date"]}
-                    maxDate={moment().startOf('day').subtract(16, 'years').calendar()}
-                    minDate={moment().startOf('day').subtract(99, 'years').calendar()}
-                    value={values.birthDate}
-                    onChange={date => handleChange('birthDate', date)()}
-                />
-            </MuiPickersUtilsProvider>
-            <Typography component="div">
-                <Grid component="label" container alignItems="center" spacing={1}>
-                    <Grid item>Male</Grid>
-                    <Grid item>
-                        <GenderSwitch
-                            checked={values.gender === 'female'}
-                            onChange={e => handleChange('gender', e.target.checked ? 'female' : 'male')()}
-                            name="gender"
-                        />
-                    </Grid>
-                    <Grid item>Female</Grid>
-                </Grid>
-            </Typography>
+            <DatePicker
+                maxDate={moment().startOf('day').subtract(16, 'years').calendar()}
+                minDate={moment().startOf('day').subtract(99, 'years').calendar()}
+                state={birthDate}
+                label={'Date of birth'}
+                name={'birthDate'}
+                onChange={handleChangeDate('birthDate')}
+            />
+            <Switch
+                firstLabel={'Male'}
+                secondLabel={'Female'}
+                checked={gender === 'female'}
+                name={'gender'}
+                onChange={handleChangeSwitch('gender')}
+            />
             <TextField
                 id="email"
                 name="email"
                 label="Email"
-                value={values.email}
-                onChange={handleChange()}
+                value={email}
+                onChange={handleChange}
                 margin="normal"
                 variant="outlined"
                 fullWidth
             />
-            <TextField
-                id="password"
-                name="password"
-                label="Password"
-                type={showPassword ? 'text' : 'password'}
-                value={values.password}
-                onChange={handleChange()}
-                margin="normal"
-                variant="outlined"
-                fullWidth
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="Toggle password visibility"
-                                onClick={togglePasswordMask}
-                            >
-                                {showPassword ? <Visibility/> : <VisibilityOff/>}
-                            </IconButton>
-                        </InputAdornment>
-                    )
-                }}
+            <PasswordField
+                showPassword={showPassword}
+                name={'password'}
+                value={password}
+                label={'Password'}
+                togglePasswordMask={togglePasswordMask}
+                onChange={handleChange}
             />
             {submitError &&
             <Button
@@ -230,10 +166,11 @@ const SignUpGuru = (props) => {
                 color="primary"
                 className={classes.submit}
                 disabled={!validateForm()}
+                onClick={handleSubmit}
             >
                 Sign Up
             </Button>
-        </form>
+        </div>
     );
 };
 

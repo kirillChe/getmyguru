@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -14,6 +14,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import * as moment from 'moment';
 import { MessageInput } from 'components';
+import {MainContext} from 'context';
 
 const styles = () => ({
     text: {
@@ -23,14 +24,13 @@ const styles = () => ({
 });
 
 const SingleComment = (props) => {
+    const { user, defaultUserAvatar } = useContext(MainContext);
     const {
         classes,
         handleClickExpand,
         handleSubmitInput,
         comment,
-        userId,
         profileId,
-        defaultUserAvatar,
         openComments
     } = props;
 
@@ -60,7 +60,7 @@ const SingleComment = (props) => {
                     <Typography variant={"body2"}>
                         {comment.text}
                     </Typography>
-                    {profileId === userId && comment.userId !== userId &&
+                    {profileId === user.id && comment.userId !== user.id &&
                         <Link href="" color="primary" onClick={handleClickReply} >
                             reply
                         </Link>
@@ -87,9 +87,7 @@ SingleComment.propTypes = {
     classes: PropTypes.object.isRequired,
     handleClickExpand: PropTypes.func.isRequired,
     handleSubmitInput: PropTypes.func.isRequired,
-    userId: PropTypes.number.isRequired,
     profileId: PropTypes.number.isRequired,
-    defaultUserAvatar: PropTypes.object.isRequired,
     openComments: PropTypes.object.isRequired,
     comment: PropTypes.object.isRequired
 };

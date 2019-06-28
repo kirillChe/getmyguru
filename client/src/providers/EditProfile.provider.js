@@ -7,17 +7,17 @@ import * as R from 'ramda';
 
 import { MainContext, EditProfileContext } from 'context';
 
-// const ages = R.range(14, 99);
 
 const EditProfile = ({children, history, location}) => {
     const { defaultUserAvatar, user } = useContext(MainContext);
     const [submitError, setSubmitError] = useState(false);
     const profile = location.state;
 
-    const [file, setFile] = useState(null);
+    //const [file, setFile] = useState(null);
     const [avatarLocation, setAvatarLocation] = useState(profile.avatarLocation || defaultUserAvatar[profile.gender]);
 
-    const [state, setState] = React.useState({
+    const defaultState = {
+        file: null,
         firstName: profile.firstName || '',
         lastName: profile.lastName || '',
         gender: profile.gender || 'male',
@@ -33,31 +33,14 @@ const EditProfile = ({children, history, location}) => {
         phone: profile.info.phone || '',
         site: profile.info.site || '',
         languages: profile.languages || [],
-    });
-
-    // const {
-    //     firstName,
-    //     lastName,
-    //     gender,
-    //     email,
-    //     birthDate,
-    //     description,
-    //     competitiveExperience,
-    //     education,
-    //     experience,
-    //     nutritionScheme,
-    //     trainingSystem,
-    //     country,
-    //     phone,
-    //     site,
-    //     languages,
-    // } = state;
+    };
+    const [state, setState] = React.useState(R.clone(defaultState));
 
     const handleChangeDate = name => date => {
         setState({ ...state, [name]: date });
     };
 
-    const handleChangeTextField = e => {
+    const handleChange = e => {
         let {name, value} = e.target;
         setState({...state, [name]: value})
     };
@@ -66,69 +49,9 @@ const EditProfile = ({children, history, location}) => {
         setState({ ...state, [name]: e.target.checked ? 'female' : 'male' });
     };
 
-    // const handleChangeSlider = name => (e, value) => {
-    //     setState({ ...state, [name]: value });
-    // };
-
-    const handleChangeSelect = name => event => {
-        setState({ ...state, [name]: event.target.value });
-    };
-
     const handleChangeCheckbox = name => event => {
         setState({ ...state, [name]: event.target.checked });
     };
-
-
-
-    // const [values, setValues] = useState({
-    //     phone: profile.phone || '',
-    //     language: profile.language || 'en',
-    //     age: profile.age,
-    //     gender: profile.gender || 'male',
-    //     firstName: profile.firstName || '',
-    //     lastName: profile.lastName || '',
-    //     email: profile.email || ''
-    // });
-
-    // const [firstName, setFirstName] = useState(profile.firstName || '');
-    // const [lastName, setLastName] = useState(profile.lastName || '');
-    // const [gender, setGender] = useState(profile.gender || 'male');
-    // const [email, setEmail] = useState(profile.email || '');
-    // const [birthDate, setBirthDate] = useState(profile.birthDate || '');
-    // const [description, setDescription] = useState(profile.info.description || '');
-    // const [competitiveExperience, setCompetitiveExperience] = useState(profile.info.competitiveExperience || '');
-    // const [education, setEducation] = useState(profile.info.education || '');
-    // const [experience, setExperience] = useState(profile.info.experience || '');
-    // const [nutritionScheme, setNutritionScheme] = useState(profile.info.nutritionScheme || false);
-    // const [trainingSystem, setTrainingSystem] = useState(profile.info.trainingSystem || false);
-    // const [country, setCountry] = useState(profile.info.country || '');
-    // const [phone, setPhone] = useState(profile.info.phone || '');
-    // const [site, setSite] = useState(profile.info.site || '');
-    // const [languages, setLanguages] = useState(profile.languages || []);
-
-
-
-    // const [file, setFile] = useState(null);
-    // const [avatarLocation, setAvatarLocation] = useState(profile.avatarLocation || defaultUserAvatar[profile.gender]);
-
-
-    // const setStatesValues = {
-    //     firstName: setFirstName,
-    //     lastName: setLastName,
-    //     gender: setGender,
-    //     email: setEmail,
-    //     birthDate: setBirthDate,
-    //     description: setDescription,
-    //     competitiveExperience: setCompetitiveExperience,
-    //     education: setEducation,
-    //     experience: setExperience,
-    //     nutritionScheme: setNutritionScheme,
-    //     trainingSystem: setTrainingSystem,
-    //     country: setCountry,
-    //     phone: setPhone,
-    //     site: setSite,
-    //     languages: setLanguages
-    // };
 
     function validateForm () {
         //@todo add required validator
@@ -137,18 +60,13 @@ const EditProfile = ({children, history, location}) => {
             state.email.length > 0;
     }
 
-    // function handleInputChange (e) {
-    //     const {name, value} = e.target;
-    //     setValues({...values, [name]: value})
-    // }
-
     function handleAvatarChange (e) {
-        setFile(e.target.files[0]);
+        setState({ ...state, file: e.target.files[0]});
+        //setFile(e.target.files[0]);
         setAvatarLocation(URL.createObjectURL(e.target.files[0]));
     }
 
-    async function handleSubmit (e) {
-        e.preventDefault();
+    async function handleSubmit () {
         const data = new FormData();
         const config = {
             headers: {
@@ -157,9 +75,12 @@ const EditProfile = ({children, history, location}) => {
         };
 
         R.forEachObjIndexed((val, key) => {
+            //don't save empty string value
+            if ('string' === typeof val && R.not(R.trim(val)))
+                val = null;
             data.append(key, val);
         }, state);
-        data.append('file', file);
+        //data.append('file', file);
 
         try {
             let response = await axios.put('/api/users/me', data, config);
@@ -178,10 +99,8 @@ const EditProfile = ({children, history, location}) => {
     const valueState = {
         state,
         handleChangeSwitch,
-        // handleChangeSlider,
-        handleChangeSelect,
         handleChangeCheckbox,
-        handleChangeTextField,
+        handleChange,
         handleChangeDate,
         validateForm,
         handleAvatarChange,

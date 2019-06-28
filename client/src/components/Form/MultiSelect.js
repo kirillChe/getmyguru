@@ -9,6 +9,7 @@ import {
     MenuItem,
     Input
 } from '@material-ui/core';
+import * as R from 'ramda';
 
 const styles = () => ({
     chips: {
@@ -23,7 +24,9 @@ const styles = () => ({
     }
 });
 
+
 const MultiSelect = ({classes, name, state, label, onChange, selectValues}) => {
+    let formattedSelectValues = R.toPairs(selectValues);
     return (
         <FormControl className={classes.selectWidth}>
             <InputLabel htmlFor="select-multiple">{label}</InputLabel>
@@ -31,20 +34,20 @@ const MultiSelect = ({classes, name, state, label, onChange, selectValues}) => {
                 multiple
                 variant="outlined"
                 value={state}
-
+                name={name}
                 onChange={onChange}
                 input={<Input id={name} />}
                 renderValue={selected => (
                     <div className={classes.chips}>
                         {selected.map(value => (
-                            <Chip key={value} label={value} className={classes.chip} />
+                            <Chip key={value} label={selectValues[value]} className={classes.chip} />
                         ))}
                     </div>
                 )}
             >
-                {selectValues.map(name => (
-                    <MenuItem key={name} value={name} >
-                        {name}
+                {formattedSelectValues.map(([key, value]) => (
+                    <MenuItem key={key} value={key} >
+                        {value}
                     </MenuItem>
                 ))}
             </Select>
@@ -58,7 +61,7 @@ MultiSelect.propTypes = {
     state: PropTypes.array.isRequired,
     label: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
-    selectValues: PropTypes.array.isRequired,
+    selectValues: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(MultiSelect);

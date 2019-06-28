@@ -9,7 +9,7 @@ const on = require('await-handler')
 //internal modules
 const filePath = __dirname + '/../../public'
     , helper = require('./helpers/userHelpers')
-    , {User, File, Rating, UserLanguage} = require('../models');
+    , {User, File, Rating, UserLanguage, UserInfo} = require('../models');
 
 const create = async (req, res, next) => {
 
@@ -322,20 +322,27 @@ const userProfile = async (req, res, next) => {
 };
 
 const filtersData = async (req, res, next) => {
-    let languages;
+    let languagesRange, countriesRange;
     try {
-        languages = await UserLanguage.findAll({
+        let languages = await UserLanguage.findAll({
             attributes: [
                 [sequelize.fn('DISTINCT', sequelize.col('code')) ,'code'],
             ],
             raw: true
         });
-        languages = R.map(R.prop('code'), languages);
+        languagesRange = R.map(R.prop('code'), languages);
+        let countries = await UserInfo.findAll({
+            attributes: [
+                [sequelize.fn('DISTINCT', sequelize.col('country')) ,'country'],
+            ],
+            raw: true
+        });
+        countriesRange = R.map(R.prop('country'), countries);
     } catch (e) {
         return next(e);
     }
 
-    return res.json({languages});
+    return res.json({languagesRange, countriesRange});
 };
 
 module.exports = {

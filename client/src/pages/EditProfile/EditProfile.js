@@ -7,9 +7,8 @@ const EditProfile = () => {
     const {
         state,
         handleChangeSwitch,
-        handleChangeSelect,
         handleChangeCheckbox,
-        handleChangeTextField,
+        handleChange,
         handleChangeDate,
         validateForm,
         handleAvatarChange,
@@ -23,9 +22,8 @@ const EditProfile = () => {
         <EditProfileComponent
             state={state}
             handleChangeSwitch={handleChangeSwitch}
-            handleChangeSelect={handleChangeSelect}
             handleChangeCheckbox={handleChangeCheckbox}
-            handleChangeTextField={handleChangeTextField}
+            handleChange={handleChange}
             handleChangeDate={handleChangeDate}
             validateForm={validateForm}
             handleAvatarChange={handleAvatarChange}

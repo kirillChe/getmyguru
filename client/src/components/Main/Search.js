@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -11,6 +11,7 @@ import {Tune, Search as SearchIcon} from '@material-ui/icons';
 import axios from 'axios';
 import * as R from 'ramda';
 
+import { MainContext } from 'context';
 import {Checkbox, Slider, MultiSelect, Switch} from 'components/Form';
 
 const experienceRange = [
@@ -18,7 +19,7 @@ const experienceRange = [
     '2-4',
     '5-10',
     '11+',
-];
+].reduce((res, val) => { res[val] = val; return res; }, {});
 
 const defaultStates = {
     withPhotoOnly: false,
@@ -30,6 +31,7 @@ const defaultStates = {
     age: [16, 99],
     rating: [1, 10],
     gender: 'male',
+    country: [],
     languages: [],
     experience: []
 };
@@ -53,8 +55,8 @@ const styles = theme => ({
     dialog: {
         marginLeft: theme.spacing(3),
         marginRight: theme.spacing(3),
-        [theme.breakpoints.up(650 + theme.spacing(3) * 2)]: {
-            width: 650,
+        [theme.breakpoints.up(700 + theme.spacing(3) * 2)]: {
+            width: 700,
             marginLeft: 'auto',
             marginRight: 'auto',
         },
@@ -66,6 +68,7 @@ const styles = theme => ({
 });
 
 const Search = (props) => {
+    const { countriesList } = useContext(MainContext);
     const {
         classes,
         setCustomFilter,
@@ -75,9 +78,23 @@ const Search = (props) => {
     const [baseSearch, setBaseSearch] = useState('');
     const [filtersData, setFiltersData] = useState({});
     const [showFilters, setShowFilters] = useState(false);
-
     const [state, setState] = React.useState(R.clone(defaultStates));
 
+    //@todo find list of languages per lang
+    filtersData.languagesRange = {
+        en: 'English',
+        ru: 'Russian',
+        es: 'Spanish',
+        il: 'Hebrew',
+    };
+    //convert array with codes to object with human readable values
+    let getReadableValues = (donorObj, arr) => {
+        let result = {};
+        R.forEach(v => {
+            result[v] = donorObj[v];
+        }, arr);
+        return result;
+    };
     const {
         withPhotoOnly,
         genderNoMatter,
@@ -89,7 +106,8 @@ const Search = (props) => {
         rating,
         gender,
         languages,
-        experience
+        experience,
+        country
     } = state;
 
     const handleChangeSwitch = name => e => {
@@ -100,8 +118,10 @@ const Search = (props) => {
         setState({ ...state, [name]: value });
     };
 
-    const handleChangeSelect = name => event => {
-        setState({ ...state, [name]: event.target.value });
+    const handleChange = e => {
+        let {name, value} = e.target;
+        console.log('222222222222', e.target);
+        setState({...state, [name]: value})
     };
 
     const handleChangeCheckbox = name => event => {
@@ -232,11 +252,12 @@ const Search = (props) => {
                                     onChange={handleChangeCheckbox('withPhotoOnly')}
                                     label={'Only with photo'}
                                 />
-                                <Checkbox
-                                    name="competitiveExperience"
-                                    state={competitiveExperience}
-                                    onChange={handleChangeCheckbox('competitiveExperience')}
-                                    label={'Has competitive experience'}
+                                <MultiSelect
+                                    name={'country'}
+                                    state={country}
+                                    label={'Country'}
+                                    onChange={handleChange}
+                                    selectValues={getReadableValues(countriesList, filtersData.countriesRange || [])}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -244,14 +265,14 @@ const Search = (props) => {
                                     name={'languages'}
                                     state={languages}
                                     label={'Language'}
-                                    onChange={handleChangeSelect('languages')}
-                                    selectValues={filtersData.languages}
+                                    onChange={handleChange}
+                                    selectValues={filtersData.languagesRange}
                                 />
                                 <MultiSelect
                                     name={'experience'}
                                     state={experience}
                                     label={'Experience (years)'}
-                                    onChange={handleChangeSelect('experience')}
+                                    onChange={handleChange}
                                     selectValues={experienceRange}
                                 />
                                 <Checkbox
@@ -265,6 +286,12 @@ const Search = (props) => {
                                     state={trainingSystem}
                                     onChange={handleChangeCheckbox('trainingSystem')}
                                     label={'Prepare training system'}
+                                />
+                                <Checkbox
+                                    name="competitiveExperience"
+                                    state={competitiveExperience}
+                                    onChange={handleChangeCheckbox('competitiveExperience')}
+                                    label={'Has competitive experience'}
                                 />
                                 <Checkbox
                                     name="education"

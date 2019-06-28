@@ -14,19 +14,20 @@ import { MainContext } from 'context';
 
 import {Checkbox, MultiSelect, Switch, DatePicker, Select} from 'components/Form';
 
+//must be an object
 const experienceRange = [
     '0-1',
     '2-4',
     '5-10',
     '11+',
-];
+].reduce((res, val) => { res[val] = val; return res; }, {});
 
-const languagesRange = [
-    'en',
-    'ru',
-    'es',
-    'il',
-];
+const languagesRange = {
+    en: 'English',
+    ru: 'Russian',
+    es: 'Spanish',
+    il: 'Hebrew',
+};
 
 
 const styles = theme => ({
@@ -58,9 +59,8 @@ const EditProfile = (props) => {
         classes,
         state,
         handleChangeSwitch,
-        handleChangeSelect,
         handleChangeCheckbox,
-        handleChangeTextField,
+        handleChange,
         handleChangeDate,
         validateForm,
         handleAvatarChange,
@@ -126,7 +126,7 @@ const EditProfile = (props) => {
                             name="description"
                             label="Description"
                             value={description}
-                            onChange={handleChangeTextField}
+                            onChange={handleChange}
                             margin="normal"
                             variant="outlined"
                             fullWidth
@@ -162,7 +162,7 @@ const EditProfile = (props) => {
                             name="firstName"
                             label="First Name"
                             value={firstName}
-                            onChange={handleChangeTextField}
+                            onChange={handleChange}
                             margin="normal"
                             variant="outlined"
                             fullWidth
@@ -172,22 +172,22 @@ const EditProfile = (props) => {
                             name="lastName"
                             label="Last Name"
                             value={lastName}
-                            onChange={handleChangeTextField}
+                            onChange={handleChange}
                             margin="normal"
                             variant="outlined"
                             fullWidth
                         />
                         <MultiSelect
+                            selectValues={languagesRange}
+                            label={'Languages'}
+                            onChange={handleChange}
                             name={'languages'}
                             state={languages}
-                            label={'Languages'}
-                            onChange={handleChangeSelect('languages')}
-                            selectValues={languagesRange}
                         />
                         <Select
-                            selectValues={Object.entries(countriesList)}
+                            selectValues={countriesList}
                             label={'Country'}
-                            onChange={handleChangeTextField}
+                            onChange={handleChange}
                             name={'country'}
                             state={country}
                         />
@@ -196,7 +196,7 @@ const EditProfile = (props) => {
                             name="email"
                             label="Email"
                             value={email}
-                            onChange={handleChangeTextField}
+                            onChange={handleChange}
                             margin="normal"
                             variant="outlined"
                             fullWidth
@@ -206,7 +206,7 @@ const EditProfile = (props) => {
                             name="phone"
                             label="Phone"
                             value={phone}
-                            onChange={handleChangeTextField}
+                            onChange={handleChange}
                             margin="normal"
                             variant="outlined"
                             fullWidth
@@ -218,7 +218,7 @@ const EditProfile = (props) => {
                             name="site"
                             label="Site"
                             value={site}
-                            onChange={handleChangeTextField}
+                            onChange={handleChange}
                             margin="normal"
                             variant="outlined"
                             fullWidth
@@ -226,7 +226,7 @@ const EditProfile = (props) => {
                         <Select
                             selectValues={experienceRange}
                             label={'Experience'}
-                            onChange={handleChangeTextField}
+                            onChange={handleChange}
                             name={'experience'}
                             state={experience}
                         />
@@ -238,7 +238,7 @@ const EditProfile = (props) => {
                             name="competitiveExperience"
                             label="Competitive Experience"
                             value={competitiveExperience}
-                            onChange={handleChangeTextField}
+                            onChange={handleChange}
                             margin="normal"
                             variant="outlined"
                             fullWidth
@@ -251,7 +251,7 @@ const EditProfile = (props) => {
                             name="education"
                             label="Education"
                             value={education}
-                            onChange={handleChangeTextField}
+                            onChange={handleChange}
                             margin="normal"
                             variant="outlined"
                             fullWidth
@@ -280,7 +280,7 @@ const EditProfile = (props) => {
                             </Button>
                         }
                         <Button
-                            onSubmit={handleSubmit}
+                            onClick={handleSubmit}
                             fullWidth
                             variant="contained"
                             color="primary"
@@ -300,9 +300,8 @@ EditProfile.propTypes = {
     classes: PropTypes.object.isRequired,
     state: PropTypes.object.isRequired,
     handleChangeSwitch: PropTypes.func.isRequired,
-    handleChangeSelect: PropTypes.func.isRequired,
     handleChangeCheckbox: PropTypes.func.isRequired,
-    handleChangeTextField: PropTypes.func.isRequired,
+    handleChange: PropTypes.func.isRequired,
     handleChangeDate: PropTypes.func.isRequired,
     validateForm: PropTypes.func.isRequired,
     handleAvatarChange: PropTypes.func.isRequired,

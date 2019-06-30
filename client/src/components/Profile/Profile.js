@@ -17,7 +17,8 @@ import {
     Slide
 } from '@material-ui/core';
 import Slider from '@material-ui/lab/Slider';
-import {Comment, PhotoLibrary} from '@material-ui/icons';
+import {Comment, PhotoLibrary, Add} from '@material-ui/icons';
+import {useDropzone} from 'react-dropzone';
 
 import { MainContext } from 'context';
 import { MessageInput } from 'components';
@@ -25,6 +26,9 @@ import { Comments } from 'components/Comments';
 // import messages from './Profile.messages';
 
 const styles = theme => ({
+    cont: {
+        backgroundColor: '#1890ff'
+    },
     editButton: {
         marginLeft: 10,
         marginTop: 0,
@@ -33,6 +37,18 @@ const styles = theme => ({
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+    },
+    cardAdd: {
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#fafafa',
+        color: '#bdbdbd',
+    },
+    cardMediaAdd: {
+
+        paddingTop: '50%', // 16:9
+        paddingBottom: '50%', // 16:9
     },
     cardMedia: {
         paddingTop: '100%', // 16:9
@@ -108,6 +124,15 @@ class Transition extends React.Component {
 const Profile = (props) => {
     const { user, countriesList } = useContext(MainContext);
     const [ rating, setRating ] = useState(8);
+    const [files, setFiles] = useState([]);
+    const {getRootProps, getInputProps} = useDropzone({
+        accept: 'image/*',
+        onDrop: acceptedFiles => {
+            setFiles(acceptedFiles.map(file => Object.assign(file, {
+                preview: URL.createObjectURL(file)
+            })));
+        }
+    });
     const {
         classes,
         showMessageInput,
@@ -251,8 +276,29 @@ const Profile = (props) => {
                                     </Card>
                                 </Grid>
                             ))}
+                            <Grid item key={'addImage'} xs={4}>
+                                <Card className={classes.cardAdd} {...getRootProps()}>
+                                    {/*<CardActionArea className={classes.cardMediaAdd} >*/}
+                                    {/*    <section className="container" >*/}
+                                    {/*        <div >*/}
+                                                <input {...getInputProps()} />
+                                                <div>
+                                                    <Add />
+                                                    <Typography
+                                                        align={'center'}
+                                                        variant="h4"
+                                                        component="h4"
+                                                    >
+                                                        Add photos
+                                                    </Typography>
+                                                </div>
+                                    {/*        </div>*/}
+                                    {/*    </section>*/}
+                                    {/*</CardActionArea>*/}
+                                </Card>
+                            </Grid>
                         </Grid>
-                        {(!profile.images || profile.images.length === 0) &&
+                        {(!profile.images || profile.images.length === 0) && profile.id !== user.id &&
                             <Typography
                                 variant="h4"
                                 component="h4"

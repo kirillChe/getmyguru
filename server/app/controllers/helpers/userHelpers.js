@@ -3,6 +3,62 @@ const R = require('ramda');
 const moment = require('moment');
 const {User, UserInfo, UserLanguage, File} = require('../../models');
 
+const updateUserWithAssociations = async ({user, userData}) => {
+    console.dir(userData, {colors: true, depth: 3});
+    // declare supported models
+    let userProps = {};
+    let userInfoProps = {};
+    let userLanguageProps = [];
+
+    // get supported models keys
+    let userKeys = R.keys(User.rawAttributes);
+    let userInfoKeys = R.keys(UserInfo.rawAttributes);
+
+    // iterate all userData and fill the correct model
+    R.forEachObjIndexed((val, key) => {
+        console.log('_________________HERE: 18________________________', typeof val, key);
+        R.contains(key, userKeys) ?
+            userProps[key] = val :
+            R.contains(key, userInfoKeys) ?
+                userInfoProps[key] = val :
+                key === 'languages' ?
+                    userLanguageProps = R.map(v => ({userId: user.id, code: v}), val) :
+                    null;
+    }, userData);
+
+    console.log('___________________');
+    console.log('___________________');
+    console.log('userHelpers.js :30', userProps);
+    console.log('userHelpers.js :30', userInfoProps);
+    console.log('userHelpers.js :30', userLanguageProps);
+    console.log('___________________');
+    console.log('___________________');
+
+    //remove all existing languages of current user
+    await UserLanguage.destroy({where: { userId: user.id }});
+
+    //create new languages of current user
+    await UserLanguage.bulkCreate(userLanguageProps);
+
+    //update userInfo
+    await UserInfo.update(userInfoProps, {where: { userId: user.id }});
+
+    //update user
+    await user.update(userProps);
+
+
+
+    // userProps.info = userInfoProps;
+    // userProps.languages = userLanguageProps;
+    //
+    // let result = await user.update(userProps);
+    // console.log('___________________');
+    // console.log('___________________');
+    // console.log(result);
+    // console.log('___________________');
+    // console.log('___________________');
+};
+
 function getBaseSearchFilter (filter, rawFilters) {
     filter.where = R.merge(
         filter.where,
@@ -137,5 +193,6 @@ const prepareGuruFilter = ({filter, rawFilters}) => {
 };
 
 module.exports = {
+    updateUserWithAssociations,
     prepareGuruFilter
 };

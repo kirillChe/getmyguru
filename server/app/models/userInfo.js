@@ -20,12 +20,18 @@ module.exports = (sequelize, DataTypes) => {
         nutritionScheme: {
             type: DataTypes.TINYINT(1),
             allowNull: false,
-            defaultValue: false
+            defaultValue: false,
+            get() {
+                return Boolean(this.getDataValue('nutritionScheme'));
+            }
         },
         trainingSystem: {
             type: DataTypes.TINYINT(1),
             allowNull: false,
-            defaultValue: false
+            defaultValue: false,
+            get() {
+                return Boolean(this.getDataValue('trainingSystem'));
+            }
         },
         phone: {
             type: DataTypes.STRING(20)

@@ -67,7 +67,6 @@ const EditProfile = (props) => {
         handleSubmit,
         avatarLocation,
         submitError,
-        profile,
     } = props;
 
     const {

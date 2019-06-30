@@ -7,7 +7,8 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 isAlpha: true,
                 len: [2,2]
-            }
+            },
+            allowNull: false
         },
         updatedAt: {
             type: DataTypes.DATE,

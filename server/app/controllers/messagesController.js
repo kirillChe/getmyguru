@@ -40,7 +40,7 @@ const findById = async (req, res, next) => {
 };
 
 const conversationsPartners = async (req, res, next) => {
-    let ownerId = req.session.passport && req.session.passport.user && req.session.passport.user.id;
+    let ownerId = req.session.passport && req.session.passport.user;
     if (!ownerId)
         return res.sendStatus(400);
 
@@ -131,7 +131,7 @@ const conversationsPartners = async (req, res, next) => {
 };
 
 const conversation = async (req, res, next) => {
-    let ownerId = req.session.passport && req.session.passport.user && req.session.passport.user.id;
+    let ownerId = req.session.passport && req.session.passport.user;
     let partnerId = req.query.partnerId;
     if (!ownerId || !partnerId)
         return res.sendStatus(400);

@@ -15,7 +15,6 @@ const EditProfile = () => {
         handleSubmit,
         avatarLocation,
         submitError,
-        profile,
     } = useContext(EditProfileContext);
 
     return (
@@ -30,7 +29,6 @@ const EditProfile = () => {
             handleSubmit={handleSubmit}
             avatarLocation={avatarLocation}
             submitError={submitError}
-            profile={profile}
         />
     )
 };

@@ -64,19 +64,29 @@ const findById = async (req, res, next) => {
 };
 
 const update = async (req, res, next) => {
-    //user can update himself only if he is not admin
-    if (req.params.id !== 'me' && req.session.passport.user.userType !== 'admin')
-        return res.status(400);
+    //user can update himself only if he is not an admin
+    if (req.params.id !== 'me' && req.session.passport.user.userType !== 'admin') {
+        try {
+            let currentUser = await User.findByPk(req.session.passport.user);
+            if (currentUser.type !== 'admin')
+                return res.status(400).json({errorName: 'SCOPE_ERROR'});
+        } catch (e) {
+            return next(e);
+        }
+    }
 
-    let userId = req.params.id === 'me' ? req.session.passport.user.id : req.params.id;
+    let userId = req.params.id === 'me' ? req.session.passport.user : req.params.id;
 
-    let [err, user] = await on(User.findByPk(userId));
-    console.log('usersController.js :44', err, user && user.id);
-    if (err)
-        return next(err);
+    let user = null;
+    try {
+        user = await User.findByPk(userId);
 
-    if (!user)
-        return res.sendStatus(404);
+        if (!user)
+            return res.sendStatus(404);
+
+    } catch (e) {
+        return next(e);
+    }
 
     let busboy = new Busboy({headers: req.headers});
     let userData = {}, fileProvided = false;
@@ -84,10 +94,16 @@ const update = async (req, res, next) => {
 
     busboy.on('field', (fieldname, val) => {
         console.log('Field [' + fieldname + ']: value: ' + val);
-        userData[fieldname] = val;
+
+        if (fieldname === 'userData') {
+            try{
+                userData = JSON.parse(val);
+            } catch (e) {
+                return next(e);
+            }
+        }
     });
 
-    //@todo add image size validation
     busboy.on('file', async (fieldname, file, filename, encoding, mimetype) => {
         fileProvided = true;
 
@@ -130,7 +146,6 @@ const update = async (req, res, next) => {
             try {
                 let file = await File.create(data);
                 userData.avatar = file.id;
-                userData.avatarLocation = file.location;
 
             } catch (e) {
                 console.log('Failed to create file model (avatar): ', e);
@@ -153,10 +168,8 @@ const update = async (req, res, next) => {
             em.on('uploadFinished', async () => {
                 //update user model
                 try {
-                    let updatedUser = await user.update(userData);
-                    updatedUser.setDataValue('avatarLocation', userData.avatarLocation || null);
-
-                    return res.status(200).json(updatedUser);
+                    await helper.updateUserWithAssociations({user, userData});
+                    res.sendStatus(201);
 
                 } catch (e) {
                     console.log('Failed to update user model: ', e);
@@ -166,10 +179,8 @@ const update = async (req, res, next) => {
         } else {
             //update user model
             try {
-                let updatedUser = await user.update(userData);
-                updatedUser.setDataValue('avatarLocation', userData.avatarLocation || null);
-
-                return res.status(200).json(updatedUser);
+                await helper.updateUserWithAssociations({user, userData});
+                res.sendStatus(201);
             } catch (e) {
                 console.log('Failed to update user model: ', e);
                 next(e);

@@ -13,11 +13,10 @@ const EditProfile = ({children, history, location}) => {
     const [submitError, setSubmitError] = useState(false);
     const profile = location.state;
 
-    //const [file, setFile] = useState(null);
+    const [file, setFile] = useState(null);
     const [avatarLocation, setAvatarLocation] = useState(profile.avatarLocation || defaultUserAvatar[profile.gender]);
 
     const defaultState = {
-        file: null,
         firstName: profile.firstName || '',
         lastName: profile.lastName || '',
         gender: profile.gender || 'male',
@@ -61,8 +60,7 @@ const EditProfile = ({children, history, location}) => {
     }
 
     function handleAvatarChange (e) {
-        setState({ ...state, file: e.target.files[0]});
-        //setFile(e.target.files[0]);
+        setFile(e.target.files[0]);
         setAvatarLocation(URL.createObjectURL(e.target.files[0]));
     }
 
@@ -74,17 +72,15 @@ const EditProfile = ({children, history, location}) => {
             }
         };
 
-        R.forEachObjIndexed((val, key) => {
-            //don't save empty string value
-            if ('string' === typeof val && R.not(R.trim(val)))
-                val = null;
-            data.append(key, val);
+        let userData = R.map(prop => {
+            return ('string' === typeof prop && R.not(R.trim(prop))) ? null : prop;
         }, state);
-        //data.append('file', file);
+        data.append('userData', JSON.stringify(userData));
+        data.append('file', file);
 
         try {
             let response = await axios.put('/api/users/me', data, config);
-            if (response.status === 200) {
+            if (response.status === 201) {
                 history.push(`/account/profile/${user.id}`);
             } else {
                 setSubmitError(true);
@@ -107,7 +103,6 @@ const EditProfile = ({children, history, location}) => {
         handleSubmit,
         avatarLocation,
         submitError,
-        profile,
     };
 
     return (

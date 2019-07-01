@@ -23,7 +23,7 @@ const styles = theme => ({
 });
 
 const SignUpAdept = (props) => {
-    const { language: userLanguage } = useContext(MainContext);
+    const { language: userLanguage, countryCode } = useContext(MainContext);
     const {classes} = props;
     const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
@@ -36,13 +36,14 @@ const SignUpAdept = (props) => {
         password: '',
         userType: 'adept',
         language: userLanguage,
+        country: countryCode
     });
 
     const {
         firstName,
         lastName,
         email,
-        password,
+        password
     } = state;
 
     function handleChange (e) {

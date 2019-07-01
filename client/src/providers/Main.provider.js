@@ -64,7 +64,6 @@ class Main extends PureComponent {
 
     async componentDidMount() {
         try {
-            await this.getUserCountry();
             await this.getUserData();
         } catch (error) {
             console.log('Get user: no user: ', error);
@@ -74,6 +73,8 @@ class Main extends PureComponent {
                 user: {}
             });
         }
+        if (!this.state.loggedIn)
+            await this.getUserCountry();
     }
 
     state = {

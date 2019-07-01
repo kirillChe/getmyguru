@@ -1,5 +1,4 @@
 const on = require('await-handler')
-    , Op = require('sequelize').Op
     , R = require('ramda')
     , {File, User} = require('../models');
 
@@ -47,23 +46,17 @@ const userImages = async (req, res, next) => {
             where: {
                 id: req.params.id
             },
-            include: [{
-                model: File,
-                as: 'files',
-                where: {
-                    id: {
-                        [Op.ne]: {
-                            [Op.col]: 'User.avatar'
-                        }
-                    }
-                }
-            }]
+            include: ['files']
         };
         let user = await User.findOne(filter);
-        let images = R.map(file => ({
-            id: file.id,
-            url: file.location
-        }), user && user.files || []);
+        let images = [];
+        R.forEach(file => {
+            if (file.id !== user.id)
+                images.push({
+                    id: file.id,
+                    url: file.location
+                });
+        }, user && user.files || []);
 
         res.status(200).json(images);
     } catch (e) {

@@ -1,11 +1,10 @@
 'use strict';
 
-const Busboy = require('busboy');
-const path = require('path');
-const fs = require('fs');
-const on = require('await-handler');
-const filePath = __dirname + '/../../public';
-const R = require('ramda');
+const Busboy = require('busboy')
+    , path = require('path')
+    , fs = require('fs')
+    , filePath = __dirname + '/../../public'
+    , R = require('ramda');
 
 module.exports = (sequelize, DataTypes) => {
     const File = sequelize.define('File', {
@@ -59,12 +58,12 @@ module.exports = (sequelize, DataTypes) => {
                     userId,
                     location: `/api/public/${name}`
                 };
-                let [err, file] = await on(File.upsert(data));
-                if (err) {
-                    console.log('Failed to create file model: ', err);
+                try{
+                    let file = await File.upsert(data);
+                    console.log('File model is created successfully: fileId: ', file);
+                }catch (e) {
+                    console.log('Failed to create file model: ', e);
                     fs.unlinkSync(saveTo);
-                } else {
-                    console.log('File model is created successfully: fileId: ', file.id);
                 }
             });
             file.pipe(fs.createWriteStream(saveTo));

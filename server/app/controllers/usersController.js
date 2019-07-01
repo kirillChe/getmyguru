@@ -28,6 +28,25 @@ const create = async (req, res, next) => {
         }
     );
 
+    try {
+        let user = await User.create(userData, {
+            include: [
+                {
+                    association: User.associations.languages,
+                    as: 'languages'
+                },
+                {
+                    association: User.associations.info,
+                    as: 'info'
+                }
+            ]
+        });
+
+        res.status(201).json(user);
+    }catch (e) {
+        next(e);
+    }
+
     let [err, user] = await on(User.create(userData, {
         include: [
             {

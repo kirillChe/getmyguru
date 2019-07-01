@@ -24,7 +24,7 @@ const styles = theme => ({
 });
 
 const SignUpGuru = (props) => {
-    const { language: userLanguage } = useContext(MainContext);
+    const { language: userLanguage, countryCode } = useContext(MainContext);
     const {classes} = props;
     const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
@@ -39,6 +39,7 @@ const SignUpGuru = (props) => {
         password: '',
         userType: 'guru',
         language: userLanguage,
+        country: countryCode
     });
 
     const {

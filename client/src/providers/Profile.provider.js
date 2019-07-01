@@ -91,7 +91,7 @@ const Profile = ({children, history}) => {
         try {
             const response = await axios.get(`/api/users/userProfile/${id}`);
             setProfile(response.data);
-            setAvatarLocation(response.data.avatarLocation || defaultUserAvatar[response.data.gender]);
+            setAvatarLocation(response.data.avatarLocation || defaultUserAvatar[response.data.gender || 'male']);
         } catch (e) {
             console.log('Profile.js : cannot get profile: ', e);
             throw e;

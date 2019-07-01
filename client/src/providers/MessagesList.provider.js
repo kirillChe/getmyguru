@@ -62,7 +62,7 @@ class MessagesList extends Component{
         try {
             let response = await axios.get('/api/messages/conversationsPartners');
 
-            if (response.data) {
+            if (response.status === 200 && response.data && response.data.length > 0) {
                 this.setState({partners: response.data});
 
                 if (!this.state.selectedPartnerId) {

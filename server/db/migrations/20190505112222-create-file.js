@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
-    up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('Files', {
+    up: async (queryInterface, Sequelize) => {
+        await queryInterface.createTable('Files', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
@@ -31,6 +31,15 @@ module.exports = {
                 defaultValue: Sequelize.NOW
             }
         });
+
+        return queryInterface.addIndex(
+            'Files',
+            ['location'],
+            {
+                indexName: 'uniqImage',
+                unique: true
+            }
+        );
     },
     down: (queryInterface) => {
         return queryInterface.dropTable('Files');

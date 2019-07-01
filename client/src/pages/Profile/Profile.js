@@ -13,7 +13,11 @@ const Profile = () => {
         handleClickEdit,
         avatarLocation,
         handleSubmitInput,
-        submitRateUser
+        submitRateUser,
+        profileImages,
+        getRootProps,
+        getInputProps,
+        removeImage
     } = useContext(ProfileContext);
 
     return (
@@ -27,6 +31,10 @@ const Profile = () => {
             handleClickEdit={handleClickEdit}
             handleSubmitInput={handleSubmitInput}
             submitRateUser={submitRateUser}
+            profileImages={profileImages}
+            getRootProps={getRootProps}
+            getInputProps={getInputProps}
+            removeImage={removeImage}
         />
     )
 };

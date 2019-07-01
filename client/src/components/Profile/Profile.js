@@ -14,21 +14,17 @@ import {
     Card,
     CardActionArea,
     CardMedia,
-    Slide
+    Slide,
+    IconButton
 } from '@material-ui/core';
 import Slider from '@material-ui/lab/Slider';
-import {Comment, PhotoLibrary, Add} from '@material-ui/icons';
-import {useDropzone} from 'react-dropzone';
+import {Comment, PhotoLibrary, Add, Delete} from '@material-ui/icons';
 
 import { MainContext } from 'context';
 import { MessageInput } from 'components';
 import { Comments } from 'components/Comments';
-// import messages from './Profile.messages';
 
 const styles = theme => ({
-    cont: {
-        backgroundColor: '#1890ff'
-    },
     editButton: {
         marginLeft: 10,
         marginTop: 0,
@@ -44,11 +40,6 @@ const styles = theme => ({
         flexDirection: 'column',
         backgroundColor: '#fafafa',
         color: '#bdbdbd',
-    },
-    cardMediaAdd: {
-
-        paddingTop: '50%', // 16:9
-        paddingBottom: '50%', // 16:9
     },
     cardMedia: {
         paddingTop: '100%', // 16:9
@@ -111,7 +102,7 @@ const styles = theme => ({
     content: {
         marginTop: theme.spacing(2),
         padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
-    },
+    }
 });
 
 class Transition extends React.Component {
@@ -123,16 +114,6 @@ class Transition extends React.Component {
 
 const Profile = (props) => {
     const { user, countriesList } = useContext(MainContext);
-    const [ rating, setRating ] = useState(8);
-    const [files, setFiles] = useState([]);
-    const {getRootProps, getInputProps} = useDropzone({
-        accept: 'image/*',
-        onDrop: acceptedFiles => {
-            setFiles(acceptedFiles.map(file => Object.assign(file, {
-                preview: URL.createObjectURL(file)
-            })));
-        }
-    });
     const {
         classes,
         showMessageInput,
@@ -143,8 +124,13 @@ const Profile = (props) => {
         avatarLocation,
         handleSubmitInput,
         submitRateUser,
-        handleClickEdit
+        handleClickEdit,
+        profileImages,
+        getRootProps,
+        getInputProps,
+        removeImage
     } = props;
+    const [ rating, setRating ] = useState(profile.rating || 8);
 
     function onChangeRatingHandler(e, val) {
         setRating(val);
@@ -264,41 +250,42 @@ const Profile = (props) => {
                 {tabIndex === 0 &&
                     <div>
                         <Grid container spacing={4} >
-                            {profile.images && profile.images.map(image => (
-                                <Grid item key={image} xs={4}>
+                            {profileImages.map(image => (
+                                <Grid item key={image.id} xs={4}>
                                     <Card className={classes.card}>
+                                        {profile.id === user.id &&
+                                            <IconButton color="inherit" aria-label="Icon" onClick={removeImage(image.id)}>
+                                                <Delete/>
+                                            </IconButton>
+                                        }
                                         <CardActionArea>
                                             <CardMedia
                                                 className={classes.cardMedia}
-                                                image={image}
+                                                image={image.url}
                                             />
                                         </CardActionArea>
                                     </Card>
                                 </Grid>
                             ))}
-                            <Grid item key={'addImage'} xs={4}>
-                                <Card className={classes.cardAdd} {...getRootProps()}>
-                                    {/*<CardActionArea className={classes.cardMediaAdd} >*/}
-                                    {/*    <section className="container" >*/}
-                                    {/*        <div >*/}
-                                                <input {...getInputProps()} />
-                                                <div>
-                                                    <Add />
-                                                    <Typography
-                                                        align={'center'}
-                                                        variant="h4"
-                                                        component="h4"
-                                                    >
-                                                        Add photos
-                                                    </Typography>
-                                                </div>
-                                    {/*        </div>*/}
-                                    {/*    </section>*/}
-                                    {/*</CardActionArea>*/}
-                                </Card>
-                            </Grid>
+                            {profile.id === user.id &&
+                                <Grid item key={'addImage'} xs={4}>
+                                    <Card className={classes.cardAdd} {...getRootProps()}>
+                                        <input {...getInputProps()} />
+                                        <div>
+                                            <Add/>
+                                            <Typography
+                                                align={'center'}
+                                                variant="h4"
+                                                component="h4"
+                                            >
+                                                Add photos
+                                            </Typography>
+                                        </div>
+                                    </Card>
+                                </Grid>
+                            }
                         </Grid>
-                        {(!profile.images || profile.images.length === 0) && profile.id !== user.id &&
+                        {(profileImages.length === 0) && profile.id !== user.id &&
                             <Typography
                                 variant="h4"
                                 component="h4"
@@ -331,9 +318,14 @@ Profile.propTypes = {
     setTabIndex: PropTypes.func.isRequired,
     profile: PropTypes.object.isRequired,
     avatarLocation: PropTypes.string.isRequired,
+    profileImages: PropTypes.array.isRequired,
     handleClickEdit: PropTypes.func.isRequired,
     handleSubmitInput: PropTypes.func.isRequired,
     submitRateUser: PropTypes.func.isRequired,
+    getRootProps: PropTypes.func.isRequired,
+    getInputProps: PropTypes.func.isRequired,
+    removeImage: PropTypes.func.isRequired,
+    // getUserImages: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(Profile);

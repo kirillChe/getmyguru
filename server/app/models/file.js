@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const on = require('await-handler');
 const filePath = __dirname + '/../../public';
+const R = require('ramda');
 
 module.exports = (sequelize, DataTypes) => {
     const File = sequelize.define('File', {
@@ -22,26 +23,33 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.NOW,
             allowNull: false
         }
-    }, {});
+    }, {
+        indexes: [
+            {
+                unique: true,
+                fields: ['location']
+            }
+        ]
+    });
 
     File.associate = ({User}) => {
         File.belongsTo(User, {as: 'user'})
     };
 
     File.beforeDestroy(file => {
-        fs.unlink(filePath + file.location, err => {
+        let filename = R.replace('/api/public/', '', file.location);
+        fs.unlink(path.join(filePath, filename), err => {
             if (err)
                 throw new Error('Failed to delete file: ', err);
         });
     });
 
-    File.upload = function (ctx, cb) {
+    File.upload = ctx => {
         let {userId, req, res} = ctx;
         let busboy = new Busboy({headers: req.headers});
         //@todo add image size validation
         busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
-            let date = Date.now();
-            let name = `${userId}-${date}`;
+            let name = `${userId}-${filename}`;
             let saveTo = path.join(filePath, name);
             file.on('error', (error) => {
                 console.log('Upload file failed with error: ', error);

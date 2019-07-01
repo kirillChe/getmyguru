@@ -1,7 +1,7 @@
-const on = require('await-handler');
-const R = require('ramda');
-const Op = require('sequelize').Op;
-const { Comment, User, File } = require('../models');
+const on = require('await-handler')
+    , R = require('ramda')
+    , Op = require('sequelize').Op
+    , { Comment, User, File } = require('../models');
 
 const create = async (req, res, next) => {
     let [err, comment] = await on(Comment.create(req.body));

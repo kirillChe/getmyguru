@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import useForceUpdate from 'use-force-update';
 import {withRouter} from 'react-router-dom';
 import ReactRouterPropTypes from 'react-router-prop-types';
+import {useDropzone} from 'react-dropzone';
 
 import axios from 'axios';
 import * as R from 'ramda';
@@ -16,13 +17,46 @@ const Profile = ({children, history}) => {
     const [showMessageInput, setShowMessageInput] = useState(false);
     const [tabIndex, setTabIndex] = useState(0);
     const [profile, setProfile] = useState({});
+    const [profileImages, setProfileImages] = useState([]);
     const [avatarLocation, setAvatarLocation] = useState('');
     const { defaultUserAvatar, user } = useContext(MainContext);
     // "/account/profile/{profileId}"
     const profileId = R.split('/', window.location.pathname)[3];
 
+    const {getRootProps, getInputProps} = useDropzone({
+        accept: 'image/*',
+        onDrop: async acceptedFiles => {
+            console.log('upload images', acceptedFiles);
+            const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+            const data = new FormData();
+
+            acceptedFiles.map(file => {
+                data.append('File[]', file);
+            });
+            try {
+                let response = await axios.post('/api/files/upload/me', data, config);
+                if (response && response.status === 200)
+                    getUserImages();
+            }catch (e) {
+                console.log('Upload images error: ');
+                console.log(e);
+            }
+        }
+    });
+    function removeImage (imageId) {
+        return async () => {
+            try {
+                let response = await axios.delete(`/api/files/${imageId}`);
+                if (response && response.status === 204)
+                    getUserImages();
+            }catch (e) {
+                console.log('Remove image error: ');
+                console.log(e);
+            }
+        }
+    }
+
     function handleClickEdit () {
-        // event.preventDefault();
         console.log('Go to edit profile');
         history.push({
             pathname: `/account/profile/${user.id}/edit`,
@@ -39,6 +73,29 @@ const Profile = ({children, history}) => {
         };
         socket.emit('NEW_MESSAGE', data);
         setShowMessageInput(false);
+    }
+
+    async function getUserImages () {
+        try {
+            const response = await axios.get(`/api/files/userImages/${profileId}`);
+            if (response.status === 200) {
+                setProfileImages(response.data);
+            }
+        } catch (e) {
+            console.log('Profile.js : cannot get use images: ', e);
+            throw e;
+        }
+    }
+
+    async function getProfile(id) {
+        try {
+            const response = await axios.get(`/api/users/userProfile/${id}`);
+            setProfile(response.data);
+            setAvatarLocation(response.data.avatarLocation || defaultUserAvatar[response.data.gender]);
+        } catch (e) {
+            console.log('Profile.js : cannot get profile: ', e);
+            throw e;
+        }
     }
 
     function submitRateUser(value) {
@@ -64,18 +121,8 @@ const Profile = ({children, history}) => {
     }
 
     useEffect(() => {
-        async function getProfile(id) {
-            try {
-                const response = await axios.get(`/api/users/userProfile/${id}`);
-                setProfile(response.data);
-                setAvatarLocation(response.data.avatarLocation || defaultUserAvatar[response.data.gender]);
-            } catch (e) {
-                console.log('Profile.js : cannot get profile: ', e);
-                throw e;
-            }
-        }
-
         getProfile(profileId);
+        getUserImages();
     }, [profileId, defaultUserAvatar]);
 
     const state = {
@@ -85,9 +132,13 @@ const Profile = ({children, history}) => {
         setTabIndex,
         profile,
         avatarLocation,
+        profileImages,
         handleClickEdit,
         handleSubmitInput,
         submitRateUser,
+        getRootProps,
+        getInputProps,
+        removeImage
     };
 
     return (

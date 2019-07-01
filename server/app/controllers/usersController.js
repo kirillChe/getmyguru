@@ -4,7 +4,8 @@ const on = require('await-handler')
     , path = require('path')
     , fs = require('fs')
     , events = require('events')
-    , sequelize = require('sequelize');
+    , sequelize = require('sequelize')
+    , Op = require('sequelize').Op;
 
 //internal modules
 const filePath = __dirname + '/../../public'
@@ -65,7 +66,7 @@ const findById = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     //user can update himself only if he is not an admin
-    if (req.params.id !== 'me' && req.session.passport.user.userType !== 'admin') {
+    if (req.params.id !== 'me') {
         try {
             let currentUser = await User.findByPk(req.session.passport.user);
             if (currentUser.type !== 'admin')
@@ -278,7 +279,20 @@ const userProfile = async (req, res, next) => {
             where: {
                 id: req.params.id
             },
-            include: ['files', 'info', 'languages']
+            include: [
+                {
+                    model: File,
+                    as: 'files',
+                    where: {
+                        id: {
+                            [Op.col]: 'User.avatar'
+                        }
+                    },
+                    required: false
+                },
+                'info',
+                'languages'
+            ]
         };
 
         user = await User.findOne(filter);
@@ -307,11 +321,12 @@ const userProfile = async (req, res, next) => {
         return next(e);
     }
 
+    let userAvatar = R.prop('location', R.head(user.files) || {});
+
     let result = {
-        avatarLocation: null,
+        avatarLocation: userAvatar || null,
         rating: user.rating / 10,
         ratersCount: ratersCount,
-        images: [],
         info: user.info,
         languages: R.map(R.prop('code'), user.languages)
     };
@@ -320,14 +335,6 @@ const userProfile = async (req, res, next) => {
         R.pickAll(['id', 'firstName', 'lastName', 'gender', 'email', 'language', 'birthDate'], user),
         result
     );
-
-    R.forEach(file => {
-        if (file.id === user.avatar) {
-            result.avatarLocation = file.location;
-        } else {
-            result.images.push(file.location);
-        }
-    }, user.files || []);
 
     res.status(200).json(result);
 };

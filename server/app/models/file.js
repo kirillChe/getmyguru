@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
                     userId,
                     location: `/api/public/${name}`
                 };
-                let [err, file] = await on(File.create(data));
+                let [err, file] = await on(File.upsert(data));
                 if (err) {
                     console.log('Failed to create file model: ', err);
                     fs.unlinkSync(saveTo);

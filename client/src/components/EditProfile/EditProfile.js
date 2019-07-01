@@ -307,7 +307,6 @@ EditProfile.propTypes = {
     handleSubmit: PropTypes.func.isRequired,
     avatarLocation: PropTypes.string.isRequired,
     submitError: PropTypes.bool.isRequired,
-    profile: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(EditProfile);

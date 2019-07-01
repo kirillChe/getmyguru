@@ -4,6 +4,7 @@ import {withRouter} from 'react-router-dom';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import axios from 'axios';
 import * as R from 'ramda';
+import moment from 'moment';
 
 import { MainContext, EditProfileContext } from 'context';
 
@@ -21,7 +22,7 @@ const EditProfile = ({children, history, location}) => {
         lastName: profile.lastName || '',
         gender: profile.gender || 'male',
         email: profile.email || '',
-        birthDate: profile.birthDate || '',
+        birthDate: moment(profile.birthDate).isValid() ? moment(profile.birthDate) : null,
         description: profile.info.description || '',
         competitiveExperience: profile.info.competitiveExperience || '',
         education: profile.info.education || '',
@@ -113,6 +114,7 @@ const EditProfile = ({children, history, location}) => {
 };
 
 EditProfile.propTypes = {
+    location: ReactRouterPropTypes.location.isRequired,
     history: ReactRouterPropTypes.history.isRequired,
     children: PropTypes.node
 };

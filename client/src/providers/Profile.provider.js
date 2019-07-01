@@ -60,7 +60,7 @@ const Profile = ({children, history}) => {
         console.log('Go to edit profile');
         history.push({
             pathname: `/account/profile/${user.id}/edit`,
-            state: profile
+            state: R.merge(profile, {avatarLocation})
         });
     }
 

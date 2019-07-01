@@ -13,7 +13,7 @@ router.get(
             return res.json(req.user);
 
         // res.json({user: null});
-        res.sendStatus(401);
+        res.sendStatus(204);
     }
 );
 

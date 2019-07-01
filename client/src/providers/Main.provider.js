@@ -1,11 +1,16 @@
 import React, { PureComponent } from "react";
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { MainContext } from 'context';
-
 import axios from 'axios';
 import * as R from 'ramda';
+import { IntlProvider } from 'react-intl';
 import countries from 'i18n-iso-countries';
+
+import { IntlContextProvider } from 'providers';
+import { MainContext } from 'context';
+import { ErrorPage } from 'pages'
+
+import translations from '../i18n/locales'
 
 countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
 countries.registerLocale(require("i18n-iso-countries/langs/ru.json"));
@@ -18,10 +23,23 @@ class Main extends PureComponent {
         history: PropTypes.object
     };
 
-    getBrowserLanguage = () => R.slice(0,2, navigator.language);
+    getCountriesList = () => {
+        const {language} = this.state;
+        if (language) {
+            let countriesList = countries.getNames(language);
+            this.setState({countriesList});
+        }
+    };
 
-    // getCountriesList = lang => Object.entries(countries.getNames(lang));
-    getCountriesList = lang => countries.getNames(lang);
+    getBrowserLanguage = () => {
+        let lang = R.slice(0,2, navigator.language);
+        this.setState(
+            {
+                language: lang
+            },
+            () => this.getCountriesList()
+        );
+    };
 
     updateUser = (state) => {
         this.setState(state);
@@ -43,23 +61,28 @@ class Main extends PureComponent {
         let response = await axios.get('/auth/isLoggedIn');
         console.log('Get User: There is a user saved in the server session: ', response && response.data);
 
+        //@TODO CHANGE RETURNED USER DATA (There is no countryCode)
         if (response.status === 200 && response.data) {
-            if (!this.state.loggedIn) {
-                this.setState({
+            // if (!this.state.loggedIn) {
+            this.setState(
+                {
                     language: response.data.language,
-                    countriesList: this.getCountriesList(response.data.language),
                     loggedIn: true,
                     loading: false,
                     user: response.data
-                })
-            }
-        } else {
-            this.setState({
-                loggedIn: true,
-                loading: false,
-                user: {}
-            });
+                },
+                () => this.getCountriesList()
+            );
+            // }
         }
+        // } else {
+        //     console.log('_________________HERE: 77________________________');
+        //     this.setState({
+        //         loggedIn: false,
+        //         loading: false,
+        //         user: {}
+        //     });
+        // }
     };
 
     async componentDidMount() {
@@ -67,22 +90,34 @@ class Main extends PureComponent {
             await this.getUserData();
         } catch (error) {
             console.log('Get user: no user: ', error);
-            this.setState({
-                loggedIn: false,
-                loading: false,
-                user: {}
-            });
+            // this.setState({
+            //     loggedIn: false,
+            //     loading: false,
+            //     user: {}
+            // });
         }
-        if (!this.state.loggedIn)
-            await this.getUserCountry();
+        if (!this.state.loggedIn) {
+            this.setState(
+                {
+                    loggedIn: false,
+                    loading: false,
+                    user: {}
+                },
+                async() => {
+                    await this.getUserCountry();
+                    await this.getBrowserLanguage();
+                }
+            );
+        }
     }
 
     state = {
         countryCode: '',
-        language: this.getBrowserLanguage(),
-        countriesList: this.getCountriesList(this.getBrowserLanguage()),
+        language: 'en',
+        countriesList: [],
         loggedIn: false,
         user: {},
+        error: '',
         updateUser: this.updateUser,
         loading: true,
         allowedLanguages: ['en', 'ru'],
@@ -94,10 +129,26 @@ class Main extends PureComponent {
     };
 
     render() {
-        let {children} = this.props;
-        return (
-            <MainContext.Provider value={this.state}>{children}</MainContext.Provider>
-        );
+        const { countriesList, error, language } = this.state;
+        console.log('___________________');
+        console.log('___________________');
+        console.log(this.state);
+        console.log('___________________');
+        console.log('___________________');
+        const {children} = this.props;
+
+        if (error)
+            return <ErrorPage />;
+
+        const messages = translations[language];
+
+        return R.not(R.isEmpty(countriesList)) ? (
+            <IntlProvider locale={language} key={language} messages={messages}>
+                <IntlContextProvider>
+                    <MainContext.Provider value={this.state}>{children}</MainContext.Provider>
+                </IntlContextProvider>
+            </IntlProvider>
+        ) : null
     }
 }
 

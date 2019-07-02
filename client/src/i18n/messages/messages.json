@@ -1,0 +1,507 @@
+[
+  {
+    "id": "comments.commentsTitle",
+    "defaultMessage": "_Comments_",
+    "filepath": "src/components/Comments/Comments.messages.js"
+  },
+  {
+    "id": "editProfile.upload",
+    "defaultMessage": "_upload_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.description",
+    "defaultMessage": "_Description_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.birthDate",
+    "defaultMessage": "_Date of birth_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.male",
+    "defaultMessage": "_Male_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.female",
+    "defaultMessage": "_Female_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.firstName",
+    "defaultMessage": "_First Name_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.lastName",
+    "defaultMessage": "_Last Name_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.languages",
+    "defaultMessage": "_Languages_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.country",
+    "defaultMessage": "_Country_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.email",
+    "defaultMessage": "_Email_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.phone",
+    "defaultMessage": "_Phone_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.site",
+    "defaultMessage": "_Site_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.experience",
+    "defaultMessage": "_Experience_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.competitiveExperience",
+    "defaultMessage": "_Competitive Experience_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.education",
+    "defaultMessage": "_Education_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.prepareNutritionScheme",
+    "defaultMessage": "_Prepare Nutrition Scheme_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.prepareTrainingSystem",
+    "defaultMessage": "_Prepare Training System_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.save",
+    "defaultMessage": "_save_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.wrongData",
+    "defaultMessage": "_Wrong Data Entered_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "exception.404",
+    "defaultMessage": "_Exception_404_",
+    "filepath": "src/components/Exception/Exception.messages.js"
+  },
+  {
+    "id": "exception.403",
+    "defaultMessage": "_Exception_403_",
+    "filepath": "src/components/Exception/Exception.messages.js"
+  },
+  {
+    "id": "exception.500",
+    "defaultMessage": "_Exception_500_",
+    "filepath": "src/components/Exception/Exception.messages.js"
+  },
+  {
+    "id": "forgotPwd.email",
+    "defaultMessage": "_Email_",
+    "filepath": "src/components/ForgotPwd.messages.js"
+  },
+  {
+    "id": "forgotPwd.notValid",
+    "defaultMessage": "_Credentials not valid_",
+    "filepath": "src/components/ForgotPwd.messages.js"
+  },
+  {
+    "id": "forgotPwd.resetButton",
+    "defaultMessage": "_Reset_",
+    "filepath": "src/components/ForgotPwd.messages.js"
+  },
+  {
+    "id": "login.email",
+    "defaultMessage": "_Email_",
+    "filepath": "src/components/Login.messages.js"
+  },
+  {
+    "id": "login.password",
+    "defaultMessage": "_Password_",
+    "filepath": "src/components/Login.messages.js"
+  },
+  {
+    "id": "login.rememberMe",
+    "defaultMessage": "_Remember me_",
+    "filepath": "src/components/Login.messages.js"
+  },
+  {
+    "id": "login.notValid",
+    "defaultMessage": "_Credentials not valid_",
+    "filepath": "src/components/Login.messages.js"
+  },
+  {
+    "id": "login.loginButton",
+    "defaultMessage": "_Login_",
+    "filepath": "src/components/Login.messages.js"
+  },
+  {
+    "id": "main.companyName",
+    "defaultMessage": "_Bla-Bla-Bla Text_",
+    "filepath": "src/components/Main/Main.messages.js"
+  },
+  {
+    "id": "main.slogan",
+    "defaultMessage": "_Something short and leading about the site._",
+    "filepath": "src/components/Main/Main.messages.js"
+  },
+  {
+    "id": "main.foundText",
+    "defaultMessage": "_We found somebody for you._",
+    "filepath": "src/components/Main/Main.messages.js"
+  },
+  {
+    "id": "main.mostRated",
+    "defaultMessage": "_The most rated._",
+    "filepath": "src/components/Main/Main.messages.js"
+  },
+  {
+    "id": "main.lastJoined",
+    "defaultMessage": "_Last joined._",
+    "filepath": "src/components/Main/Main.messages.js"
+  },
+  {
+    "id": "main.searchPlaceholder",
+    "defaultMessage": "_Enter last name or/and first name_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.searchTooltip",
+    "defaultMessage": "_Search_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.filtersTooltip",
+    "defaultMessage": "_Filters_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.ageRange",
+    "defaultMessage": "_Age range_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.ratingRange",
+    "defaultMessage": "_Rating range_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.male",
+    "defaultMessage": "_Male_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.female",
+    "defaultMessage": "_Female_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.anyGender",
+    "defaultMessage": "_Any gender_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.withPhotoOnly",
+    "defaultMessage": "_Only with photo_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.country",
+    "defaultMessage": "_Country_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.language",
+    "defaultMessage": "_Language_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.experience",
+    "defaultMessage": "_Experience (years)_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.competitiveExperience",
+    "defaultMessage": "_Has Competitive Experience_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.education",
+    "defaultMessage": "_Has Specific Education_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.prepareNutritionScheme",
+    "defaultMessage": "_Prepare Nutrition Scheme_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.prepareTrainingSystem",
+    "defaultMessage": "_Prepare Training System_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.clearFilters",
+    "defaultMessage": "_Clear filters_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.searchButton",
+    "defaultMessage": "_Search_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "messageInput.inputPlaceholder",
+    "defaultMessage": "_Type your message_",
+    "filepath": "src/components/MessageInput.messages.js"
+  },
+  {
+    "id": "messagesList.title",
+    "defaultMessage": "_Messages_",
+    "filepath": "src/components/Messages/MessagesList.messages.js"
+  },
+  {
+    "id": "profile.editProfile",
+    "defaultMessage": "_Edit_",
+    "filepath": "src/components/Profile/Profile.messages.js"
+  },
+  {
+    "id": "profile.sendMessage",
+    "defaultMessage": "_Send Message_",
+    "filepath": "src/components/Profile/Profile.messages.js"
+  },
+  {
+    "id": "profile.newMessageFor",
+    "defaultMessage": "_New message for_",
+    "filepath": "src/components/Profile/Profile.messages.js"
+  },
+  {
+    "id": "profile.rating",
+    "defaultMessage": "_rating_",
+    "filepath": "src/components/Profile/Profile.messages.js"
+  },
+  {
+    "id": "profile.raters",
+    "defaultMessage": "_raters_",
+    "filepath": "src/components/Profile/Profile.messages.js"
+  },
+  {
+    "id": "profile.rateButton",
+    "defaultMessage": "_rate_",
+    "filepath": "src/components/Profile/Profile.messages.js"
+  },
+  {
+    "id": "profile.tabTitlePhotos",
+    "defaultMessage": "_Photos_",
+    "filepath": "src/components/Profile/Profile.messages.js"
+  },
+  {
+    "id": "profile.tabTitleComments",
+    "defaultMessage": "_Comments_",
+    "filepath": "src/components/Profile/Profile.messages.js"
+  },
+  {
+    "id": "profile.addPhotoTitle",
+    "defaultMessage": "_Add photos_",
+    "filepath": "src/components/Profile/Profile.messages.js"
+  },
+  {
+    "id": "profile.noImagesTitle",
+    "defaultMessage": "_User has no images yet._",
+    "filepath": "src/components/Profile/Profile.messages.js"
+  },
+  {
+    "id": "profileMenu.main",
+    "defaultMessage": "_Main Page_",
+    "filepath": "src/components/ProfileMenu.messages.js"
+  },
+  {
+    "id": "profileMenu.profile",
+    "defaultMessage": "_Profile_",
+    "filepath": "src/components/ProfileMenu.messages.js"
+  },
+  {
+    "id": "profileMenu.messages",
+    "defaultMessage": "_My messages_",
+    "filepath": "src/components/ProfileMenu.messages.js"
+  },
+  {
+    "id": "profileMenu.logout",
+    "defaultMessage": "_Logout_",
+    "filepath": "src/components/ProfileMenu.messages.js"
+  },
+  {
+    "id": "setNewPwd.password",
+    "defaultMessage": "_Password_",
+    "filepath": "src/components/SetNewPwd.messages.js"
+  },
+  {
+    "id": "setNewPwd.notValid",
+    "defaultMessage": "_Credentials not valid_",
+    "filepath": "src/components/SetNewPwd.messages.js"
+  },
+  {
+    "id": "setNewPwd.reset",
+    "defaultMessage": "_Reset_",
+    "filepath": "src/components/SetNewPwd.messages.js"
+  },
+  {
+    "id": "signUpAdept.firstName",
+    "defaultMessage": "_First Name_",
+    "filepath": "src/components/SignUpAdept.messages.js"
+  },
+  {
+    "id": "signUpAdept.lastName",
+    "defaultMessage": "_Last Name_",
+    "filepath": "src/components/SignUpAdept.messages.js"
+  },
+  {
+    "id": "signUpAdept.email",
+    "defaultMessage": "_Email_",
+    "filepath": "src/components/SignUpAdept.messages.js"
+  },
+  {
+    "id": "signUpAdept.password",
+    "defaultMessage": "_Password_",
+    "filepath": "src/components/SignUpAdept.messages.js"
+  },
+  {
+    "id": "signUpAdept.signUp",
+    "defaultMessage": "_Sign up_",
+    "filepath": "src/components/SignUpAdept.messages.js"
+  },
+  {
+    "id": "signUpAdept.wrongData",
+    "defaultMessage": "_Wrong Data Entered_",
+    "filepath": "src/components/SignUpAdept.messages.js"
+  },
+  {
+    "id": "signUpGuru.birthDate",
+    "defaultMessage": "_Date of birth_",
+    "filepath": "src/components/SignUpGuru.messages.js"
+  },
+  {
+    "id": "signUpGuru.male",
+    "defaultMessage": "_Male_",
+    "filepath": "src/components/SignUpGuru.messages.js"
+  },
+  {
+    "id": "signUpGuru.female",
+    "defaultMessage": "_Female_",
+    "filepath": "src/components/SignUpGuru.messages.js"
+  },
+  {
+    "id": "signUpGuru.firstName",
+    "defaultMessage": "_First Name_",
+    "filepath": "src/components/SignUpGuru.messages.js"
+  },
+  {
+    "id": "signUpGuru.lastName",
+    "defaultMessage": "_Last Name_",
+    "filepath": "src/components/SignUpGuru.messages.js"
+  },
+  {
+    "id": "signUpGuru.password",
+    "defaultMessage": "_Password_",
+    "filepath": "src/components/SignUpGuru.messages.js"
+  },
+  {
+    "id": "signUpGuru.email",
+    "defaultMessage": "_Email_",
+    "filepath": "src/components/SignUpGuru.messages.js"
+  },
+  {
+    "id": "signUpGuru.signUp",
+    "defaultMessage": "_Sign up_",
+    "filepath": "src/components/SignUpGuru.messages.js"
+  },
+  {
+    "id": "signUpGuru.wrongData",
+    "defaultMessage": "_Wrong Data Entered_",
+    "filepath": "src/components/SignUpGuru.messages.js"
+  },
+  {
+    "id": "footer.companyFooter",
+    "defaultMessage": "_\\u00A9 COMPANY 2019_",
+    "filepath": "src/layouts/Footer.messages.js"
+  },
+  {
+    "id": "footer.footerText",
+    "defaultMessage": "_All rights reserved._",
+    "filepath": "src/layouts/Footer.messages.js"
+  },
+  {
+    "id": "toolbar.companyName",
+    "defaultMessage": "_COMPANY_",
+    "filepath": "src/layouts/Toolbar.messages.js"
+  },
+  {
+    "id": "toolbar.login",
+    "defaultMessage": "_Login_",
+    "filepath": "src/layouts/Toolbar.messages.js"
+  },
+  {
+    "id": "toolbar.signUp",
+    "defaultMessage": "_Sign Up_",
+    "filepath": "src/layouts/Toolbar.messages.js"
+  },
+  {
+    "id": "toolbar.emailSent",
+    "defaultMessage": "_Email sent!_",
+    "filepath": "src/layouts/Toolbar.messages.js"
+  },
+  {
+    "id": "toolbar.resetPwdText",
+    "defaultMessage": "_A reset password link has been sent to you via email. Go to the mail and click the link to enter a new password._",
+    "filepath": "src/layouts/Toolbar.messages.js"
+  },
+  {
+    "id": "toolbar.haveAccount",
+    "defaultMessage": "_Already have an account?_",
+    "filepath": "src/layouts/Toolbar.messages.js"
+  },
+  {
+    "id": "toolbar.setNewPwd",
+    "defaultMessage": "_Set new password_",
+    "filepath": "src/layouts/Toolbar.messages.js"
+  },
+  {
+    "id": "toolbar.forgotPwdQ",
+    "defaultMessage": "_Forgot password?_",
+    "filepath": "src/layouts/Toolbar.messages.js"
+  },
+  {
+    "id": "toolbar.forgotPwd",
+    "defaultMessage": "_Forgot password_",
+    "filepath": "src/layouts/Toolbar.messages.js"
+  },
+  {
+    "id": "toolbar.noAccount",
+    "defaultMessage": "_Do not have an account yet?_",
+    "filepath": "src/layouts/Toolbar.messages.js"
+  },
+  {
+    "id": "toolbar.rememberQ",
+    "defaultMessage": "_Do you remember it?_",
+    "filepath": "src/layouts/Toolbar.messages.js"
+  }
+]

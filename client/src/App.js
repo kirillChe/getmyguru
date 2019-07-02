@@ -2,9 +2,7 @@ import React  from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { MainLayout } from 'layouts';
 import { MainProvider } from 'providers';
-import { Profile } from 'pages/Profile';
-import { Messages } from 'pages/Messages';
-import { EditProfile } from 'pages/EditProfile';
+import { Profile, Messages, EditProfile } from 'pages';
 import { Main } from 'components/Main';
 import { ErrorHandler, ErrorBoundary } from 'components';
 

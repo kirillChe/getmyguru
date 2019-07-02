@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 // import * as Sentry from '@sentry/browser'
 import PropTypes from 'prop-types';
-import { ErrorPage } from 'pages';
+import { Error } from 'pages';
 import {MainLayout} from 'layouts';
 
 export default class ErrorBoundaryComponent extends PureComponent {
@@ -33,7 +33,7 @@ export default class ErrorBoundaryComponent extends PureComponent {
             // render fallback UI
             return (
                 <MainLayout>
-                    <ErrorPage />
+                    <Error />
                 </MainLayout>
             )
         }

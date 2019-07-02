@@ -106,8 +106,6 @@ class ToolbarLayout extends Component {
     render() {
         let context = this.context;
         const { classes, intl } = this.props;
-        const formatMessage = this.formatMessage;
-
 
         return (
             <AppBar position="sticky" color="default" className={classes.root}>

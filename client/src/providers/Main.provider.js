@@ -8,7 +8,7 @@ import countries from 'i18n-iso-countries';
 
 import { IntlContextProvider } from 'providers';
 import { MainContext } from 'context';
-import { ErrorPage } from 'pages'
+import { Error } from 'pages';
 
 import translations from '../i18n/locales'
 
@@ -118,7 +118,7 @@ class Main extends PureComponent {
         const {children} = this.props;
 
         if (error)
-            return <ErrorPage />;
+            return <Error />;
 
         const messages = translations[language];
 

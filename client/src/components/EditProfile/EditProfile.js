@@ -172,8 +172,8 @@ const EditProfile = (props) => {
                         <TextField
                             id="lastName"
                             name="lastName"
-                            label="Last Name"
-                            value={formatMessage(messages.lastName)}
+                            label={formatMessage(messages.lastName)}
+                            value={lastName}
                             onChange={handleChange}
                             margin="normal"
                             variant="outlined"
@@ -218,8 +218,8 @@ const EditProfile = (props) => {
                         <TextField
                             id="site"
                             name="site"
-                            label="Site"
-                            value={formatMessage(messages.site)}
+                            label={formatMessage(messages.site)}
+                            value={site}
                             onChange={handleChange}
                             margin="normal"
                             variant="outlined"

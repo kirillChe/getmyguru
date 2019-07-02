@@ -503,5 +503,15 @@
     "id": "toolbar.rememberQ",
     "defaultMessage": "_Do you remember it?_",
     "filepath": "src/layouts/Toolbar.messages.js"
+  },
+  {
+    "id": "profileProvider.ratedSuccess",
+    "defaultMessage": "_User was rated successfully_",
+    "filepath": "src/providers/Profile.messages.js"
+  },
+  {
+    "id": "profileProvider.messageSent",
+    "defaultMessage": "_Message is sent_",
+    "filepath": "src/providers/Profile.messages.js"
   }
 ]

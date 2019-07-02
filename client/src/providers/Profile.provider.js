@@ -4,15 +4,18 @@ import useForceUpdate from 'use-force-update';
 import {withRouter} from 'react-router-dom';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import {useDropzone} from 'react-dropzone';
-
+import { withSnackbar } from 'notistack';
 import axios from 'axios';
 import * as R from 'ramda';
 import socketIOClient from "socket.io-client";
+import { useIntl } from 'hooks';
+import messages from './Profile.messages';
 
 import { ProfileContext, MainContext } from 'context';
 
 
-const Profile = ({children, history}) => {
+const Profile = ({children, history, enqueueSnackbar}) => {
+    const { formatMessage } = useIntl();
     const forceUpdate = useForceUpdate();
     const [showMessageInput, setShowMessageInput] = useState(false);
     const [tabIndex, setTabIndex] = useState(0);
@@ -73,6 +76,7 @@ const Profile = ({children, history}) => {
         };
         socket.emit('NEW_MESSAGE', data);
         setShowMessageInput(false);
+        enqueueSnackbar(formatMessage(messages.messageSent), { variant: 'success' });
     }
 
     async function getUserImages () {
@@ -111,6 +115,7 @@ const Profile = ({children, history}) => {
                 console.log('___________________');
                 console.log(response.data);
                 console.log('___________________');
+                enqueueSnackbar(formatMessage(messages.ratedSuccess), { variant: 'success' });
                 forceUpdate();
 
             } catch (e) {
@@ -144,7 +149,8 @@ const Profile = ({children, history}) => {
     return (
         <ProfileContext.Provider value={state}>
             {children}
-        </ProfileContext.Provider>);
+        </ProfileContext.Provider>
+    );
 };
 
 Profile.propTypes = {
@@ -152,4 +158,4 @@ Profile.propTypes = {
     children: PropTypes.node
 };
 
-export default withRouter(Profile);
+export default withSnackbar(withRouter(Profile));

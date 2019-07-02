@@ -1,4 +1,6 @@
 {
+  "profileProvider.ratedSuccess": "_User was rated successfully_",
+  "profileProvider.messageSent": "_Message is sent_",
   "comments.commentsTitle": "_Comments_",
   "editProfile.birthDate": "_Date of birth_",
   "editProfile.competitiveExperience": "_Competitive Experience_",

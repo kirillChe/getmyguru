@@ -5,6 +5,7 @@ import axios from 'axios';
 import * as R from 'ramda';
 import { IntlProvider } from 'react-intl';
 import countries from 'i18n-iso-countries';
+import { SnackbarProvider } from 'notistack';
 
 import { IntlContextProvider } from 'providers';
 import { MainContext } from 'context';
@@ -123,11 +124,19 @@ class Main extends PureComponent {
         const messages = translations[language];
 
         return R.not(R.isEmpty(countriesList)) ? (
-            <IntlProvider locale={language} key={language} messages={messages}>
-                <IntlContextProvider>
-                    <MainContext.Provider value={this.state}>{children}</MainContext.Provider>
-                </IntlContextProvider>
-            </IntlProvider>
+            <SnackbarProvider
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                maxSnack={3}
+            >
+                <IntlProvider locale={language} key={language} messages={messages}>
+                    <IntlContextProvider>
+                        <MainContext.Provider value={this.state}>{children}</MainContext.Provider>
+                    </IntlContextProvider>
+                </IntlProvider>
+            </SnackbarProvider>
         ) : null
     }
 }

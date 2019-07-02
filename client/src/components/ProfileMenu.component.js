@@ -6,8 +6,11 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import axios from 'axios';
 
 import { MainContext } from 'context';
+import { useIntl } from 'hooks';
+import messages from './ProfileMenu.messages';
 
 const ProfileMenu = (props) => {
+    const { formatMessage } = useIntl();
     const [anchorEl, setAnchorEl] = useState(null);
     const { updateUser, user } = useContext(MainContext);
 
@@ -79,10 +82,10 @@ const ProfileMenu = (props) => {
                 onClose={handleClose}
                 TransitionComponent={Fade}
             >
-                <MenuItem onClick={handleMain}>Main Page</MenuItem>
-                <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                <MenuItem onClick={handleMessages}>My messages</MenuItem>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                <MenuItem onClick={handleMain}>{formatMessage(messages.main)}</MenuItem>
+                <MenuItem onClick={handleProfile}>{formatMessage(messages.profile)}</MenuItem>
+                <MenuItem onClick={handleMessages}>{formatMessage(messages.messages)}</MenuItem>
+                <MenuItem onClick={handleLogout}>{formatMessage(messages.logout)}</MenuItem>
             </Menu>
         </React.Fragment>
     );

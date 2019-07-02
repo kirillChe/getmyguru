@@ -13,6 +13,8 @@ import * as R from 'ramda';
 
 import { MainContext } from 'context';
 import {Checkbox, Slider, MultiSelect, Switch} from 'components/Form';
+import { useIntl } from 'hooks';
+import messages from './Search.messages';
 
 const experienceRange = [
     '0-1',
@@ -69,6 +71,7 @@ const styles = theme => ({
 
 const Search = (props) => {
     const { countriesList } = useContext(MainContext);
+    const { formatMessage } = useIntl();
     const {
         classes,
         setCustomFilter,
@@ -120,7 +123,6 @@ const Search = (props) => {
 
     const handleChange = e => {
         let {name, value} = e.target;
-        console.log('222222222222', e.target);
         setState({...state, [name]: value})
     };
 
@@ -175,13 +177,13 @@ const Search = (props) => {
             <Paper className={classes.root} elevation={1}>
                 <InputBase
                     className={classes.input}
-                    placeholder="Search placeholder"
+                    placeholder={formatMessage(messages.searchPlaceholder)}
                     value={baseSearch}
                     onChange={e => setBaseSearch(e.target.value)}
                     onKeyPress={e => e.key === 'Enter'? handleBaseSearch() : null}
                 />
                 <Divider className={classes.divider} />
-                <Tooltip title="Search">
+                <Tooltip title={formatMessage(messages.searchTooltip)}>
                     <Button
                         onClick={handleBaseSearch}
                         className={classes.searchButton}
@@ -191,7 +193,7 @@ const Search = (props) => {
                     </Button>
                 </Tooltip>
                 <Divider className={classes.divider} />
-                <Tooltip title="Filters">
+                <Tooltip title={formatMessage(messages.filtersTooltip)}>
                     <Button
                         onClick={() => setShowFilters(true)}
                         className={classes.searchButton}
@@ -217,7 +219,7 @@ const Search = (props) => {
                         >
                             <Grid item xs={6}>
                                 <Slider
-                                    label={'Age range'}
+                                    label={formatMessage(messages.ageRange)}
                                     name={'age'}
                                     state={age}
                                     min={16}
@@ -225,7 +227,7 @@ const Search = (props) => {
                                     onChange={handleChangeSlider('age')}
                                 />
                                 <Slider
-                                    label={'Rating range'}
+                                    label={formatMessage(messages.ratingRange)}
                                     name={'rating'}
                                     state={rating}
                                     min={1}
@@ -234,8 +236,8 @@ const Search = (props) => {
                                 />
                                 <Switch
                                     disabled={genderNoMatter}
-                                    firstLabel={'Male'}
-                                    secondLabel={'Female'}
+                                    firstLabel={formatMessage(messages.male)}
+                                    secondLabel={formatMessage(messages.female)}
                                     checked={gender === 'female'}
                                     name={'gender'}
                                     onChange={handleChangeSwitch('gender')}
@@ -244,18 +246,18 @@ const Search = (props) => {
                                     name="genderNoMatter"
                                     state={genderNoMatter}
                                     onChange={handleChangeCheckbox('genderNoMatter')}
-                                    label={'Any gender'}
+                                    label={formatMessage(messages.anyGender)}
                                 />
                                 <Checkbox
                                     name="withPhotoOnly"
                                     state={withPhotoOnly}
                                     onChange={handleChangeCheckbox('withPhotoOnly')}
-                                    label={'Only with photo'}
+                                    label={formatMessage(messages.withPhotoOnly)}
                                 />
                                 <MultiSelect
                                     name={'country'}
                                     state={country}
-                                    label={'Country'}
+                                    label={formatMessage(messages.country)}
                                     onChange={handleChange}
                                     selectValues={getReadableValues(countriesList, filtersData.countriesRange || [])}
                                 />
@@ -264,14 +266,14 @@ const Search = (props) => {
                                 <MultiSelect
                                     name={'languages'}
                                     state={languages}
-                                    label={'Language'}
+                                    label={formatMessage(messages.language)}
                                     onChange={handleChange}
                                     selectValues={filtersData.languagesRange}
                                 />
                                 <MultiSelect
                                     name={'experience'}
                                     state={experience}
-                                    label={'Experience (years)'}
+                                    label={formatMessage(messages.experience)}
                                     onChange={handleChange}
                                     selectValues={experienceRange}
                                 />
@@ -279,39 +281,39 @@ const Search = (props) => {
                                     name="nutritionScheme"
                                     state={nutritionScheme}
                                     onChange={handleChangeCheckbox('nutritionScheme')}
-                                    label={'Prepare nutrition scheme'}
+                                    label={formatMessage(messages.prepareNutritionScheme)}
                                 />
                                 <Checkbox
                                     name="trainingSystem"
                                     state={trainingSystem}
                                     onChange={handleChangeCheckbox('trainingSystem')}
-                                    label={'Prepare training system'}
+                                    label={formatMessage(messages.prepareTrainingSystem)}
                                 />
                                 <Checkbox
                                     name="competitiveExperience"
                                     state={competitiveExperience}
                                     onChange={handleChangeCheckbox('competitiveExperience')}
-                                    label={'Has competitive experience'}
+                                    label={formatMessage(messages.competitiveExperience)}
                                 />
                                 <Checkbox
                                     name="education"
                                     state={education}
                                     onChange={handleChangeCheckbox('education')}
-                                    label={'Has specific education'}
+                                    label={formatMessage(messages.education)}
                                 />
                                 <Button
                                     onClick={clearFilters}
                                     variant="outlined"
                                     color="primary"
                                 >
-                                    Clear filters
+                                    {formatMessage(messages.clearFilters)}
                                 </Button>
                                 <Button
                                     onClick={handleSubmit}
                                     variant="contained"
                                     color="primary"
                                 >
-                                    Search
+                                    {formatMessage(messages.searchButton)}
                                 </Button>
                             </Grid>
                         </Grid>

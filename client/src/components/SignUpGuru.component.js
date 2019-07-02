@@ -12,6 +12,8 @@ import axios from 'axios';
 import moment from 'moment';
 import { MainContext } from 'context';
 import {DatePicker, Switch, PasswordField} from 'components/Form';
+import { useIntl } from 'hooks';
+import messages from './SignUpGuru.messages';
 
 const styles = theme => ({
     root: {
@@ -26,6 +28,7 @@ const styles = theme => ({
 const SignUpGuru = (props) => {
     const { language: userLanguage, countryCode } = useContext(MainContext);
     const {classes} = props;
+    const { formatMessage } = useIntl();
     const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
     const [submitError, setSubmitError] = useState(false);
@@ -99,7 +102,7 @@ const SignUpGuru = (props) => {
             <TextField
                 id="firstName"
                 name="firstName"
-                label="First Name"
+                label={formatMessage(messages.firstName)}
                 value={firstName}
                 onChange={handleChange}
                 margin="normal"
@@ -109,7 +112,7 @@ const SignUpGuru = (props) => {
             <TextField
                 id="lastName"
                 name="lastName"
-                label="Last Name"
+                label={formatMessage(messages.lastName)}
                 value={lastName}
                 onChange={handleChange}
                 margin="normal"
@@ -120,13 +123,13 @@ const SignUpGuru = (props) => {
                 maxDate={moment().startOf('day').subtract(16, 'years').calendar()}
                 minDate={moment().startOf('day').subtract(99, 'years').calendar()}
                 state={birthDate}
-                label={'Date of birth'}
+                label={formatMessage(messages.birthDate)}
                 name={'birthDate'}
                 onChange={handleChangeDate('birthDate')}
             />
             <Switch
-                firstLabel={'Male'}
-                secondLabel={'Female'}
+                firstLabel={formatMessage(messages.male)}
+                secondLabel={formatMessage(messages.female)}
                 checked={gender === 'female'}
                 name={'gender'}
                 onChange={handleChangeSwitch('gender')}
@@ -134,7 +137,7 @@ const SignUpGuru = (props) => {
             <TextField
                 id="email"
                 name="email"
-                label="Email"
+                label={formatMessage(messages.email)}
                 value={email}
                 onChange={handleChange}
                 margin="normal"
@@ -145,7 +148,7 @@ const SignUpGuru = (props) => {
                 showPassword={showPassword}
                 name={'password'}
                 value={password}
-                label={'Password'}
+                label={formatMessage(messages.password)}
                 togglePasswordMask={togglePasswordMask}
                 onChange={handleChange}
             />
@@ -157,7 +160,7 @@ const SignUpGuru = (props) => {
                 className={classes.submit}
                 disabled
             >
-                <Warning/> Wrong data entered
+                <Warning/> {formatMessage(messages.wrongData)}
             </Button>
             }
             <Button
@@ -169,7 +172,7 @@ const SignUpGuru = (props) => {
                 disabled={!validateForm()}
                 onClick={handleSubmit}
             >
-                Sign Up
+                {formatMessage(messages.signUp)}
             </Button>
         </div>
     );

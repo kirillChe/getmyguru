@@ -7,6 +7,9 @@ import useForceUpdate from 'use-force-update';
 
 import axios from 'axios';
 
+import { useIntl } from 'hooks';
+import messages from './ForgotPwd.messages';
+
 const styles = theme => ({
     form: {
         width: '90%', // Fix IE 11 issue.
@@ -18,6 +21,7 @@ const styles = theme => ({
 });
 
 const ForgotPwd = (props) => {
+    const { formatMessage } = useIntl();
     const forceUpdate = useForceUpdate();
     const [wrongCredentials, setWrongCredentials] = useState(false);
     const [email, setEmail] = useState('');
@@ -63,7 +67,7 @@ const ForgotPwd = (props) => {
             <form className={classes.form} onSubmit={handleSubmit}>
                 <TextField
                     id="email"
-                    label="Email"
+                    label={formatMessage(messages.email)}
                     value={email}
                     onChange={handleChange}
                     margin="normal"
@@ -78,7 +82,7 @@ const ForgotPwd = (props) => {
                     className={classes.submit}
                     disabled
                 >
-                    <ErrorIcon/> Credentials not valid
+                    <ErrorIcon/> {formatMessage(messages.notValid)}
                 </Button>
                 }
                 <Button
@@ -89,7 +93,7 @@ const ForgotPwd = (props) => {
                     className={classes.submit}
                     disabled={!validateForm()}
                 >
-                    Reset
+                    {formatMessage(messages.resetButton)}
                 </Button>
             </form>
         </React.Fragment>

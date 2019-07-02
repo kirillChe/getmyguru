@@ -24,11 +24,9 @@ export default class ErrorBoundaryComponent extends PureComponent {
     }
 
     render() {
-        console.log('___________________');
-        console.log('___________________');
+        console.log('_____ErrorBoundary________');
         console.log(this.state);
         console.log(this.props.children);
-        console.log('___________________');
         console.log('___________________');
         if (this.state.error) {
             console.log('_________________HERE: 34________________________');

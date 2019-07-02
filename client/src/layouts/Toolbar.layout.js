@@ -17,6 +17,8 @@ import * as R from 'ramda';
 
 import {Login, SignUp, ForgotPwd, ProfileMenu, SetNewPwd} from '../components';
 import { MainContext } from '../context';
+import { injectIntl, intlShape } from 'react-intl';
+import messages from './Toolbar.messages';
 
 
 class Transition extends React.Component {
@@ -103,7 +105,9 @@ class ToolbarLayout extends Component {
 
     render() {
         let context = this.context;
-        const { classes } = this.props;
+        const { classes, intl } = this.props;
+        const formatMessage = this.formatMessage;
+
 
         return (
             <AppBar position="sticky" color="default" className={classes.root}>
@@ -112,17 +116,17 @@ class ToolbarLayout extends Component {
                         <FitnessIcon />
                     </IconButton>
                     <Typography variant="h6" color="inherit" className={classes.grow} >
-                        COMPANY
+                        {intl.formatMessage(messages.companyName)}
                     </Typography>
                     {context.loggedIn ? (
                         <ProfileMenu />
                     ) : (
                         <div>
                             <Button color="inherit" className='btn-link' onClick={this.handleClick('showLogin')}>
-                                Login
+                                {intl.formatMessage(messages.login)}
                             </Button>
                             <Button variant="outlined" color="primary" onClick={this.handleClick('showSignUp')}>
-                                Sign Up
+                                {intl.formatMessage(messages.signUp)}
                             </Button>
                         </div>
                     )}
@@ -135,11 +139,11 @@ class ToolbarLayout extends Component {
                     >
                         <DialogContent className={classes.content}>
                             <Typography variant="h5">
-                                Email sent!
+                                {intl.formatMessage(messages.emailSent)}
                             </Typography>
                             <div className={classes.signup}>
                                 <Typography>
-                                    A reset password link has been sent to you via email. Go to the mail and click the link to enter a new password.
+                                    {intl.formatMessage(messages.resetPwdText)}
                                 </Typography>
                             </div>
                         </DialogContent>
@@ -154,18 +158,18 @@ class ToolbarLayout extends Component {
                     >
                         <DialogContent className={classes.content}>
                             <Typography variant="h5">
-                                Sign Up
+                                {intl.formatMessage(messages.signUp)}
                             </Typography>
                             <SignUp dialogClick={this.handleClick('showLogin')} />
                             <div className={classes.signup}>
                                 <Typography>
-                                    Already have an account?
+                                    {intl.formatMessage(messages.haveAccount)}
                                     <Link
                                         href=""
                                         className={classes.link}
                                         onClick={this.handleClick('showLogin')}
                                     >
-                                        Log in
+                                        {intl.formatMessage(messages.login)}
                                     </Link>
                                 </Typography>
                             </div>
@@ -181,7 +185,7 @@ class ToolbarLayout extends Component {
                     >
                         <DialogContent className={classes.content}>
                             <Typography variant="h5">
-                                Set new password
+                                {intl.formatMessage(messages.setNewPwd)}
                             </Typography>
                             <SetNewPwd token={this.state.token} dialogClick={this.handleClick('showLogin')} />
                         </DialogContent>
@@ -196,7 +200,7 @@ class ToolbarLayout extends Component {
                     >
                         <DialogContent className={classes.content}>
                             <Typography variant="h5">
-                                Login
+                                {intl.formatMessage(messages.login)}
                             </Typography>
                             <Login loggedIn={context.loggedIn}/>
                             <div className={classes.signup}>
@@ -204,17 +208,17 @@ class ToolbarLayout extends Component {
                                     href=""
                                     className={classes.link}
                                     onClick={this.handleClick('showForgotPwd')}>
-                                    Forgot password?
+                                    {intl.formatMessage(messages.forgotPwdQ)}
                                 </Link>
                                 <br/>
                                 <Typography>
-                                    Do not have an account yet?
+                                    {intl.formatMessage(messages.noAccount)}
                                     <Link
                                         href=""
                                         className={classes.link}
                                         onClick={this.handleClick('showSignUp')}
                                     >
-                                        Sign Up
+                                        {intl.formatMessage(messages.signUp)}
                                     </Link>
                                 </Typography>
                             </div>
@@ -231,18 +235,18 @@ class ToolbarLayout extends Component {
                     >
                         <DialogContent className={classes.content}>
                             <Typography variant="h5">
-                                Forgot password
+                                {intl.formatMessage(messages.forgotPwd)}
                             </Typography>
                             <ForgotPwd dialogClick={this.handleClick} />
                             <div className={classes.signup}>
                                 <Typography>
-                                    Do you remember it?
+                                    {intl.formatMessage(messages.rememberQ)}
                                     <Link
                                         href=""
                                         className={classes.link}
                                         onClick={this.handleClick('showLogin')}
                                     >
-                                        Log In
+                                        {intl.formatMessage(messages.login)}
                                     </Link>
                                 </Typography>
                             </div>
@@ -258,6 +262,7 @@ class ToolbarLayout extends Component {
 
 ToolbarLayout.propTypes = {
     classes: PropTypes.object.isRequired,
+    intl: intlShape,
 };
 
-export default withStyles(styles)(ToolbarLayout);
+export default withStyles(styles)(injectIntl(ToolbarLayout));

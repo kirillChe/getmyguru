@@ -32,7 +32,6 @@ class Exception extends Component {
         console.log('____Exception________');
         console.log(this.props);
         console.log('___________________');
-        console.log('___________________');
         const { backText, type, title, desc, img, redirect } = this.props;
 
         const pageType = type in config ? type : '404';

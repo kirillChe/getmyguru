@@ -11,6 +11,8 @@ import useForceUpdate from 'use-force-update';
 import axios from 'axios';
 import { MainContext } from 'context';
 import { PasswordField} from 'components/Form';
+import { useIntl } from 'hooks';
+import messages from './SignUpAdept.messages';
 
 const styles = theme => ({
     root: {
@@ -25,6 +27,7 @@ const styles = theme => ({
 const SignUpAdept = (props) => {
     const { language: userLanguage, countryCode } = useContext(MainContext);
     const {classes} = props;
+    const { formatMessage } = useIntl();
     const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
     const [submitError, setSubmitError] = useState(false);
@@ -86,7 +89,7 @@ const SignUpAdept = (props) => {
             <TextField
                 id="firstName"
                 name="firstName"
-                label="First Name"
+                label={formatMessage(messages.firstName)}
                 value={firstName}
                 onChange={handleChange}
                 margin="normal"
@@ -96,7 +99,7 @@ const SignUpAdept = (props) => {
             <TextField
                 id="lastName"
                 name="lastName"
-                label="Last Name"
+                label={formatMessage(messages.lastName)}
                 value={lastName}
                 onChange={handleChange}
                 margin="normal"
@@ -106,7 +109,7 @@ const SignUpAdept = (props) => {
             <TextField
                 id="email"
                 name="email"
-                label="Email"
+                label={formatMessage(messages.email)}
                 value={email}
                 onChange={handleChange}
                 margin="normal"
@@ -117,7 +120,7 @@ const SignUpAdept = (props) => {
                 showPassword={showPassword}
                 name={'password'}
                 value={password}
-                label={'Password'}
+                label={formatMessage(messages.password)}
                 togglePasswordMask={togglePasswordMask}
                 onChange={handleChange}
             />
@@ -129,7 +132,7 @@ const SignUpAdept = (props) => {
                 className={classes.submit}
                 disabled
             >
-                <Warning/> Wrong data entered
+                <Warning/> {formatMessage(messages.wrongData)}
             </Button>
             }
             <Button
@@ -141,7 +144,7 @@ const SignUpAdept = (props) => {
                 disabled={!validateForm()}
                 onClick={handleSubmit}
             >
-                Sign Up
+                {formatMessage(messages.signUp)}
             </Button>
         </div>
     );

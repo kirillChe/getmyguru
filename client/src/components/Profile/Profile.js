@@ -23,6 +23,8 @@ import {Comment, PhotoLibrary, Add, Delete} from '@material-ui/icons';
 import { MainContext } from 'context';
 import { MessageInput } from 'components';
 import { Comments } from 'components/Comments';
+import { useIntl } from 'hooks';
+import messages from './Profile.messages';
 
 const styles = theme => ({
     editButton: {
@@ -114,6 +116,7 @@ class Transition extends React.Component {
 
 const Profile = (props) => {
     const { user, countriesList } = useContext(MainContext);
+    const { formatMessage } = useIntl();
     const {
         classes,
         showMessageInput,
@@ -157,12 +160,12 @@ const Profile = (props) => {
                                     </Typography>
                                     {user.id === profile.id &&
                                         <Button className={classes.editButton} variant="outlined" onClick={handleClickEdit}>
-                                            Edit Profile
+                                            {formatMessage(messages.editProfile)}
                                         </Button>
                                     }
                                     {user.id !== profile.id &&
                                         <Button className={classes.editButton} variant="outlined" onClick={() => setShowMessageInput(true)}>
-                                            Send Message
+                                            {formatMessage(messages.sendMessage)}
                                         </Button>
                                     }
                                 </Grid>
@@ -176,7 +179,7 @@ const Profile = (props) => {
                             >
                                 <DialogContent className={classes.content}>
                                     <Typography variant="h5">
-                                        New message for {profile.firstName} {profile.lastName}
+                                        {formatMessage(messages.newMessageFor)} {profile.firstName} {profile.lastName}
                                     </Typography>
                                     <MessageInput
                                         rows={3}
@@ -189,12 +192,12 @@ const Profile = (props) => {
                                 <Grid container spacing={5}>
                                     <Grid item>
                                         <Typography variant="body1">
-                                            <b>{profile.rating}</b> rating
+                                            <b>{profile.rating}</b> {formatMessage(messages.rating)}
                                         </Typography>
                                     </Grid>
                                     <Grid item>
                                         <Typography variant="body1">
-                                            <b>{profile.ratersCount}</b> raters
+                                            <b>{profile.ratersCount}</b> {formatMessage(messages.raters)}
                                         </Typography>
                                     </Grid>
                                 </Grid>
@@ -215,7 +218,7 @@ const Profile = (props) => {
                                         </Grid>
                                         <Grid item xs={3}>
                                             <Button variant="outlined" onClick={submitRateUser(rating)}>
-                                                Rate
+                                                {formatMessage(messages.rateButton)}
                                             </Button>
                                         </Grid>
                                     </Grid>
@@ -237,12 +240,12 @@ const Profile = (props) => {
                     classes={{ root: classes.tabsRoot, indicator: classes.tabsIndicator, fixed: classes.fixed }}
                 >
                     <MuiTab
-                        label="Photos"
+                        label={formatMessage(messages.tabTitlePhotos)}
                         icon={<PhotoLibrary />}
                         classes={{ selected: classes.selected, root: classes.tabRoot, labelIcon: classes.labelIcon, textColorInherit: classes.textColorInherit, wrapper: classes.wrapper }}
                     />
                     <MuiTab
-                        label="Comments"
+                        label={formatMessage(messages.tabTitleComments)}
                         icon={<Comment />}
                         classes={{ selected: classes.selected, root: classes.tabRoot, labelIcon: classes.labelIcon, textColorInherit: classes.textColorInherit, wrapper: classes.wrapper }}
                     />
@@ -278,7 +281,7 @@ const Profile = (props) => {
                                                 variant="h4"
                                                 component="h4"
                                             >
-                                                Add photos
+                                                {formatMessage(messages.addPhotoTitle)}
                                             </Typography>
                                         </div>
                                     </Card>
@@ -293,7 +296,7 @@ const Profile = (props) => {
                                 align={'center'}
                                 className={classes.noPhotos}
                             >
-                                User has no images yet.
+                                {formatMessage(messages.noImagesTitle)}
                             </Typography>
                         }
                     </div>

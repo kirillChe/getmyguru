@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import { useIntl } from 'hooks';
+import messages from './Footer.messages';
 
 const styles = theme => ({
     footer: {
@@ -12,14 +14,15 @@ const styles = theme => ({
 
 function Footer(props) {
     const { classes } = props;
+    const { formatMessage } = useIntl();
     return (
         <React.Fragment>
             <footer className={classes.footer}>
                 <Typography variant="h6" align="center" gutterBottom>
-                    &copy; COMPANY 2019
+                    {formatMessage(messages.companyFooter)}
                 </Typography>
                 <Typography variant="body1" align="center" color="textSecondary" component="p">
-                    All rights reserved.
+                    {formatMessage(messages.footerText)}
                 </Typography>
             </footer>
         </React.Fragment>

@@ -63,7 +63,6 @@ class Main extends PureComponent {
 
         //@TODO CHANGE RETURNED USER DATA (There is no countryCode)
         if (response.status === 200 && response.data) {
-            // if (!this.state.loggedIn) {
             this.setState(
                 {
                     language: response.data.language,
@@ -73,16 +72,7 @@ class Main extends PureComponent {
                 },
                 () => this.getCountriesList()
             );
-            // }
         }
-        // } else {
-        //     console.log('_________________HERE: 77________________________');
-        //     this.setState({
-        //         loggedIn: false,
-        //         loading: false,
-        //         user: {}
-        //     });
-        // }
     };
 
     async componentDidMount() {
@@ -90,11 +80,6 @@ class Main extends PureComponent {
             await this.getUserData();
         } catch (error) {
             console.log('Get user: no user: ', error);
-            // this.setState({
-            //     loggedIn: false,
-            //     loading: false,
-            //     user: {}
-            // });
         }
         if (!this.state.loggedIn) {
             this.setState(
@@ -130,11 +115,6 @@ class Main extends PureComponent {
 
     render() {
         const { countriesList, error, language } = this.state;
-        console.log('___________________');
-        console.log('___________________');
-        console.log(this.state);
-        console.log('___________________');
-        console.log('___________________');
         const {children} = this.props;
 
         if (error)

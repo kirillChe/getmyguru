@@ -14,6 +14,8 @@ import {
 } from '@material-ui/icons';
 import useForceUpdate from 'use-force-update';
 import axios from 'axios';
+import { useIntl } from 'hooks';
+import messages from './SetNewPwd.messages';
 
 const styles = theme => ({
     form: {
@@ -28,6 +30,7 @@ const styles = theme => ({
 
 const SetNewPwd = (props) => {
     const {classes} = props;
+    const { formatMessage } = useIntl();
     const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
     const [wrongCredentials, setWrongCredentials] = useState(false);
@@ -80,7 +83,7 @@ const SetNewPwd = (props) => {
                 <TextField
                     id="password"
                     name="password"
-                    label="Password"
+                    label={formatMessage(messages.password)}
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={handleChange}
@@ -108,7 +111,7 @@ const SetNewPwd = (props) => {
                     className={classes.submit}
                     disabled
                 >
-                    <Warning/> Credentials not valid
+                    <Warning/> {formatMessage(messages.notValid)}
                 </Button>
                 }
                 <Button
@@ -119,7 +122,7 @@ const SetNewPwd = (props) => {
                     className={classes.submit}
                     disabled={!validateForm()}
                 >
-                    Reset
+                    {formatMessage(messages.reset)}
                 </Button>
             </form>
         </React.Fragment>

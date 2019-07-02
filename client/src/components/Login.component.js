@@ -17,6 +17,8 @@ import {
 import useForceUpdate from 'use-force-update';
 
 import axios from 'axios';
+import { useIntl } from 'hooks';
+import messages from './Login.messages';
 
 const styles = theme => ({
     form: {
@@ -30,6 +32,7 @@ const styles = theme => ({
 
 const Login = (props) => {
     const {classes} = props;
+    const { formatMessage } = useIntl();
     const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
     const [wrongCredentials, setWrongCredentials] = useState(false);
@@ -94,7 +97,7 @@ const Login = (props) => {
                 <TextField
                     id="email"
                     name="email"
-                    label="Email"
+                    label={formatMessage(messages.email)}
                     value={values.email}
                     onChange={handleChange}
                     margin="normal"
@@ -104,7 +107,7 @@ const Login = (props) => {
                 <TextField
                     id="password"
                     name="password"
-                    label="Password"
+                    label={formatMessage(messages.password)}
                     type={showPassword ? 'text' : 'password'}
                     value={values.password}
                     onChange={handleChange}
@@ -135,7 +138,7 @@ const Login = (props) => {
                             onChange={handleChange}
                         />
                     }
-                    label="Remember me"
+                    label={formatMessage(messages.rememberMe)}
                 />
                 {wrongCredentials &&
                 <Button
@@ -145,7 +148,7 @@ const Login = (props) => {
                     className={classes.submit}
                     disabled
                 >
-                    <Warning/> Credentials not valid
+                    <Warning/> {formatMessage(messages.notValid)}
                 </Button>
                 }
                 <Button
@@ -156,7 +159,7 @@ const Login = (props) => {
                     className={classes.submit}
                     disabled={!validateForm()}
                 >
-                    Login
+                    {formatMessage(messages.loginButton)}
                 </Button>
             </form>
         </React.Fragment>

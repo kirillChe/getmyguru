@@ -14,6 +14,8 @@ import {
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import {Chat, MessageInput} from 'components';
+import { useIntl } from 'hooks';
+import messages from './MessagesList.messages';
 
 const styles = theme => ({
     root: {
@@ -31,6 +33,7 @@ const muiBaseTheme = createMuiTheme();
 
 
 const Messages = props => {
+    const { formatMessage } = useIntl();
     const {
         classes,
         partners,
@@ -49,7 +52,7 @@ const Messages = props => {
                     gutterBottom
                     align="center"
                 >
-                    Messages
+                    {formatMessage(messages.title)}
                 </Typography>
                 <Grid container>
                     <Grid item xs={4}>

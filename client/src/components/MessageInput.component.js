@@ -12,6 +12,8 @@ import {
 } from '@material-ui/core';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
+import { useIntl } from 'hooks';
+import messages from './MessageInput.messages';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -46,6 +48,7 @@ const useStyles = makeStyles(() => ({
 const noop = () => false;
 
 const MessageInput = ({ onChange, onSubmit, onUpload, rows, rowsMax }) => {
+    const { formatMessage } = useIntl();
     const classes = useStyles();
     const [inputValue, onInputChange] = useState('');
     const [showEmoji, setShowEmoji] = useState(false);
@@ -121,7 +124,7 @@ const MessageInput = ({ onChange, onSubmit, onUpload, rows, rowsMax }) => {
                     variant="outlined"
                     onChange={handleChange}
                     value={inputValue}
-                    placeholder="Type your message"
+                    placeholder={formatMessage(messages.inputPlaceholder)}
                     endAdornment={
                         <InputAdornment position="end">
                             <EmojiIcon className={classes.icon} onClick={toggleEmoji} />

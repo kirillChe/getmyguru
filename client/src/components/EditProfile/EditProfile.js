@@ -13,6 +13,8 @@ import moment from 'moment';
 import { MainContext } from 'context';
 
 import {Checkbox, MultiSelect, Switch, DatePicker, Select} from 'components/Form';
+import { useIntl } from 'hooks';
+import messages from './EditProfile.messages';
 
 //must be an object
 const experienceRange = [
@@ -55,6 +57,7 @@ const styles = theme => ({
 
 const EditProfile = (props) => {
     const { countriesList } = useContext(MainContext);
+    const { formatMessage } = useIntl();
     const {
         classes,
         state,
@@ -111,7 +114,7 @@ const EditProfile = (props) => {
                             />
                             <label htmlFor="raised-button-file">
                                 <Button component="span" variant={'outlined'} color={'primary'}>
-                                    Upload
+                                    {formatMessage(messages.upload)}
                                 </Button>
                             </label>
                         </div>
@@ -123,7 +126,7 @@ const EditProfile = (props) => {
                             rowsMax={7}
                             id="description"
                             name="description"
-                            label="Description"
+                            label={formatMessage(messages.description)}
                             value={description}
                             onChange={handleChange}
                             margin="normal"
@@ -144,13 +147,13 @@ const EditProfile = (props) => {
                                 maxDate={moment().startOf('day').subtract(16, 'years').calendar()}
                                 minDate={moment().startOf('day').subtract(99, 'years').calendar()}
                                 state={birthDate}
-                                label={'Date of birth'}
+                                label={formatMessage(messages.birthDate)}
                                 name={'birthDate'}
                                 onChange={handleChangeDate('birthDate')}
                             />
                             <Switch
-                                firstLabel={'Male'}
-                                secondLabel={'Female'}
+                                firstLabel={formatMessage(messages.male)}
+                                secondLabel={formatMessage(messages.female)}
                                 checked={gender === 'female'}
                                 name={'gender'}
                                 onChange={handleChangeSwitch('gender')}
@@ -159,7 +162,7 @@ const EditProfile = (props) => {
                         <TextField
                             id="firstName"
                             name="firstName"
-                            label="First Name"
+                            label={formatMessage(messages.firstName)}
                             value={firstName}
                             onChange={handleChange}
                             margin="normal"
@@ -170,7 +173,7 @@ const EditProfile = (props) => {
                             id="lastName"
                             name="lastName"
                             label="Last Name"
-                            value={lastName}
+                            value={formatMessage(messages.lastName)}
                             onChange={handleChange}
                             margin="normal"
                             variant="outlined"
@@ -178,14 +181,14 @@ const EditProfile = (props) => {
                         />
                         <MultiSelect
                             selectValues={languagesRange}
-                            label={'Languages'}
+                            label={formatMessage(messages.languages)}
                             onChange={handleChange}
                             name={'languages'}
                             state={languages}
                         />
                         <Select
                             selectValues={countriesList}
-                            label={'Country'}
+                            label={formatMessage(messages.country)}
                             onChange={handleChange}
                             name={'country'}
                             state={country}
@@ -193,7 +196,7 @@ const EditProfile = (props) => {
                         <TextField
                             id="email"
                             name="email"
-                            label="Email"
+                            label={formatMessage(messages.email)}
                             value={email}
                             onChange={handleChange}
                             margin="normal"
@@ -203,7 +206,7 @@ const EditProfile = (props) => {
                         <TextField
                             id="phone"
                             name="phone"
-                            label="Phone"
+                            label={formatMessage(messages.phone)}
                             value={phone}
                             onChange={handleChange}
                             margin="normal"
@@ -216,7 +219,7 @@ const EditProfile = (props) => {
                             id="site"
                             name="site"
                             label="Site"
-                            value={site}
+                            value={formatMessage(messages.site)}
                             onChange={handleChange}
                             margin="normal"
                             variant="outlined"
@@ -224,7 +227,7 @@ const EditProfile = (props) => {
                         />
                         <Select
                             selectValues={experienceRange}
-                            label={'Experience'}
+                            label={formatMessage(messages.experience)}
                             onChange={handleChange}
                             name={'experience'}
                             state={experience}
@@ -235,7 +238,7 @@ const EditProfile = (props) => {
                             rowsMax={5}
                             id="competitiveExperience"
                             name="competitiveExperience"
-                            label="Competitive Experience"
+                            label={formatMessage(messages.competitiveExperience)}
                             value={competitiveExperience}
                             onChange={handleChange}
                             margin="normal"
@@ -248,7 +251,7 @@ const EditProfile = (props) => {
                             rowsMax={5}
                             id="education"
                             name="education"
-                            label="Education"
+                            label={formatMessage(messages.education)}
                             value={education}
                             onChange={handleChange}
                             margin="normal"
@@ -259,13 +262,13 @@ const EditProfile = (props) => {
                             name="nutritionScheme"
                             state={nutritionScheme}
                             onChange={handleChangeCheckbox('nutritionScheme')}
-                            label={'Prepare nutrition scheme'}
+                            label={formatMessage(messages.prepareNutritionScheme)}
                         />
                         <Checkbox
                             name="trainingSystem"
                             state={trainingSystem}
                             onChange={handleChangeCheckbox('trainingSystem')}
-                            label={'Prepare training system'}
+                            label={formatMessage(messages.prepareTrainingSystem)}
                         />
                         {submitError &&
                             <Button
@@ -275,7 +278,7 @@ const EditProfile = (props) => {
                                 className={classes.submit}
                                 disabled
                             >
-                                <ErrorIcon/> Wrong data entered
+                                <ErrorIcon/> {formatMessage(messages.wrongData)}
                             </Button>
                         }
                         <Button
@@ -286,7 +289,7 @@ const EditProfile = (props) => {
                             className={classes.submit}
                             disabled={!validateForm()}
                         >
-                            Save
+                            {formatMessage(messages.save)}
                         </Button>
                     </Grid>
                 </Grid>

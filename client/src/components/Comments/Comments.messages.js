@@ -1,10 +1,8 @@
 import { defineMessages } from 'react-intl';
 
-const messages = defineMessages({
-    name: {
-        id: 'accountInvoices.name',
-        defaultMessage: '_Account Invoices_'
-    }
+export default defineMessages({
+    commentsTitle: {
+        id: 'comments.commentsTitle',
+        defaultMessage: '_Comments_'
+    },
 });
-
-export default messages;

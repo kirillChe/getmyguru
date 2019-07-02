@@ -5,6 +5,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 import ImageGrid from './ImageGrid';
 import Search from './Search';
+import { useIntl } from 'hooks';
+import messages from './Main.messages';
 
 const styles = theme => ({
     heroUnit: {
@@ -19,6 +21,7 @@ const styles = theme => ({
 
 const Main = (props) => {
     const { classes } = props;
+    const { formatMessage } = useIntl();
     const [customFilter, setCustomFilter] = useState(false);
     const [rawFilters, setRawFilters] = useState({});
 
@@ -27,10 +30,10 @@ const Main = (props) => {
             <div className={classes.heroUnit}>
                 <div className={classes.heroContent}>
                     <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-                        Bla-Bla-Bla Text
+                        {formatMessage(messages.companyName)}
                     </Typography>
                     <Typography variant="h6" align="center" color="textSecondary" paragraph>
-                        Something short and leading about the site.
+                        {formatMessage(messages.slogan)}
                     </Typography>
                     <Search
                         setCustomFilter={setCustomFilter}
@@ -41,7 +44,7 @@ const Main = (props) => {
             {customFilter ?
                 (<div>
                     <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                        We found somebody for you.
+                        {formatMessage(messages.foundText)}
                     </Typography>
                     < ImageGrid
                         customFilter={customFilter}
@@ -50,11 +53,11 @@ const Main = (props) => {
                 </div>) :
                 (<div>
                     <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                        The most rated.
+                        {formatMessage(messages.mostRated)}
                     </Typography>
                     < ImageGrid attr={'rated'} />
                     <Typography variant="h5" align="center" color="textSecondary" paragraph>
-                        Last joined.
+                        {formatMessage(messages.lastJoined)}
                     </Typography>
                     <ImageGrid attr={'last'}/>
                 </div>)

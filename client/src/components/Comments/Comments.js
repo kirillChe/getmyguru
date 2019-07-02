@@ -12,6 +12,8 @@ import * as R from 'ramda';
 import { MessageInput } from 'components';
 import SingleComment from './SingleComment';
 import {MainContext} from 'context';
+import { useIntl } from 'hooks';
+import messages from './Comments.messages';
 
 
 const styles = theme => ({
@@ -33,12 +35,15 @@ const styles = theme => ({
 
 const Comments = (props) => {
     const { user } = useContext(MainContext);
+    const { formatMessage } = useIntl();
     const {
         classes,
         profileId
     } = props;
     const [comments, setComments] = useState([]);
     const [openComments, setOpenComments] = useState({});
+
+
 
     function handleSubmitInput (receiverId, parentId) {
         return async (text) => {
@@ -108,7 +113,7 @@ const Comments = (props) => {
                 component="h4"
                 gutterBottom
             >
-                Comments
+                {formatMessage(messages.commentsTitle)}
             </Typography>
             <List className={classes.list}>
                 {comments.map(comment => (

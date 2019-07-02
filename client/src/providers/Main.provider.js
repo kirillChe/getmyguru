@@ -11,7 +11,7 @@ import { IntlContextProvider } from 'providers';
 import { MainContext } from 'context';
 import { Error } from 'pages';
 
-import translations from '../i18n/locales'
+import translations from 'i18n/locales';
 
 countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
 countries.registerLocale(require("i18n-iso-countries/langs/ru.json"));

@@ -513,5 +513,20 @@
     "id": "profileProvider.messageSent",
     "defaultMessage": "_Message is sent_",
     "filepath": "src/providers/Profile.messages.js"
+  },
+  {
+    "id": "editProfileProvider.profileUpdated",
+    "defaultMessage": "_Your info was updated successfully_",
+    "filepath": "src/providers/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfileProvider.profileUpdateError",
+    "defaultMessage": "_Some error occurred while updating the info_",
+    "filepath": "src/providers/EditProfile.messages.js"
+  },
+  {
+    "id": "imageGridProvider.userNotLoggedIn",
+    "defaultMessage": "_Only logged in users can watch profiles_",
+    "filepath": "src/providers/ImageGrid.messages.js"
   }
 ]

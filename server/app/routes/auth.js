@@ -13,7 +13,7 @@ router.get(
             return res.json(req.user);
 
         // res.json({user: null});
-        res.sendStatus(204);
+        res.sendStatus(401);
     }
 );
 
@@ -30,7 +30,6 @@ router.post(
 
             if (!req.body.remember)
                 return res.sendStatus(200);
-
 
             var token = utils.randomString(64);
             try {

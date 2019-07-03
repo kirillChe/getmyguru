@@ -1,4 +1,7 @@
 {
+  "imageGridProvider.userNotLoggedIn": "_Only logged in users can watch profiles_",
+  "editProfileProvider.profileUpdated": "_Your info was updated successfully_",
+  "editProfileProvider.profileUpdateError": "_Some error occurred while updating the info_",
   "profileProvider.ratedSuccess": "_User was rated successfully_",
   "profileProvider.messageSent": "Сообщение отправлено",
   "comments.commentsTitle": "Комментарии",
@@ -36,7 +39,7 @@
   "login.rememberMe": "Запомнить меня.",
   "main.ageRange": "Возраст",
   "main.anyGender": "Пол не важен",
-  "main.clearFilters": "Очистить все фильтры",
+  "main.clearFilters": "Очистить все",
   "main.companyName": "GETMYGURU",
   "main.competitiveExperience": "Имеет соревновательный опыт",
   "main.country": "Страна",

@@ -12,7 +12,7 @@ import messages from './ProfileMenu.messages';
 const ProfileMenu = (props) => {
     const { formatMessage } = useIntl();
     const [anchorEl, setAnchorEl] = useState(null);
-    const { updateUser, user } = useContext(MainContext);
+    const { updateMainState, user } = useContext(MainContext);
 
     function handleClick (event) {
         setAnchorEl(event.currentTarget);
@@ -50,7 +50,7 @@ const ProfileMenu = (props) => {
             let response = await axios.post('/auth/logout');
 
             if (response.status === 200)
-                updateUser({
+                updateMainState({
                     loggedIn: false,
                     user: {}
                 });

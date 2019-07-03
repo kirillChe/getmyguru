@@ -1,4 +1,7 @@
 {
+  "imageGridProvider.userNotLoggedIn": "_Only logged in users can watch profiles_",
+  "editProfileProvider.profileUpdated": "_Your info was updated successfully_",
+  "editProfileProvider.profileUpdateError": "_Some error occurred while updating the info_",
   "profileProvider.ratedSuccess": "_User was rated successfully_",
   "profileProvider.messageSent": "_Message is sent_",
   "comments.commentsTitle": "_Comments_",

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -10,12 +10,9 @@ import {
     Grid,
     Typography
 } from '@material-ui/core';
-import {withRouter} from 'react-router-dom';
-import ReactRouterPropTypes from 'react-router-prop-types';
-import * as R from 'ramda';
-import axios from 'axios';
 
-import {MainContext} from 'context';
+import { ImageGridProvider } from 'providers';
+import {ImageGridContext} from 'context';
 
 const styles = theme => ({
     cardGrid: {
@@ -45,75 +42,8 @@ const styles = theme => ({
 });
 
 
-const ImageGrid = (props) => {
-    const { defaultUserAvatar, loggedIn } = useContext(MainContext);
-    const [users, setUsers] = useState([]);
-    const {
-        classes,
-        rawFilters,
-        customFilter,
-        attr
-    } = props;
-
-    function handleClickCard (profileId) {
-        return event => {
-            if (loggedIn) {
-                console.log('ImageGrid.component.js :60', profileId);
-                event.preventDefault();
-                console.log('Go to profile');
-                props.history.push(`/account/profile/${profileId}`);
-            } else {
-                console.log('ImageGrid.js :61: user is not logged in');
-                //@todo add appearing flag
-            }
-        }
-    }
-
-
-    useEffect(() => {
-        async function getGuruProfiles() {
-            let params = {};
-
-            if (customFilter) {
-                params = {
-                    _limit: 20,
-                    _order: 'DESC',
-                    _sort: 'createdAt',
-                    _page: 1,
-                    rawFilters
-                };
-            } else {
-                params = {
-                    _limit: 4,
-                    _order: 'DESC',
-                    _sort: attr === 'last' ? 'createdAt' : 'rating',
-                    _page: 1
-                };
-            }
-
-            try {
-                let response = await axios.get('/api/users/getGurusPreviews', {params});
-
-                if (response.data) {
-                    let users = R.map(user => {
-                        if (!user.avatarLocation)
-                            user.avatarLocation = defaultUserAvatar[user.gender];
-
-                        return user;
-                    }, response.data);
-
-                    setUsers(users);
-                } else {
-                    console.log('Get users: no users');
-                }
-            }catch (e) {
-                console.log('Show image grid error: ');
-                console.log(e);
-            }
-        }
-
-        getGuruProfiles();
-    }, [defaultUserAvatar, attr, customFilter, rawFilters]);
+const ImageGrid = ({classes}) => {
+    const { users, handleClickCard } = useContext(ImageGridContext);
 
     return (
         <div className={classNames(classes.layout, classes.cardGrid)}>
@@ -142,8 +72,19 @@ const ImageGrid = (props) => {
 };
 
 ImageGrid.propTypes = {
-    history: ReactRouterPropTypes.history.isRequired,
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    users: PropTypes.array.isRequired,
+    handleClickCard: PropTypes.func
 };
 
-export default withRouter(withStyles(styles)(ImageGrid));
+ImageGrid.defaultProps = {
+    users: []
+};
+
+export default withStyles(styles)(
+    React.forwardRef((props, ref) => (
+        <ImageGridProvider>
+            <ImageGrid {...props} />
+        </ImageGridProvider>
+    ))
+);

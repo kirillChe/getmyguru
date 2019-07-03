@@ -1,23 +1,25 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent } from 'react';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { SnackbarProvider } from 'notistack';
 import axios from 'axios';
 import * as R from 'ramda';
-import { IntlProvider } from 'react-intl';
 import countries from 'i18n-iso-countries';
-import { SnackbarProvider } from 'notistack';
+import { IntlProvider, addLocaleData } from 'react-intl';
+import ru from 'react-intl/locale-data/ru';
 
 import { IntlContextProvider } from 'providers';
 import { MainContext } from 'context';
 import { Error } from 'pages';
-
 import translations from 'i18n/locales';
+
+addLocaleData([...ru]);
 
 countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
 countries.registerLocale(require("i18n-iso-countries/langs/ru.json"));
 
 
-class Main extends PureComponent {
+class MainProvider extends PureComponent {
 
     static propTypes = {
         children: PropTypes.node,
@@ -42,9 +44,8 @@ class Main extends PureComponent {
         );
     };
 
-    updateUser = (state) => {
+    updateMainState = (state) => {
         this.setState(state);
-        console.log('Main.js :18', this.state.user, state);
     };
 
     getUserCountry = async () => {
@@ -98,13 +99,14 @@ class Main extends PureComponent {
     }
 
     state = {
+        showLogin: false,
         countryCode: '',
         language: 'en',
         countriesList: [],
         loggedIn: false,
         user: {},
         error: '',
-        updateUser: this.updateUser,
+        updateMainState: this.updateMainState,
         loading: true,
         allowedLanguages: ['en', 'ru'],
         //@todo buy images when time came
@@ -129,6 +131,7 @@ class Main extends PureComponent {
                     vertical: 'top',
                     horizontal: 'center',
                 }}
+                hideIconVariant={true}
                 maxSnack={3}
             >
                 <IntlProvider locale={language} key={language} messages={messages}>
@@ -141,4 +144,4 @@ class Main extends PureComponent {
     }
 }
 
-export default withRouter(Main);
+export default withRouter(MainProvider);

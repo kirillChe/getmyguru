@@ -5,11 +5,15 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import axios from 'axios';
 import * as R from 'ramda';
 import moment from 'moment';
+import { withSnackbar } from 'notistack';
 
+import { useIntl } from 'hooks';
 import { MainContext, EditProfileContext } from 'context';
+import messages from "./EditProfile.messages";
 
 
-const EditProfile = ({children, history, location}) => {
+const EditProfile = ({children, history, location, enqueueSnackbar}) => {
+    const { formatMessage } = useIntl();
     const { defaultUserAvatar, user } = useContext(MainContext);
     const [submitError, setSubmitError] = useState(false);
     const profile = location.state;
@@ -82,8 +86,10 @@ const EditProfile = ({children, history, location}) => {
         try {
             let response = await axios.put('/api/users/me', data, config);
             if (response.status === 201) {
+                enqueueSnackbar(formatMessage(messages.profileUpdated), { variant: 'success' });
                 history.push(`/account/profile/${user.id}`);
             } else {
+                enqueueSnackbar(formatMessage(messages.profileUpdateError), { variant: 'error' });
                 setSubmitError(true);
             }
         } catch (err) {
@@ -116,7 +122,8 @@ const EditProfile = ({children, history, location}) => {
 EditProfile.propTypes = {
     location: ReactRouterPropTypes.location.isRequired,
     history: ReactRouterPropTypes.history.isRequired,
-    children: PropTypes.node
+    children: PropTypes.node,
+    enqueueSnackbar: PropTypes.func.isRequired
 };
 
-export default withRouter(EditProfile);
+export default withSnackbar(withRouter(EditProfile));

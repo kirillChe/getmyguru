@@ -119,6 +119,7 @@ const Profile = ({children, history, enqueueSnackbar}) => {
                 forceUpdate();
 
             } catch (e) {
+                //@todo add message when error handling is done on backend side
                 console.log('Profile.js : cannot rate user: ', e);
                 throw e;
             }
@@ -155,7 +156,8 @@ const Profile = ({children, history, enqueueSnackbar}) => {
 
 Profile.propTypes = {
     history: ReactRouterPropTypes.history.isRequired,
-    children: PropTypes.node
+    children: PropTypes.node,
+    enqueueSnackbar: PropTypes.func.isRequired
 };
 
 export default withSnackbar(withRouter(Profile));

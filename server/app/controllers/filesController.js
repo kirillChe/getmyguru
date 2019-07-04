@@ -81,7 +81,7 @@ const destroy = async (req, res) => {
                 meta: { fileId: req.params.id }
             });
 
-        if (file.userId !== req.session.passsport.user) {
+        if (file.userId !== req.session.passport.user) {
             let currentUser = await User.findByPk(req.session.passport.user);
 
             if (!currentUser)

@@ -8,6 +8,7 @@ const express = require('express')
 
 // for session
 const passport = require('passport')
+    , uuid = require('uuid/v4')
     , session = require('express-session')
     , redisStore = require('connect-redis')(session)
     , redis = require("redis")
@@ -39,8 +40,10 @@ const serverApp = async () => {
 
     app.use(session({
         store: new redisStore({client}),
-        secret: 'secretforsession'/*,
+        secret: 'secretforsession',
         resave: true,
+        saveUninitialized: true,
+        genid: () => uuid(),/*,
         saveUninitialized: true,
         cookie: {
             // 2 hours
@@ -52,8 +55,10 @@ const serverApp = async () => {
         } */
     }));
 
+    app.use(middleware.publicHandler());
     app.use(passport.initialize());
     app.use(passport.session());
+
     app.use(passport.authenticate('remember-me'));
 
     try {
@@ -62,9 +67,7 @@ const serverApp = async () => {
     } catch (e) {
         console.log('Something went wrong with the Database update! ', e);
     }
-
     app.use(middleware.isAuthenticated());
-    app.use(middleware.publicHandler());
     app.use(middleware.queryParser());
 
     //Require routes into the application

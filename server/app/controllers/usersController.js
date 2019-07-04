@@ -1,5 +1,4 @@
-const on = require('await-handler')
-    , R = require('ramda')
+const R = require('ramda')
     , Busboy = require('busboy')
     , path = require('path')
     , fs = require('fs')
@@ -12,7 +11,7 @@ const filePath = __dirname + '/../../public'
     , helper = require('./helpers/userHelpers')
     , {User, File, Rating, UserLanguage, UserInfo} = require('../models');
 
-const create = async (req, res, next) => {
+const create = async (req, res) => {
 
     let userData = R.merge(
         R.omit(['country'], req.body),
@@ -43,55 +42,42 @@ const create = async (req, res, next) => {
         });
 
         res.status(201).json(user);
-    }catch (e) {
-        next(e);
-    }
-
-    let [err, user] = await on(User.create(userData, {
-        include: [
-            {
-                association: User.associations.languages,
-                as: 'languages'
-            },
-            {
-                association: User.associations.info,
-                as: 'info'
+    }catch (error) {
+        return res.status(502).send({
+            message: 'Cannot create a user',
+            meta: {
+                error,
+                userData
             }
-        ]
-    }));
-    if (err)
-        return next(err);
-
-    res.status(201).json(user);
+        });
+    }
 };
 
-const find = async (req, res, next) => {
-    let filter = req.query.filter || {};
-
-    let [err, data] = await on(User.findAll(filter));
-    if (err)
-        return next(err);
-
-    res.json(data);
-};
-
-const findById = async (req, res, next) => {
-    let [err, user] = await on(User.findByPk(req.params.id));
-    if (err)
-        return next(err);
-
-    res.json(user);
-};
-
-const update = async (req, res, next) => {
+const update = async (req, res) => {
     //user can update himself only if he is not an admin
     if (req.params.id !== 'me') {
         try {
             let currentUser = await User.findByPk(req.session.passport.user);
+
+            if (!currentUser)
+                return res.status(404).send({
+                    message: 'User was not found',
+                    meta: {userId: req.session.passport.user}
+                });
+
             if (currentUser.type !== 'admin')
-                return res.status(400).json({errorName: 'SCOPE_ERROR'});
-        } catch (e) {
-            return next(e);
+                return res.status(400).send({
+                    message: 'This user has no permissions for updating other users'
+                });
+
+        } catch (error) {
+            return res.status(502).send({
+                message: 'Some error occurred while searching user from session',
+                meta: {
+                    error,
+                    userId: req.session.passport.user
+                }
+            });
         }
     }
 
@@ -102,10 +88,19 @@ const update = async (req, res, next) => {
         user = await User.findByPk(userId);
 
         if (!user)
-            return res.sendStatus(404);
+            return res.status(404).send({
+                message: 'User was not found',
+                meta: {userId}
+            });
 
-    } catch (e) {
-        return next(e);
+    } catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while searching user',
+            meta: {
+                error,
+                userId
+            }
+        });
     }
 
     let busboy = new Busboy({headers: req.headers});
@@ -118,8 +113,14 @@ const update = async (req, res, next) => {
         if (fieldname === 'userData') {
             try{
                 userData = JSON.parse(val);
-            } catch (e) {
-                return next(e);
+            } catch (error) {
+                return res.status(502).send({
+                    message: 'Field userData must be stringified object',
+                    meta: {
+                        error,
+                        userData
+                    }
+                });
             }
         }
     });
@@ -178,53 +179,53 @@ const update = async (req, res, next) => {
 
     busboy.on('error', error => {
         console.log('Upload failed: ', error);
+        res.status(502).send({
+            message: 'Some error occurred while file/s uploading',
+            meta: { error }
+        });
     });
 
     busboy.on('finish', async () => {
         console.log('Upload complete');
 
-        //@todo REFACTOR
-        if (fileProvided) {
-            em.on('uploadFinished', async () => {
-                //update user model
-                try {
+        try {
+            //@todo REFACTOR
+            if (fileProvided) {
+
+                em.on('uploadFinished', async () => {
+                    //update user model
                     await helper.updateUserWithAssociations({user, userData});
                     res.sendStatus(201);
+                });
 
-                } catch (e) {
-                    console.log('Failed to update user model: ', e);
-                    next(e);
-                }
-            });
-        } else {
-            //update user model
-            try {
+            } else {
+
+                //update user model
                 await helper.updateUserWithAssociations({user, userData});
                 res.sendStatus(201);
-            } catch (e) {
-                console.log('Failed to update user model: ', e);
-                next(e);
             }
+
+        } catch (error) {
+            console.log('Failed to update user model: ', e);
+            res.status(502).send({
+                message: 'Some error occurred while updating a user',
+                meta: {
+                    error,
+                    userData
+                }
+            });
         }
     });
 
     req.pipe(busboy);
 };
 
-const destroy = async (req, res, next) => {
-    try {
-        await User.destroy({
-            where: {id: req.params.id},
+const resetPassword = async (req, res) => {
+    let email = req.body.email;
+    if (!email)
+        return res.status(400).send({
+            message: 'Missing required parameter email'
         });
-        res.sendStatus(204);
-    } catch (error) {
-        next(error);
-    }
-};
-
-const resetPassword = async (req, res, next) => {
-    if (!req.body.email)
-        return res.status(400).json('Missing required parameters');
 
     try {
         //@todo move host/port to config
@@ -232,47 +233,71 @@ const resetPassword = async (req, res, next) => {
 
         let ctx = {
             url,
-            email: req.body.email
+            email: email
         };
 
         await User.resetPassword(ctx);
 
         res.sendStatus(204);
     } catch (error) {
-        //@todo add error handler
-        next(error);
+        res.status(502).send({
+            message: 'Some error occurred while trying to reset password',
+            meta: {
+                error,
+                email
+            }
+        });
     }
 };
 
-const setNewPassword = async (req, res, next) => {
+const setNewPassword = async (req, res) => {
     let ctx = {
         token: req.body.token,
         newPassword: req.body.newPassword
     };
 
     if (!ctx.newPassword || !ctx.token)
-        return res.status(400).json('Missing required parameters');
+        return res.status(400).send({
+            message: 'Missing required parameters',
+            meta: {
+                token: ctx.token,
+                newPassword: ctx.newPassword
+            }
+        });
 
     try {
         await User.setNewPassword(ctx);
         res.sendStatus(204);
     } catch (error) {
-        //@todo add error handler
-        next(error);
+        return res.status(502).send({
+            message: 'Some error occurred while trying to set new password',
+            meta: {
+                token: ctx.token,
+                newPassword: ctx.newPassword,
+                error
+            }
+        });
     }
 };
 
-const getGurusPreviews = async (req, res, next) => {
+const getGurusPreviews = async (req, res) => {
     if (!req.query.filter)
-        return res.sendStatus(400);
+        return res.status(400).send({
+            message: 'Missing required parameter filter'
+        });
 
     let users = [];
     try {
         let filter = await helper.prepareGuruFilter(req.query);
         users = await User.findAll(filter);
-    } catch (e) {
-        console.log('usersController.js :114', e);
-        return next(e);
+    } catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while searching the users',
+            meta: {
+                filter,
+                error
+            }
+        });
     }
 
     let previews = R.map(user => {
@@ -285,12 +310,14 @@ const getGurusPreviews = async (req, res, next) => {
         );
     }, users);
 
-    res.json(previews);
+    res.status(200).json(previews);
 };
 
-const userProfile = async (req, res, next) => {
+const userProfile = async (req, res) => {
     if (!req.params.id)
-        return res.status(400);
+        return res.status(400).send({
+            message: 'Missing required parameter id'
+        });
     
     let user, ratersCount;
     try {
@@ -317,10 +344,19 @@ const userProfile = async (req, res, next) => {
         user = await User.findOne(filter);
 
         if (!user)
-            return res.sendStatus(404);
+            return res.status(404).send({
+                message: 'Cannot find user with provided id',
+                meta: { filter }
+            });
 
-    }catch (e) {
-        return next(e);
+    }catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while searching a user',
+            meta: {
+                filter,
+                error
+            }
+        });
     }
 
     try {
@@ -336,8 +372,14 @@ const userProfile = async (req, res, next) => {
 
         ratersCount = ratings && ratings[0] && ratings[0].ratersCount || 0;
 
-    }catch (e) {
-        return next(e);
+    }catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while searching the rating for user',
+            meta: {
+                filter,
+                error
+            }
+        });
     }
 
     let userAvatar = R.prop('location', R.head(user.files) || {});
@@ -358,7 +400,7 @@ const userProfile = async (req, res, next) => {
     res.status(200).json(result);
 };
 
-const filtersData = async (req, res, next) => {
+const filtersData = async (req, res) => {
     let languagesRange, countriesRange;
     try {
         let languages = await UserLanguage.findAll({
@@ -375,8 +417,11 @@ const filtersData = async (req, res, next) => {
             raw: true
         });
         countriesRange = R.map(R.prop('country'), countries);
-    } catch (e) {
-        return next(e);
+    } catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while assembling filters data',
+            meta: { error }
+        });
     }
 
     return res.json({languagesRange, countriesRange});
@@ -384,10 +429,7 @@ const filtersData = async (req, res, next) => {
 
 module.exports = {
     create,
-    find,
-    findById,
     update,
-    destroy,
     resetPassword,
     setNewPassword,
     getGurusPreviews,

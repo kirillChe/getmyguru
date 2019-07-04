@@ -16,7 +16,6 @@ const updateUserWithAssociations = async ({user, userData}) => {
 
     // iterate all userData and fill the correct model
     R.forEachObjIndexed((val, key) => {
-        console.log('_________________HERE: 18________________________', typeof val, key);
         R.contains(key, userKeys) ?
             userProps[key] = val :
             R.contains(key, userInfoKeys) ?
@@ -25,14 +24,6 @@ const updateUserWithAssociations = async ({user, userData}) => {
                     userLanguageProps = R.map(v => ({userId: user.id, code: v}), val) :
                     null;
     }, userData);
-
-    console.log('___________________');
-    console.log('___________________');
-    console.log('userHelpers.js :30', userProps);
-    console.log('userHelpers.js :30', userInfoProps);
-    console.log('userHelpers.js :30', userLanguageProps);
-    console.log('___________________');
-    console.log('___________________');
 
     //remove all existing languages of current user
     await UserLanguage.destroy({where: { userId: user.id }});
@@ -45,18 +36,6 @@ const updateUserWithAssociations = async ({user, userData}) => {
 
     //update user
     await user.update(userProps);
-
-
-
-    // userProps.info = userInfoProps;
-    // userProps.languages = userLanguageProps;
-    //
-    // let result = await user.update(userProps);
-    // console.log('___________________');
-    // console.log('___________________');
-    // console.log(result);
-    // console.log('___________________');
-    // console.log('___________________');
 };
 
 function getBaseSearchFilter (filter, rawFilters) {

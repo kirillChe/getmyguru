@@ -17,20 +17,20 @@ router.route('/filtersData').get(userCtrl.filtersData);
 
 router.route('/')
 /** GET /api/users - Get list of users */
-    .get(userCtrl.find)
+    // .get(userCtrl.find)
 
     /** POST /api/users - Create new user */
     .post(userCtrl.create);
 
 router.route('/:id')
 /** GET /api/users/:userId - Get user */
-    .get(userCtrl.findById)
+    // .get(userCtrl.findById)
 
     /** PUT /api/users/:userId - Update user */
     .put(userCtrl.update)
 
     /** DELETE /api/users/:userId - Delete user */
-    .delete(userCtrl.destroy);
+    // .delete(userCtrl.destroy);
 
 // /** Load user when API with userId route parameter is hit */
 // router.param('userId', userCtrl.load);

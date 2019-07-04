@@ -96,7 +96,7 @@ ImageGrid.propTypes = {
     history: ReactRouterPropTypes.history.isRequired,
     enqueueSnackbar: PropTypes.func.isRequired,
     rawFilters: PropTypes.object,
-    customFilter: PropTypes.object,
+    customFilter: PropTypes.bool,
     attr: PropTypes.string,
 };
 

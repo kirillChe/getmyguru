@@ -1,48 +1,13 @@
-const on = require('await-handler');
 const Op = require('sequelize').Op;
 const R = require('ramda');
 
 const {Message, User, File} = require('../models');
 
-const create = async (req, res, next) => {
-    // the request is sending by sockets. You can find code in app.js
-
-
-    // let userId = req.session.passport && req.session.passport.user && req.session.passport.user.id;
-    // if (!userId)
-    //     return res.sendStatus(400);
-    //
-    // req.body.senderId = userId;
-    //
-    // let [err, message] = await on(Message.create(req.body));
-    // if (err)
-    //     return next(err);
-    //
-    res.sendStatus(404);
-};
-
-const find = async (req, res, next) => {
-    let filter = req.query.filter || {};
-
-    let [err, data] = await on(Message.findAll(filter));
-    if (err)
-        return next(err);
-
-    res.json(data);
-};
-
-const findById = async (req, res, next) => {
-    let [err, message] = await on(Message.findByPk(req.params.id));
-    if (err)
-        return next(err);
-
-    res.json(message);
-};
-
-const conversationsPartners = async (req, res, next) => {
+// the request is sending by sockets. You can find code in app.js
+const conversationsPartners = async (req, res) => {
     let ownerId = req.session.passport && req.session.passport.user;
     if (!ownerId)
-        return res.sendStatus(400);
+        return res.status(400).send({ message: 'Missing required parameter ownerId' });
 
     //find all conversations for owner
     let messages = [];
@@ -71,8 +36,11 @@ const conversationsPartners = async (req, res, next) => {
         if (!messages || messages.length === 0)
             return res.json([]);
 
-    }catch (e) {
-        return next(e);
+    }catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while searching messages',
+            meta: { error, filter }
+        });
     }
 
     // get uniq list of ids of all partners
@@ -107,10 +75,16 @@ const conversationsPartners = async (req, res, next) => {
         users = await User.findAll(filter);
 
         if (!users || users.length === 0)
-            return next(new Error('Unexpected error occurred: no one user was found'));
+            return res.status(502).send({
+                message: 'Unexpected error occurred: no one user was found',
+                meta: { filter }
+            });
 
-    } catch (e) {
-        return next(e);
+    } catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while searching users',
+            meta: { error, filter }
+        });
     }
 
     //fill final result with list of partners including part of last message
@@ -130,11 +104,14 @@ const conversationsPartners = async (req, res, next) => {
     res.json(result);
 };
 
-const conversation = async (req, res, next) => {
+const conversation = async (req, res) => {
     let ownerId = req.session.passport && req.session.passport.user;
     let partnerId = req.query.partnerId;
     if (!ownerId || !partnerId)
-        return res.sendStatus(400);
+        return res.status(502).send({
+            message: 'Missing required parameters',
+            meta: { partnerId, ownerId }
+        });
 
     let filter = {
         where: {
@@ -156,27 +133,29 @@ const conversation = async (req, res, next) => {
         ]
     };
 
-    let [err, data] = await on(Message.findAll(filter));
-    if (err)
-        return next(err);
+    try {
+        let data = await Message.findAll(filter);
+        if (!data)
+            return res.status(200).json([]);
 
-    if (!data)
-        res.json([]);
+        let response = R.map(message => ({
+            id: message.id,
+            text: message.text,
+            createdAt: message.createdAt,
+            right: message.senderId === ownerId
+        }), data);
 
-    let response = R.map(message => ({
-        id: message.id,
-        text: message.text,
-        createdAt: message.createdAt,
-        right: message.senderId === ownerId
-    }), data);
+        res.json(response);
 
-    res.json(response);
+    } catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while searching users',
+            meta: { error, filter }
+        });
+    }
 };
 
 module.exports = {
-    create,
-    find,
-    findById,
     conversation,
     conversationsPartners
 };

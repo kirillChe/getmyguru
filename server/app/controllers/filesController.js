@@ -1,17 +1,32 @@
-const on = require('await-handler')
-    , R = require('ramda')
+const R = require('ramda')
     , {File, User} = require('../models');
 
 
-const upload = async (req, res, next) => {
+const upload = async (req, res) => {
     //check if user is admin if user id is provided
     if (req.params.id !== 'me') {
         try {
             let currentUser = await User.findByPk(req.session.passport.user);
+
+            if (!currentUser)
+                return res.status(404).send({
+                    message: 'User was not found',
+                    meta: {userId: req.session.passport.user}
+                });
+
             if (currentUser.type !== 'admin')
-                return res.status(400).json({errorName: 'SCOPE_ERROR'});
+                return res.status(400).send({
+                    message: 'This user has no permissions for updating other users'
+                });
+
         } catch (e) {
-            return next(e);
+            return res.status(502).send({
+                message: 'Some error occurred while searching user from session',
+                meta: {
+                    error,
+                    userId: req.session.passport.user
+                }
+            });
         }
     }
 
@@ -22,25 +37,15 @@ const upload = async (req, res, next) => {
     };
     try {
         await File.upload(ctx);
-    } catch (e) {
-        next(e);
+    } catch (error) {
+        res.status(502).send({
+            message: 'Some error occurred while uploading image for user',
+            meta: { error, userId }
+        });
     }
 };
 
-const findById = async (req, res, next) => {
-    // @todo add scoping validation
-    /**
-     * req.session.passport.user.type === 'admin'
-     * req.session.passport.user.id === req.params.userId
-     */
-    let [err, file] = await on(File.findByPk(req.params.id));
-    if (err)
-        return next(err);
-
-    res.status(200).json(file);
-};
-
-const userImages = async (req, res, next) => {
+const userImages = async (req, res) => {
     try {
         let filter = {
             where: {
@@ -59,61 +64,53 @@ const userImages = async (req, res, next) => {
         }, user && user.files || []);
 
         res.status(200).json(images);
-    } catch (e) {
-        return next(e);
+    } catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while searching user\' images',
+            meta: { error, filter }
+        });
     }
 };
 
-const find = async (req, res, next) => {
-    // @todo add scoping validation
-    /**
-     * req.session.passport.user.type === 'admin'
-     * req.session.passport.user.id === req.params.userId
-     */
-    let filter = req.query.filter || {};
-
-    if (filter.where) {
-        filter.where.userId = req.params.userId;
-    } else {
-        filter.where = {
-            userId: req.params.userId
-        };
-    }
-
-    let [err, data] = await on(File.findAll(filter));
-    if (err)
-        return next(err);
-
-    res.status(200).json(data);
-};
-
-const destroy = async (req, res, next) => {
-    // @todo add scoping validation
-    /**
-     * req.session.passport.user.type === 'admin'
-     * req.session.passport.user.id === req.params.userId
-     */
-    let [err, file] = await on(File.findByPk(req.params.id));
-    if (err)
-        return next(err);
-
-    if (!file)
-        return res.sendStatus(404);
-
+const destroy = async (req, res) => {
     try {
+        let file = await File.findByPk(req.params.id);
+        if (!file)
+            return res.status(404).send({
+                message: 'Cannot find file with provided id',
+                meta: { fileId: req.params.id }
+            });
+
+        if (file.userId !== req.session.passsport.user) {
+            let currentUser = await User.findByPk(req.session.passport.user);
+
+            if (!currentUser)
+                return res.status(404).send({
+                    message: 'User was not found',
+                    meta: {userId: req.session.passport.user}
+                });
+
+            if (currentUser.type !== 'admin')
+                return res.status(400).send({
+                    message: 'This user has no permissions for deleting files of other users'
+                });
+        }
         await file.destroy();
         res.sendStatus(204);
-    } catch (error) {
-        next(error);
+    }catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while trying to delete user\'s image',
+            meta: {
+                error,
+                fileId: req.params.id,
+                userId: req.session.passport.user
+            }
+        });
     }
 };
-
-
 
 module.exports = {
     upload,
     userImages,
-    find,
-    findById,
     destroy
 };

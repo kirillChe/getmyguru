@@ -1,20 +1,27 @@
-const on = require('await-handler')
-    , R = require('ramda')
+const R = require('ramda')
     , Op = require('sequelize').Op
     , { Comment, User, File } = require('../models');
 
-const create = async (req, res, next) => {
-    let [err, comment] = await on(Comment.create(req.body));
-    if (err)
-        return next(err);
-
-    res.status(201).json(comment);
+const create = async (req, res) => {
+    try {
+        let comment = await Comment.create(req.body);
+        res.status(201).json(comment);
+    } catch (e) {
+        res.status(502).send({
+            message: 'Cannot create a comment',
+            meta: {
+                error: e
+            }
+        });
+    }
 };
 
-const commentsTree = async (req, res, next) => {
+const commentsTree = async (req, res) => {
     let {ownerId} = req.query;
     if (!ownerId)
-        return res.sendStatus(400);
+        return res.status(400).send({
+            message: 'Missing required parameter ownerId'
+        });
 
 
     let filter = {
@@ -48,7 +55,12 @@ const commentsTree = async (req, res, next) => {
         if (!comments || comments.length === 0)
             return res.json([]);
     } catch (e) {
-        return next(e);
+        return res.status(502).send({
+            message: 'Some error occurred while searching owner\'s comments tree',
+            meta: {
+                error: e
+            }
+        });
     }
 
     // get all comments with parent id equal null
@@ -81,40 +93,7 @@ const commentsTree = async (req, res, next) => {
     res.json(response);
 };
 
-const find = async (req, res, next) => {
-    let filter = req.query.filter || {};
-
-    let [err, data] = await on(Comment.findAll(filter));
-    if (err)
-        return next(err);
-
-    res.json(data);
-};
-
-const findById = async (req, res, next) => {
-    let [err, comment] = await on(Comment.findByPk(req.params.id));
-    if (err)
-        return next(err);
-
-    res.json(comment);
-};
-
-const update = async (req, res, next) => {
-    try {
-        const model = await Comment.findByPk(req.params.id);
-        if (!model)
-            return res.sendStatus(404);
-        model.update(req.body);
-        res.json(model);
-    } catch (error) {
-        next(error);
-    }
-};
-
 module.exports = {
     create,
-    find,
-    findById,
-    update,
     commentsTree
 };

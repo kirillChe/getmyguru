@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
-import ImageGrid from './ImageGrid';
+import {ImageGridProvider as ImageGrid } from 'providers';
 import Search from './Search';
 import { useIntl } from 'hooks';
 import messages from './Main.messages';

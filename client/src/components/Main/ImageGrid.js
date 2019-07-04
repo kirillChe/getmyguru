@@ -11,7 +11,6 @@ import {
     Typography
 } from '@material-ui/core';
 
-import { ImageGridProvider } from 'providers';
 import {ImageGridContext} from 'context';
 
 const styles = theme => ({
@@ -73,18 +72,6 @@ const ImageGrid = ({classes}) => {
 
 ImageGrid.propTypes = {
     classes: PropTypes.object.isRequired,
-    users: PropTypes.array.isRequired,
-    handleClickCard: PropTypes.func
 };
 
-ImageGrid.defaultProps = {
-    users: []
-};
-
-export default withStyles(styles)(
-    React.forwardRef((props, ref) => (
-        <ImageGridProvider>
-            <ImageGrid {...props} />
-        </ImageGridProvider>
-    ))
-);
+export default withStyles(styles)(ImageGrid);

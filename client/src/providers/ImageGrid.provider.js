@@ -9,10 +9,10 @@ import { withSnackbar } from 'notistack';
 
 import messages from './ImageGrid.messages';
 import {MainContext, ImageGridContext} from 'context';
+import { ImageGrid as ImageGridComponent } from 'components/Main';
 
 const ImageGrid = (props) => {
     const {
-        children,
         history,
         enqueueSnackbar,
         rawFilters,
@@ -87,14 +87,13 @@ const ImageGrid = (props) => {
 
     return (
         <ImageGridContext.Provider value={state}>
-            {children}
+            <ImageGridComponent />
         </ImageGridContext.Provider>
     );
 };
 
 ImageGrid.propTypes = {
     history: ReactRouterPropTypes.history.isRequired,
-    children: PropTypes.node,
     enqueueSnackbar: PropTypes.func.isRequired,
     rawFilters: PropTypes.object,
     customFilter: PropTypes.object,

@@ -45,4 +45,16 @@ export default defineMessages({
         id: 'toolbar.rememberQ',
         defaultMessage: '_Do you remember it?_'
     },
+    changeLanguage: {
+        id: 'toolbar.changeLanguage',
+        defaultMessage: '_Change language_'
+    },
+    russian: {
+        id: 'toolbar.russian',
+        defaultMessage: '_ru_'
+    },
+    english: {
+        id: 'toolbar.english',
+        defaultMessage: '_en_'
+    },
 });

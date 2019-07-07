@@ -10,7 +10,8 @@ import {
     Dialog,
     DialogContent,
     Slide,
-    Link
+    Link,
+    Tooltip
 } from '@material-ui/core';
 import FitnessIcon from '@material-ui/icons/FitnessCenter';
 import * as R from 'ramda';
@@ -79,6 +80,10 @@ class ToolbarLayout extends Component {
         showForgotPwd: false,
         token: pathComponents && pathComponents[2]
     };
+    languagesRange = {
+        en: this.props.intl.formatMessage(messages.english),
+        ru: this.props.intl.formatMessage(messages.russian)
+    };
 
     handleClose = function (state) {
         return () => {
@@ -116,6 +121,11 @@ class ToolbarLayout extends Component {
                     <Typography variant="h6" color="inherit" className={classes.grow} >
                         {intl.formatMessage(messages.companyName)}
                     </Typography>
+                    <Tooltip title={intl.formatMessage(messages.changeLanguage)}>
+                        <Button color="inherit" className='btn-link' onClick={context.changeUserLanguage}>
+                            {context.language}
+                        </Button>
+                    </Tooltip>
                     {context.loggedIn ? (
                         <ProfileMenu />
                     ) : (

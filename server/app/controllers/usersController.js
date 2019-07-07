@@ -417,14 +417,32 @@ const filtersData = async (req, res) => {
             raw: true
         });
         countriesRange = R.map(R.prop('country'), countries);
+        res.json({languagesRange, countriesRange});
     } catch (error) {
         return res.status(502).send({
             message: 'Some error occurred while assembling filters data',
             meta: { error }
         });
     }
+};
 
-    return res.json({languagesRange, countriesRange});
+const changeLanguage = async (req, res) => {
+    const {language} = req.body;
+    if (!language)
+        return res.status(400).send({
+            message: 'Missing required parameters'
+        });
+
+    try {
+        let currentUser = await User.findByPk(req.session.passport.user);
+        await currentUser.update({language});
+        res.sendStatus(204);
+    } catch (error) {
+        res.status(502).send({
+            message: 'Some error occurred while updating user language',
+            meta: { error }
+        });
+    }
 };
 
 module.exports = {
@@ -434,5 +452,6 @@ module.exports = {
     setNewPassword,
     getGurusPreviews,
     userProfile,
-    filtersData
+    filtersData,
+    changeLanguage
 };

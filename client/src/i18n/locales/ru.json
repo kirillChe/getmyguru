@@ -127,5 +127,8 @@
   "toolbar.rememberQ": "_Do you remember it?_",
   "toolbar.resetPwdText": "_A reset password link has been sent to you via email. Go to the mail and click the link to enter a new password._",
   "toolbar.setNewPwd": "_Set new password_",
-  "toolbar.signUp": "_Sign Up_"
+  "toolbar.signUp": "_Sign Up_",
+  "toolbar.changeLanguage": "_Change language_",
+  "toolbar.russian": "_ru_",
+  "toolbar.english": "_en_"
 }

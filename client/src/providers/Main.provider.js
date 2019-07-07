@@ -48,6 +48,25 @@ class MainProvider extends PureComponent {
         this.setState(state);
     };
 
+    changeUserLanguage = async () => {
+        let newLang = this.state.language === 'en' ? 'ru' : 'en';
+        if (this.state.loggedIn) {
+            try {
+                let response = await axios.put('/api/users/changeLanguage', {language: newLang});
+
+                if (response.status === 204) {
+                    this.setState({
+                        language: newLang
+                    });
+                }
+            } catch (e) {
+                console.log('Cannot change user language', e);
+            }
+        } else {
+            this.setState({language: newLang});
+        }
+    };
+
     getUserCountry = async () => {
         try {
             let response = await axios.get('https://ipinfo.io/');
@@ -99,6 +118,7 @@ class MainProvider extends PureComponent {
     }
 
     state = {
+        changeUserLanguage: this.changeUserLanguage,
         showLogin: false,
         countryCode: '',
         language: 'en',

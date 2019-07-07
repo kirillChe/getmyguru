@@ -15,6 +15,8 @@ router.route('/userProfile/:id').get(userCtrl.userProfile);
 
 router.route('/filtersData').get(userCtrl.filtersData);
 
+router.route('/changeLanguage').put(userCtrl.changeLanguage);
+
 router.route('/')
 /** GET /api/users - Get list of users */
     // .get(userCtrl.find)

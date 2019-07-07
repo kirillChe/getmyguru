@@ -643,5 +643,20 @@
     "id": "profileProvider.rateUserError",
     "defaultMessage": "_Cannot rate user. Please, try again later_",
     "filepath": "src/providers/Profile.messages.js"
+  },
+  {
+    "id": "toolbar.changeLanguage",
+    "defaultMessage": "_Cannot rate user. Please, try again later_",
+    "filepath": "src/layouts/Toolbar.messages.js"
+  },
+  {
+    "id": "toolbar.russian",
+    "defaultMessage": "_ru_",
+    "filepath": "src/layouts/Toolbar.messages.js"
+  },
+  {
+    "id": "toolbar.english",
+    "defaultMessage": "_en_",
+    "filepath": "src/layouts/Toolbar.messages.js"
   }
 ]

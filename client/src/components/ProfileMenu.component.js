@@ -1,9 +1,11 @@
 import React, { useState, useContext } from 'react';
+import PropTypes from 'prop-types';
 import { IconButton, Avatar, MenuItem, Menu, Fade } from '@material-ui/core';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import {withRouter} from 'react-router-dom';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import axios from 'axios';
+import { withSnackbar } from 'notistack';
 
 import { MainContext } from 'context';
 import { useIntl } from 'hooks';
@@ -49,16 +51,19 @@ const ProfileMenu = (props) => {
         try {
             let response = await axios.post('/auth/logout');
 
-            if (response.status === 200)
+            if (response.status === 200) {
                 updateMainState({
                     loggedIn: false,
                     user: {}
                 });
 
-            props.history.push('/');
+                props.history.push('/');
+            } else {
+                props.enqueueSnackbar(formatMessage(messages.logoutError), { variant: 'error' });
+            }
         } catch (e) {
-            console.log('Logout error');
-            console.log('ProfileMenu.component.js :42', e);
+            props.enqueueSnackbar(formatMessage(messages.logoutError), { variant: 'error' });
+            console.log('Logout error: ', e);
         }
     }
 
@@ -92,7 +97,8 @@ const ProfileMenu = (props) => {
 };
 
 ProfileMenu.propTypes = {
-    history: ReactRouterPropTypes.history.isRequired
+    history: ReactRouterPropTypes.history.isRequired,
+    enqueueSnackbar: PropTypes.func.isRequired
 };
 
-export default withRouter(ProfileMenu);
+export default withRouter(withSnackbar(ProfileMenu));

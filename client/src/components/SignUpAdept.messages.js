@@ -21,8 +21,8 @@ export default defineMessages({
         id: 'signUpAdept.signUp',
         defaultMessage: '_Sign up_'
     },
-    wrongData: {
-        id: 'signUpAdept.wrongData',
-        defaultMessage: '_Wrong Data Entered_'
+    signUpError: {
+        id: 'signUpAdept.signUpError',
+        defaultMessage: '_Please, check entered data and try again_'
     },
 });

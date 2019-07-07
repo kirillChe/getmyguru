@@ -5,8 +5,8 @@ import {
     Button,
     TextField
 } from '@material-ui/core';
-import { Warning } from '@material-ui/icons';
 import useForceUpdate from 'use-force-update';
+import { withSnackbar } from 'notistack';
 
 import axios from 'axios';
 import { MainContext } from 'context';
@@ -24,13 +24,11 @@ const styles = theme => ({
     },
 });
 
-const SignUpAdept = (props) => {
+const SignUpAdept = ({classes, dialogClick, enqueueSnackbar}) => {
     const { language: userLanguage, countryCode } = useContext(MainContext);
-    const {classes} = props;
     const { formatMessage } = useIntl();
     const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
-    const [submitError, setSubmitError] = useState(false);
 
     const [state, setState] = React.useState({
         firstName: '',
@@ -70,16 +68,15 @@ const SignUpAdept = (props) => {
             let response = await axios.post('/api/users', state);
             console.log('Sign up adept response: ');
             if (response.status === 201) {
-                props.dialogClick();
+                dialogClick();
             } else {
-                console.log('Sign up error: ');
-                setSubmitError(true);
+                console.log('Sign up adept error');
+                enqueueSnackbar(formatMessage(messages.signUpError), { variant: 'error' });
                 forceUpdate();
             }
         }catch (e) {
-            console.log('Sign up error: ');
-            console.log(e);
-            setSubmitError(true);
+            console.log('Sign up adept error: ', e);
+            enqueueSnackbar(formatMessage(messages.signUpError), { variant: 'error' });
             forceUpdate();
         }
     }
@@ -124,17 +121,6 @@ const SignUpAdept = (props) => {
                 togglePasswordMask={togglePasswordMask}
                 onChange={handleChange}
             />
-            {submitError &&
-            <Button
-                fullWidth
-                variant="outlined"
-                color="secondary"
-                className={classes.submit}
-                disabled
-            >
-                <Warning/> {formatMessage(messages.wrongData)}
-            </Button>
-            }
             <Button
                 type="submit"
                 fullWidth
@@ -153,6 +139,8 @@ const SignUpAdept = (props) => {
 
 SignUpAdept.propTypes = {
     classes: PropTypes.object.isRequired,
+    dialogClick: PropTypes.func.isRequired,
+    enqueueSnackbar: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(SignUpAdept);
+export default withStyles(styles)(withSnackbar(SignUpAdept));

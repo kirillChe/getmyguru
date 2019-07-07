@@ -33,8 +33,8 @@ export default defineMessages({
         id: 'signUpGuru.signUp',
         defaultMessage: '_Sign up_'
     },
-    wrongData: {
-        id: 'signUpGuru.wrongData',
-        defaultMessage: '_Wrong Data Entered_'
+    signUpError: {
+        id: 'signUpGuru.signUpError',
+        defaultMessage: '_Please, check entered data and try again_'
     },
 });

@@ -38,11 +38,14 @@ const Profile = ({children, history, enqueueSnackbar}) => {
             });
             try {
                 let response = await axios.post('/api/files/upload/me', data, config);
-                if (response && response.status === 200)
+                if (response && response.status === 200) {
                     getUserImages();
+                } else {
+                    enqueueSnackbar(formatMessage(messages.saveImageError), { variant: 'error' });
+                }
             }catch (e) {
-                console.log('Upload images error: ');
-                console.log(e);
+                console.log('Upload images error: ', e);
+                enqueueSnackbar(formatMessage(messages.saveImageError), { variant: 'error' });
             }
         }
     });
@@ -50,11 +53,14 @@ const Profile = ({children, history, enqueueSnackbar}) => {
         return async () => {
             try {
                 let response = await axios.delete(`/api/files/${imageId}`);
-                if (response && response.status === 204)
+                if (response && response.status === 204){
                     getUserImages();
+                } else {
+                    enqueueSnackbar(formatMessage(messages.removeImageError), { variant: 'error' });
+                }
             }catch (e) {
-                console.log('Remove image error: ');
-                console.log(e);
+                console.log('Remove image error: ', e);
+                enqueueSnackbar(formatMessage(messages.removeImageError), { variant: 'error' });
             }
         }
     }
@@ -84,10 +90,12 @@ const Profile = ({children, history, enqueueSnackbar}) => {
             const response = await axios.get(`/api/files/userImages/${profileId}`);
             if (response.status === 200) {
                 setProfileImages(response.data);
+            } else {
+                enqueueSnackbar(formatMessage(messages.getImagesError), { variant: 'error' });
             }
         } catch (e) {
             console.log('Profile.js : cannot get use images: ', e);
-            throw e;
+            enqueueSnackbar(formatMessage(messages.getImagesError), { variant: 'error' });
         }
     }
 
@@ -98,6 +106,7 @@ const Profile = ({children, history, enqueueSnackbar}) => {
             setAvatarLocation(response.data.avatarLocation || defaultUserAvatar[response.data.gender || 'male']);
         } catch (e) {
             console.log('Profile.js : cannot get profile: ', e);
+            enqueueSnackbar(formatMessage(messages.getProfileError), { variant: 'error' });
             throw e;
         }
     }
@@ -119,9 +128,9 @@ const Profile = ({children, history, enqueueSnackbar}) => {
                 forceUpdate();
 
             } catch (e) {
-                //@todo add message when error handling is done on backend side
+                enqueueSnackbar(formatMessage(messages.rateUserError), { variant: 'error' });
                 console.log('Profile.js : cannot rate user: ', e);
-                throw e;
+                //throw e;
             }
         }
     }

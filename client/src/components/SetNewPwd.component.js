@@ -8,7 +8,6 @@ import {
     InputAdornment
 } from '@material-ui/core';
 import {
-    Warning,
     Visibility,
     VisibilityOff
 } from '@material-ui/icons';
@@ -28,12 +27,10 @@ const styles = theme => ({
 });
 
 
-const SetNewPwd = (props) => {
-    const {classes} = props;
+const SetNewPwd = ({classes, enqueueSnackbar, dialogClick, token}) => {
     const { formatMessage } = useIntl();
     const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
-    const [wrongCredentials, setWrongCredentials] = useState(false);
     const [password, setPassword] = useState('');
 
     function validateForm() {
@@ -51,7 +48,7 @@ const SetNewPwd = (props) => {
     async function handleSubmit (event) {
         event.preventDefault();
         let data = {
-            token: props.token,
+            token: token,
             newPassword: password
         };
 
@@ -63,16 +60,15 @@ const SetNewPwd = (props) => {
             console.log('Set new pwd response: ');
             console.log(response);
             if (response.status === 204) {
-                props.dialogClick();
+                dialogClick();
             } else {
-                console.log('Set new pwd error: ');
-                setWrongCredentials(true);
+                console.log('Set new pwd error');
+                enqueueSnackbar(formatMessage(messages.setNewPwdError), { variant: 'error' });
                 forceUpdate();
             }
         }catch (e) {
-            console.log('Set new pwd error: ');
-            console.log(e);
-            setWrongCredentials(true);
+            enqueueSnackbar(formatMessage(messages.setNewPwdError), { variant: 'error' });
+            console.log('Set new pwd error: ', e);
             forceUpdate();
         }
     }
@@ -103,17 +99,6 @@ const SetNewPwd = (props) => {
                         )
                     }}
                 />
-                {wrongCredentials &&
-                <Button
-                    fullWidth
-                    variant="outlined"
-                    color="secondary"
-                    className={classes.submit}
-                    disabled
-                >
-                    <Warning/> {formatMessage(messages.notValid)}
-                </Button>
-                }
                 <Button
                     type="submit"
                     fullWidth
@@ -130,7 +115,8 @@ const SetNewPwd = (props) => {
 };
 
 SetNewPwd.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    enqueueSnackbar: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(SetNewPwd);

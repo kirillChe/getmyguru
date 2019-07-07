@@ -7,6 +7,7 @@ import {
     DialogContent, Box, Grid,
 } from '@material-ui/core';
 import {Tune, Search as SearchIcon} from '@material-ui/icons';
+import { withSnackbar } from 'notistack';
 
 import axios from 'axios';
 import * as R from 'ramda';
@@ -22,6 +23,7 @@ const experienceRange = [
     '5-10',
     '11+',
 ].reduce((res, val) => { res[val] = val; return res; }, {});
+
 
 const defaultStates = {
     withPhotoOnly: false,
@@ -75,21 +77,23 @@ const Search = (props) => {
     const {
         classes,
         setCustomFilter,
-        setRawFilters
+        setRawFilters,
+        enqueueSnackbar
     } = props;
 
     const [baseSearch, setBaseSearch] = useState('');
     const [filtersData, setFiltersData] = useState({});
     const [showFilters, setShowFilters] = useState(false);
     const [state, setState] = React.useState(R.clone(defaultStates));
-
-    //@todo find list of languages per lang
-    filtersData.languagesRange = {
-        en: 'English',
-        ru: 'Russian',
-        es: 'Spanish',
-        il: 'Hebrew',
+    const languagesList = {
+        en: formatMessage(messages.english),
+        ru: formatMessage(messages.russian),
+        es: formatMessage(messages.spanish),
+        he: formatMessage(messages.hebrew),
+        fr: formatMessage(messages.french),
+        zh: formatMessage(messages.chinese)
     };
+
     //convert array with codes to object with human readable values
     let getReadableValues = (donorObj, arr) => {
         let result = {};
@@ -164,8 +168,9 @@ const Search = (props) => {
                 const response = await axios.get('/api/users/filtersData');
                 setFiltersData(response.data);
             } catch (e) {
-                console.log('Profile.js : cannot get profile: ', e);
-                throw e;
+                console.log('Search.js : cannot get filters data: ', e);
+                enqueueSnackbar(formatMessage(messages.getFiltersDataError), { variant: 'error' });
+                //throw e;
             }
         }
 
@@ -268,7 +273,7 @@ const Search = (props) => {
                                     state={languages}
                                     label={formatMessage(messages.language)}
                                     onChange={handleChange}
-                                    selectValues={filtersData.languagesRange}
+                                    selectValues={getReadableValues(languagesList, filtersData.languagesRange || [])}
                                 />
                                 <MultiSelect
                                     name={'experience'}
@@ -325,7 +330,10 @@ const Search = (props) => {
 };
 
 Search.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    setCustomFilter: PropTypes.func.isRequired,
+    setRawFilters: PropTypes.func.isRequired,
+    enqueueSnackbar: PropTypes.func.isRequired
 };
 
-export default withStyles(styles)(Search);
+export default withStyles(styles)(withSnackbar(Search));

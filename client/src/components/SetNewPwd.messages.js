@@ -5,9 +5,9 @@ export default defineMessages({
         id: 'setNewPwd.password',
         defaultMessage: '_Password_'
     },
-    notValid: {
-        id: 'setNewPwd.notValid',
-        defaultMessage: '_Credentials not valid_'
+    setNewPwdError: {
+        id: 'setNewPwd.setNewPwdError',
+        defaultMessage: '_Please, check your credentials and try again_'
     },
     reset: {
         id: 'setNewPwd.reset',

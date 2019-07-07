@@ -8,7 +8,6 @@ import {
     Avatar,
     Grid,
 } from '@material-ui/core';
-import ErrorIcon from '@material-ui/icons/Warning';
 import moment from 'moment';
 import { MainContext } from 'context';
 
@@ -24,12 +23,6 @@ const experienceRange = [
     '11+',
 ].reduce((res, val) => { res[val] = val; return res; }, {});
 
-const languagesRange = {
-    en: 'English',
-    ru: 'Russian',
-    es: 'Spanish',
-    il: 'Hebrew',
-};
 
 
 const styles = theme => ({
@@ -58,6 +51,14 @@ const styles = theme => ({
 const EditProfile = (props) => {
     const { countriesList } = useContext(MainContext);
     const { formatMessage } = useIntl();
+    const languagesRange = {
+        en: formatMessage(messages.english),
+        ru: formatMessage(messages.russian),
+        es: formatMessage(messages.spanish),
+        he: formatMessage(messages.hebrew),
+        fr: formatMessage(messages.french),
+        zh: formatMessage(messages.chinese)
+    };
     const {
         classes,
         state,
@@ -69,7 +70,6 @@ const EditProfile = (props) => {
         handleAvatarChange,
         handleSubmit,
         avatarLocation,
-        submitError,
     } = props;
 
     const {
@@ -270,17 +270,6 @@ const EditProfile = (props) => {
                             onChange={handleChangeCheckbox('trainingSystem')}
                             label={formatMessage(messages.prepareTrainingSystem)}
                         />
-                        {submitError &&
-                            <Button
-                                fullWidth
-                                variant="outlined"
-                                color="secondary"
-                                className={classes.submit}
-                                disabled
-                            >
-                                <ErrorIcon/> {formatMessage(messages.wrongData)}
-                            </Button>
-                        }
                         <Button
                             onClick={handleSubmit}
                             fullWidth
@@ -309,7 +298,6 @@ EditProfile.propTypes = {
     handleAvatarChange: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     avatarLocation: PropTypes.string.isRequired,
-    submitError: PropTypes.bool.isRequired,
 };
 
 export default withStyles(styles)(EditProfile);

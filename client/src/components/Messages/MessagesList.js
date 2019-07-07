@@ -13,7 +13,8 @@ import {
     Typography
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
-import {Chat, MessageInput} from 'components';
+import Chat from './Chat';
+import {MessageInput} from 'components';
 import { useIntl } from 'hooks';
 import messages from './MessagesList.messages';
 

@@ -38,7 +38,8 @@ const Comments = (props) => {
     const { formatMessage } = useIntl();
     const {
         classes,
-        profileId
+        profileId,
+        enqueueSnackbar
     } = props;
     const [comments, setComments] = useState([]);
     const [openComments, setOpenComments] = useState({});
@@ -66,11 +67,12 @@ const Comments = (props) => {
                     getCommentsTree(profileId);
 
                 } else {
+                    enqueueSnackbar(formatMessage(messages.postCommentError), { variant: 'error' });
                     console.log('Post comment: did not save');
                 }
             }catch (e) {
-                console.log('Save comment error: ');
-                console.log(e);
+                enqueueSnackbar(formatMessage(messages.postCommentError), { variant: 'error' });
+                console.log('Save comment error: ', e);
             }
         }
     }
@@ -94,11 +96,12 @@ const Comments = (props) => {
                 )(response.data));
 
             } else {
+                enqueueSnackbar(formatMessage(messages.getCommentsTreeError), { variant: 'error' });
                 console.log('Get comments: no comments');
             }
         }catch (e) {
-            console.log('Show comments error: ');
-            console.log(e);
+            enqueueSnackbar(formatMessage(messages.getCommentsTreeError), { variant: 'error' });
+            console.log('Show comments error: ', e);
         }
     }
 

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Button, TextField } from '@material-ui/core';
-import ErrorIcon from '@material-ui/icons/Warning';
 import useForceUpdate from 'use-force-update';
+import { withSnackbar } from 'notistack';
 
 import axios from 'axios';
 
@@ -23,9 +23,8 @@ const styles = theme => ({
 const ForgotPwd = (props) => {
     const { formatMessage } = useIntl();
     const forceUpdate = useForceUpdate();
-    const [wrongCredentials, setWrongCredentials] = useState(false);
     const [email, setEmail] = useState('');
-    const { classes } = props;
+    const { classes, enqueueSnackbar } = props;
 
     function validateForm() {
         return email.length > 0;
@@ -48,16 +47,15 @@ const ForgotPwd = (props) => {
                 props.dialogClick('showEmailSent')();
             } else {
                 console.log('Forgot pwd error: ');
+                enqueueSnackbar(formatMessage(messages.resetPwdError), { variant: 'error' });
 
-                setWrongCredentials(true);
                 forceUpdate();
             }
 
         }catch (e) {
-            console.log('Forgot pwd error: ');
-            console.log(e);
+            console.log('Forgot pwd error: ', e);
+            enqueueSnackbar(formatMessage(messages.resetPwdError), { variant: 'error' });
 
-            setWrongCredentials(true);
             forceUpdate();
         }
     }
@@ -74,17 +72,6 @@ const ForgotPwd = (props) => {
                     variant="outlined"
                     fullWidth
                 />
-                {wrongCredentials &&
-                <Button
-                    fullWidth
-                    variant="outlined"
-                    color="secondary"
-                    className={classes.submit}
-                    disabled
-                >
-                    <ErrorIcon/> {formatMessage(messages.notValid)}
-                </Button>
-                }
                 <Button
                     type="submit"
                     fullWidth
@@ -101,7 +88,8 @@ const ForgotPwd = (props) => {
 };
 
 ForgotPwd.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    enqueueSnackbar: PropTypes.func.isRequired
 };
 
-export default withStyles(styles)(ForgotPwd);
+export default withStyles(styles)(withSnackbar(ForgotPwd));

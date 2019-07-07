@@ -17,4 +17,8 @@ export default defineMessages({
         id: 'profileMenu.logout',
         defaultMessage: '_Logout_'
     },
+    logoutError: {
+        id: 'profileMenu.logoutError',
+        defaultMessage: '_Something went wrong. Please, try again_'
+    },
 });

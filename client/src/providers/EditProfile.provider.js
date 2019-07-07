@@ -15,7 +15,6 @@ import messages from "./EditProfile.messages";
 const EditProfile = ({children, history, location, enqueueSnackbar}) => {
     const { formatMessage } = useIntl();
     const { defaultUserAvatar, user } = useContext(MainContext);
-    const [submitError, setSubmitError] = useState(false);
     const profile = location.state;
 
     const [file, setFile] = useState(null);
@@ -90,12 +89,10 @@ const EditProfile = ({children, history, location, enqueueSnackbar}) => {
                 history.push(`/account/profile/${user.id}`);
             } else {
                 enqueueSnackbar(formatMessage(messages.profileUpdateError), { variant: 'error' });
-                setSubmitError(true);
             }
-        } catch (err) {
-            console.log('Update user error: ');
-            console.log(err);
-            setSubmitError(true);
+        } catch (e) {
+            console.log('Update user error: ', e);
+            enqueueSnackbar(formatMessage(messages.profileUpdateError), { variant: 'error' });
         }
     }
 
@@ -109,7 +106,6 @@ const EditProfile = ({children, history, location, enqueueSnackbar}) => {
         handleAvatarChange,
         handleSubmit,
         avatarLocation,
-        submitError,
     };
 
     return (

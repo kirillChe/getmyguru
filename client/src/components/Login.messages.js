@@ -13,9 +13,9 @@ export default defineMessages({
         id: 'login.rememberMe',
         defaultMessage: '_Remember me_'
     },
-    notValid: {
-        id: 'login.notValid',
-        defaultMessage: '_Credentials not valid_'
+    loginError: {
+        id: 'login.loginError',
+        defaultMessage: '_Please, check your credentials and try one more time_'
     },
     loginButton: {
         id: 'login.loginButton',

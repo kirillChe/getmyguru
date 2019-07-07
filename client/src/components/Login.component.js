@@ -10,11 +10,11 @@ import {
     InputAdornment
 } from '@material-ui/core';
 import {
-    Warning,
     Visibility,
     VisibilityOff
 } from '@material-ui/icons';
 import useForceUpdate from 'use-force-update';
+import { withSnackbar } from 'notistack';
 
 import axios from 'axios';
 import { useIntl } from 'hooks';
@@ -30,12 +30,10 @@ const styles = theme => ({
     },
 });
 
-const Login = (props) => {
-    const {classes} = props;
+const Login = ({classes, enqueueSnackbar}) => {
     const { formatMessage } = useIntl();
     const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
-    const [wrongCredentials, setWrongCredentials] = useState(false);
     const [remember, setRemember] = useState(false);
     const [values, setValues] = useState({
         email: '',
@@ -80,13 +78,12 @@ const Login = (props) => {
                 window.location.reload();
             } else {
                 console.log('login error');
-                setWrongCredentials(true);
+                enqueueSnackbar(formatMessage(messages.loginError), { variant: 'error' });
                 forceUpdate();
             }
         }catch (e) {
-            console.log('login error: ');
-            console.log(e);
-            setWrongCredentials(true);
+            enqueueSnackbar(formatMessage(messages.loginError), { variant: 'error' });
+            console.log('login error: ', e);
             forceUpdate();
         }
     }
@@ -140,17 +137,6 @@ const Login = (props) => {
                     }
                     label={formatMessage(messages.rememberMe)}
                 />
-                {wrongCredentials &&
-                <Button
-                    fullWidth
-                    variant="outlined"
-                    color="secondary"
-                    className={classes.submit}
-                    disabled
-                >
-                    <Warning/> {formatMessage(messages.notValid)}
-                </Button>
-                }
                 <Button
                     type="submit"
                     fullWidth
@@ -167,7 +153,8 @@ const Login = (props) => {
 };
 
 Login.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    enqueueSnackbar: PropTypes.func.isRequired
 };
 
-export default withStyles(styles)(Login);
+export default withStyles(styles)(withSnackbar(Login));

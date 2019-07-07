@@ -77,4 +77,28 @@ export default defineMessages({
         id: 'editProfile.wrongData',
         defaultMessage: '_Wrong Data Entered_'
     },
+    english: {
+        id: 'editProfile.english',
+        defaultMessage: '_English_'
+    },
+    russian: {
+        id: 'editProfile.russian',
+        defaultMessage: '_Russian_'
+    },
+    spanish: {
+        id: 'editProfile.spanish',
+        defaultMessage: '_Spanish_'
+    },
+    hebrew: {
+        id: 'editProfile.hebrew',
+        defaultMessage: '_Hebrew_'
+    },
+    french: {
+        id: 'editProfile.french',
+        defaultMessage: '_French_'
+    },
+    chinese: {
+        id: 'editProfile.chinese',
+        defaultMessage: '_Chinese_'
+    },
 });

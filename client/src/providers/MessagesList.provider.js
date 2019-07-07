@@ -3,21 +3,17 @@ import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import { withRouter } from 'react-router-dom';
 import { MessagesContext, MainContext } from 'context';
+import { injectIntl, intlShape } from 'react-intl';
 
 import axios from 'axios';
 import * as R from 'ramda';
-import socketIOClient from "socket.io-client";
+import socketIOClient from 'socket.io-client';
+import messages from './MessagesList.messages';
 const socket = socketIOClient('/');
 
 
 class MessagesList extends Component{
     static contextType = MainContext;
-
-    static propTypes = {
-        children: PropTypes.node,
-        history: ReactRouterPropTypes.history.isRequired
-    };
-
 
     handleSubmitInput = text => {
         if (R.isEmpty(R.trim(text))) {
@@ -43,7 +39,7 @@ class MessagesList extends Component{
         }
     };
 
-    async getConversation(partnerId) {
+    getConversation = async partnerId => {
         try {
             let response = await axios.get(`/api/messages/conversation?partnerId=${partnerId || this.state.selectedPartnerId}`);
 
@@ -51,12 +47,13 @@ class MessagesList extends Component{
                 this.setState({dialog: response.data});
             } else {
                 console.log('Get conversation: no conversation');
+                this.props.enqueueSnackbar(this.props.intl.formatMessage(messages.getConversationError), { variant: 'error' });
             }
         }catch (e) {
-            console.log('Get conversation error: ');
-            console.log(e);
+            console.log('Get conversation error: ', e);
+            this.props.enqueueSnackbar(this.props.intl.formatMessage(messages.getConversationError), { variant: 'error' });
         }
-    }
+    };
 
     async getConversationPartners() {
         try {
@@ -77,8 +74,8 @@ class MessagesList extends Component{
                 console.log('Get conversation partners: no partners');
             }
         }catch (e) {
-            console.log('Get conversation partners error: ');
-            console.log(e);
+            this.props.enqueueSnackbar(this.props.intl.formatMessage(messages.getConversationPartnersError), { variant: 'error' });
+            console.log('Get conversation partners error: ', e);
         }
     }
 
@@ -108,4 +105,10 @@ class MessagesList extends Component{
     }
 }
 
-export default withRouter(MessagesList);
+MessagesList.propTypes = {
+    history: ReactRouterPropTypes.history.isRequired,
+    children: PropTypes.node,
+    intl: intlShape,
+};
+
+export default withRouter(injectIntl(MessagesList));

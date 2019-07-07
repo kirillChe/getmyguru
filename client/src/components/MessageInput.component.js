@@ -47,7 +47,7 @@ const useStyles = makeStyles(() => ({
 
 const noop = () => false;
 
-const MessageInput = ({ onChange, onSubmit, onUpload, rows, rowsMax }) => {
+const MessageInputComponent = ({ onChange, onSubmit, onUpload, rows, rowsMax }) => {
     const { formatMessage } = useIntl();
     const classes = useStyles();
     const [inputValue, onInputChange] = useState('');
@@ -60,13 +60,8 @@ const MessageInput = ({ onChange, onSubmit, onUpload, rows, rowsMax }) => {
     };
     const toggleEmoji = () => setShowEmoji(!showEmoji);
     const handleSubmit = async () => {
-        try {
-            await onSubmit(inputValue);
-            onInputChange('');
-
-        }catch (e) {
-            console.log('MessageInput.component.js :67', e);
-        }
+        await onSubmit(inputValue);
+        onInputChange('');
     };
     const onEmojiSelect = e => {
         handleChange({
@@ -142,20 +137,20 @@ const MessageInput = ({ onChange, onSubmit, onUpload, rows, rowsMax }) => {
     );
 };
 
-MessageInput.propTypes = {
+MessageInputComponent.propTypes = {
     onChange: PropTypes.func,
     onUpload: PropTypes.func,
     onSubmit: PropTypes.func,
 };
-MessageInput.defaultProps = {
+MessageInputComponent.defaultProps = {
     onChange: noop,
     onUpload: noop,
     onSubmit: noop,
 };
-MessageInput.metadata = {
+MessageInputComponent.metadata = {
     name: 'Pea Message input',
 };
-MessageInput.getTheme = () => ({
+MessageInputComponent.getTheme = () => ({
     'Mui{Component}': {
         // this object will be injected to 'overrides' section
         root: {},
@@ -163,4 +158,4 @@ MessageInput.getTheme = () => ({
     },
 });
 
-export default MessageInput;
+export default MessageInputComponent;

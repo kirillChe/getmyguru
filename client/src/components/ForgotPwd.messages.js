@@ -5,9 +5,9 @@ export default defineMessages({
         id: 'forgotPwd.email',
         defaultMessage: '_Email_'
     },
-    notValid: {
-        id: 'forgotPwd.notValid',
-        defaultMessage: '_Credentials not valid_'
+    resetPwdError: {
+        id: 'forgotPwd.resetPwdError',
+        defaultMessage: '_Please, check if email is correct and try one more time_'
     },
     resetButton: {
         id: 'forgotPwd.resetButton',

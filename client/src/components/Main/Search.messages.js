@@ -73,4 +73,32 @@ export default defineMessages({
         id: 'main.searchButton',
         defaultMessage: '_Search_'
     },
+    english: {
+        id: 'main.english',
+        defaultMessage: '_English_'
+    },
+    russian: {
+        id: 'main.russian',
+        defaultMessage: '_Russian_'
+    },
+    spanish: {
+        id: 'main.spanish',
+        defaultMessage: '_Spanish_'
+    },
+    hebrew: {
+        id: 'main.hebrew',
+        defaultMessage: '_Hebrew_'
+    },
+    french: {
+        id: 'main.french',
+        defaultMessage: '_French_'
+    },
+    chinese: {
+        id: 'main.chinese',
+        defaultMessage: '_Chinese_'
+    },
+    getFiltersDataError: {
+        id: 'main.getFiltersDataError',
+        defaultMessage: '_Something went wrong. Please refresh the page_'
+    },
 });

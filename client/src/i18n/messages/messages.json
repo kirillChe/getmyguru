@@ -5,6 +5,16 @@
     "filepath": "src/components/Comments/Comments.messages.js"
   },
   {
+    "id": "comments.getCommentsTreeError",
+    "defaultMessage": "_Something went wrong while getting the comments. Please, try to refresh the page or ask your administrator_",
+    "filepath": "src/components/Comments/Comments.messages.js"
+  },
+  {
+    "id": "comments.postCommentError",
+    "defaultMessage": "_Something went wrong while posting the comments. Please, try one more time_",
+    "filepath": "src/components/Comments/Comments.messages.js"
+  },
+  {
     "id": "editProfile.upload",
     "defaultMessage": "_upload_",
     "filepath": "src/components/EditProfile/EditProfile.messages.js"
@@ -100,6 +110,36 @@
     "filepath": "src/components/EditProfile/EditProfile.messages.js"
   },
   {
+    "id": "editProfile.english",
+    "defaultMessage": "_English_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.russian",
+    "defaultMessage": "_Russian_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.spanish",
+    "defaultMessage": "_Spanish_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.hebrew",
+    "defaultMessage": "_Hebrew_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.french",
+    "defaultMessage": "_French_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
+    "id": "editProfile.chinese",
+    "defaultMessage": "_Chinese_",
+    "filepath": "src/components/EditProfile/EditProfile.messages.js"
+  },
+  {
     "id": "exception.404",
     "defaultMessage": "_Exception_404_",
     "filepath": "src/components/Exception/Exception.messages.js"
@@ -120,8 +160,8 @@
     "filepath": "src/components/ForgotPwd.messages.js"
   },
   {
-    "id": "forgotPwd.notValid",
-    "defaultMessage": "_Credentials not valid_",
+    "id": "forgotPwd.resetPwdError",
+    "defaultMessage": "_Please, check if email is correct and try one more time_",
     "filepath": "src/components/ForgotPwd.messages.js"
   },
   {
@@ -145,8 +185,8 @@
     "filepath": "src/components/Login.messages.js"
   },
   {
-    "id": "login.notValid",
-    "defaultMessage": "_Credentials not valid_",
+    "id": "login.loginError",
+    "defaultMessage": "_Please, check your credentials and try one more time_",
     "filepath": "src/components/Login.messages.js"
   },
   {
@@ -270,6 +310,41 @@
     "filepath": "src/components/Main/Search.messages.js"
   },
   {
+    "id": "main.english",
+    "defaultMessage": "_English_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.russian",
+    "defaultMessage": "_Russian_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.spanish",
+    "defaultMessage": "_Spanish_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.hebrew",
+    "defaultMessage": "_Hebrew_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.french",
+    "defaultMessage": "_French_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.chinese",
+    "defaultMessage": "_Chinese_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
+    "id": "main.getFiltersDataError",
+    "defaultMessage": "_Something went wrong. Please refresh the page_",
+    "filepath": "src/components/Main/Search.messages.js"
+  },
+  {
     "id": "messageInput.inputPlaceholder",
     "defaultMessage": "_Type your message_",
     "filepath": "src/components/MessageInput.messages.js"
@@ -350,13 +425,18 @@
     "filepath": "src/components/ProfileMenu.messages.js"
   },
   {
+    "id": "profileMenu.logoutError",
+    "defaultMessage": "_Something went wrong. Please, try again_",
+    "filepath": "src/components/ProfileMenu.messages.js"
+  },
+  {
     "id": "setNewPwd.password",
     "defaultMessage": "_Password_",
     "filepath": "src/components/SetNewPwd.messages.js"
   },
   {
-    "id": "setNewPwd.notValid",
-    "defaultMessage": "_Credentials not valid_",
+    "id": "setNewPwd.setNewPwdError",
+    "defaultMessage": "_Please, check your credentials and try again_",
     "filepath": "src/components/SetNewPwd.messages.js"
   },
   {
@@ -390,8 +470,8 @@
     "filepath": "src/components/SignUpAdept.messages.js"
   },
   {
-    "id": "signUpAdept.wrongData",
-    "defaultMessage": "_Wrong Data Entered_",
+    "id": "signUpAdept.signUpError",
+    "defaultMessage": "_Please, check entered data and try again_",
     "filepath": "src/components/SignUpAdept.messages.js"
   },
   {
@@ -435,13 +515,13 @@
     "filepath": "src/components/SignUpGuru.messages.js"
   },
   {
-    "id": "signUpGuru.wrongData",
-    "defaultMessage": "_Wrong Data Entered_",
+    "id": "signUpGuru.signUpError",
+    "defaultMessage": "_Please, check entered data and try again_",
     "filepath": "src/components/SignUpGuru.messages.js"
   },
   {
     "id": "footer.companyFooter",
-    "defaultMessage": "_\\u00A9 COMPANY 2019_",
+    "defaultMessage": "_&copy; COMPANY 2019_",
     "filepath": "src/layouts/Footer.messages.js"
   },
   {
@@ -505,16 +585,6 @@
     "filepath": "src/layouts/Toolbar.messages.js"
   },
   {
-    "id": "profileProvider.ratedSuccess",
-    "defaultMessage": "_User was rated successfully_",
-    "filepath": "src/providers/Profile.messages.js"
-  },
-  {
-    "id": "profileProvider.messageSent",
-    "defaultMessage": "_Message is sent_",
-    "filepath": "src/providers/Profile.messages.js"
-  },
-  {
     "id": "editProfileProvider.profileUpdated",
     "defaultMessage": "_Your info was updated successfully_",
     "filepath": "src/providers/EditProfile.messages.js"
@@ -528,5 +598,50 @@
     "id": "imageGridProvider.userNotLoggedIn",
     "defaultMessage": "_Only logged in users can watch profiles_",
     "filepath": "src/providers/ImageGrid.messages.js"
+  },
+  {
+    "id": "messageList.getConversationError",
+    "defaultMessage": "_Cannot get conversation. Please, try again_",
+    "filepath": "src/providers/MessagesList.messages.js"
+  },
+  {
+    "id": "messageList.getConversationPartnersError",
+    "defaultMessage": "_Cannot get conversation partners. Please, try again_",
+    "filepath": "src/providers/MessagesList.messages.js"
+  },
+  {
+    "id": "profileProvider.ratedSuccess",
+    "defaultMessage": "_User was rated successfully_",
+    "filepath": "src/providers/Profile.messages.js"
+  },
+  {
+    "id": "profileProvider.messageSent",
+    "defaultMessage": "_Message is sent_",
+    "filepath": "src/providers/Profile.messages.js"
+  },
+  {
+    "id": "profileProvider.getImagesError",
+    "defaultMessage": "_Some error occurred while getting user images. Please, try again_",
+    "filepath": "src/providers/Profile.messages.js"
+  },
+  {
+    "id": "profileProvider.getProfileError",
+    "defaultMessage": "_Some error occurred while getting user profile. Please, try again_",
+    "filepath": "src/providers/Profile.messages.js"
+  },
+  {
+    "id": "profileProvider.removeImageError",
+    "defaultMessage": "_Cannot remove image. Please, try again_",
+    "filepath": "src/providers/Profile.messages.js"
+  },
+  {
+    "id": "profileProvider.saveImageError",
+    "defaultMessage": "_Cannot save image. Please, try again_",
+    "filepath": "src/providers/Profile.messages.js"
+  },
+  {
+    "id": "profileProvider.rateUserError",
+    "defaultMessage": "_Cannot rate user. Please, try again later_",
+    "filepath": "src/providers/Profile.messages.js"
   }
 ]

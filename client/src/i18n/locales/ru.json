@@ -32,7 +32,7 @@
   "exception.403": "_Exception_403_",
   "exception.404": "_Exception_404_",
   "exception.500": "_Exception_500_",
-  "footer.companyFooter": "_&copy; COMPANY 2019_",
+  "footer.companyFooter": "_\\u00A9 COMPANY 2019_",
   "footer.footerText": "_All rights reserved._",
   "forgotPwd.email": "_Email_",
   "forgotPwd.resetButton": "_Reset_",

@@ -26,10 +26,12 @@ const app = express();
 
 const serverApp = async () => {
     //TODO Don't leave it as is
-    app.use(cors(/*{
-        origin: 'http://192.168.68.123:3000',
-        credentials: true
-    }*/));
+    app.use(cors({
+        origin: 'http://192.168.68.123:3100',
+        credentials: true,
+        methods: 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
+        allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept'
+    }));
 
     //HTTP request logger
     app.use(morgan('dev'));

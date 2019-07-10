@@ -2,18 +2,19 @@ const passport = require('passport')
     , {User, File} = require('../models')
     , LocalStrategy = require('./localStrategy')
     , RememberMeStrategy = require('./rememberMeStrategy')
+    , FacebookStrategy = require('./facebookStrategy')
     , R = require('ramda')
     , Op = require('sequelize').Op;
 
 
 // tell passport how to serialize the user
 passport.serializeUser((user, done) => {
-    // console.log('*** serializeUser called ***');
+    console.log('*** serializeUser called ***');
     done(null, user.id);
 });
 
 passport.deserializeUser(async (userId, done) => {
-    // console.log('*** DeserializeUser called ***');
+    console.log('*** DeserializeUser called ***');
     try {
         let filter = {
             where: {
@@ -52,5 +53,6 @@ passport.deserializeUser(async (userId, done) => {
 
 passport.use(LocalStrategy);
 passport.use(RememberMeStrategy);
+passport.use(FacebookStrategy);
 
 module.exports = passport;

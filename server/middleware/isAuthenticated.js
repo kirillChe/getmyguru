@@ -5,7 +5,7 @@ const isAllowed = req =>
     (req.method === 'POST' && (R.startsWith('/auth/login', req.url) || R.startsWith('/api/users', req.url))) ||
     (req.method === 'GET' && R.startsWith('/api/users/filtersData', req.url)) ||
     R.startsWith('/api/users/getGurusPreviews', req.url) ||
-    R.startsWith('/auth/isLoggedIn', req.url);
+    R.startsWith('/auth', req.url);
 
 module.exports = () => (req, res, next) => {
     console.log('you hit the authentication endpoint\n');

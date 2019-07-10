@@ -62,26 +62,6 @@ const SignUpAdept = ({classes, dialogClick, enqueueSnackbar}) => {
         setShowPassword(!showPassword);
     }
 
-    async function handleSubmitFacebook () {
-        console.log(`Sign up adept facebook clicked`);
-        try {
-            let response = await axios.get('/auth/facebook');
-            console.log('Sign up adept facebook response: ');
-            console.log('SignUpAdept.component.js :70', response.data);
-            // if (response.status === 201) {
-            //     dialogClick();
-            // } else {
-            //     console.log('Sign up adept error');
-            //     enqueueSnackbar(formatMessage(messages.signUpError), { variant: 'error', preventDuplicate: true });
-            //     forceUpdate();
-            // }
-        }catch (e) {
-            console.log('Sign up adept error: ', e);
-            enqueueSnackbar(formatMessage(messages.signUpError), { variant: 'error', preventDuplicate: true });
-            forceUpdate();
-        }
-    }
-
     async function handleSubmit () {
         console.log(`Sign up adept form submitted:`);
         try {
@@ -160,6 +140,15 @@ const SignUpAdept = ({classes, dialogClick, enqueueSnackbar}) => {
                 href={'/auth/facebook'}
             >
                 {'FACEBOOK'}
+            </Button>
+            <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                href={'/auth/google'}
+            >
+                {'GOOGLE'}
             </Button>
         </div>
     );

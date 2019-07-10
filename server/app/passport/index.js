@@ -3,6 +3,7 @@ const passport = require('passport')
     , LocalStrategy = require('./localStrategy')
     , RememberMeStrategy = require('./rememberMeStrategy')
     , FacebookStrategy = require('./facebookStrategy')
+    , GoogleStrategy = require('./googleStrategy')
     , R = require('ramda')
     , Op = require('sequelize').Op;
 
@@ -54,5 +55,6 @@ passport.deserializeUser(async (userId, done) => {
 passport.use(LocalStrategy);
 passport.use(RememberMeStrategy);
 passport.use(FacebookStrategy);
+passport.use(GoogleStrategy);
 
 module.exports = passport;

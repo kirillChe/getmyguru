@@ -1,14 +1,13 @@
-const FacebookStrategy = require('passport-facebook').Strategy
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
     , {User} = require('../models')
     , R = require('ramda')
     , utils = require('../utils');
 
-const strategy = new FacebookStrategy(
+const strategy = new GoogleStrategy(
     {
-        clientID: '2069194676524263',
-        clientSecret: '6c550d60f076ed929eb4799c0adb1003',
-        callbackURL: 'http://localhost:3100/auth/facebook/callback',
-        profileFields: ['emails', 'name']
+        clientID: '1035591542587-lis9j02o005am3oulp6ffkl31prjum14.apps.googleusercontent.com',
+        clientSecret: 'RPuhYmrhsnCYMJ4ORCG4EmPv',
+        callbackURL: 'http://localhost:3100/auth/google/callback'
     },
     async (accessToken, refreshToken, profile, done) => {
         if (!profile.emails || !profile.emails[0] || !profile.emails[0].value)

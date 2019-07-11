@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Typography from '@material-ui/core/Typography';
-import Slider from '@material-ui/lab/Slider';
+import {Typography, Slider} from '@material-ui/core';
 
 const CustomSlider = ({name, state, label, onChange, min, max}) => {
     return (

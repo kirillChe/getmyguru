@@ -4,18 +4,48 @@ const R = require('ramda')
     , fs = require('fs')
     , events = require('events')
     , sequelize = require('sequelize')
-    , Op = require('sequelize').Op;
+    , Op = require('sequelize').Op
+    , request = require('request-promise');
 
 //internal modules
 const filePath = __dirname + '/../../public'
     , helper = require('./helpers/userHelpers')
-    , {port} = require('../../config/config.json').global
+    , {port, recaptcha} = require('../../config/config.json').global
     , {User, File, Rating, UserLanguage, UserInfo} = require('../models');
 
 const create = async (req, res) => {
+    if (!req.body.captcha)
+        return res.status(400).send({
+            message: 'Please, select captcha'
+        });
 
+    //STEP 1. Verify captcha
+    try {
+        let response = await request({
+            uri: recaptcha.uri,
+            method: 'POST',
+            qs: {
+                secret: recaptcha.secretKey,
+                response: req.body.captcha,
+                remoteip: req.connection.remoteAddress
+            }
+        });
+
+        if (!response || response.success !== true)
+            return res.status(400).send({
+                message: 'Invalid captcha'
+            });
+
+    } catch (error) {
+        return res.status(400).send({
+            message: 'Invalid captcha',
+            meta: { error }
+        });
+    }
+
+    //Step 2. Prepare data for saving
     let userData = R.merge(
-        R.omit(['country'], req.body),
+        R.omit(['country', 'captcha'], req.body),
         {
             info: {
                 country: req.body.country
@@ -28,6 +58,7 @@ const create = async (req, res) => {
         }
     );
 
+    // Step 3. Create user
     try {
         let user = await User.create(userData, {
             include: [

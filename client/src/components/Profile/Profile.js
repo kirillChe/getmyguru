@@ -15,9 +15,9 @@ import {
     CardActionArea,
     CardMedia,
     Slide,
-    IconButton
+    IconButton,
+    Slider
 } from '@material-ui/core';
-import Slider from '@material-ui/lab/Slider';
 import {Comment, PhotoLibrary, Add, Delete} from '@material-ui/icons';
 
 import { MainContext } from 'context';

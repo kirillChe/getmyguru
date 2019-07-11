@@ -1,4 +1,4 @@
-import React, { useContext, Component }  from 'react';
+import React, { useContext }  from 'react';
 import {Main} from "./components/Main";
 
 import { Switch, Route } from 'react-router-dom';

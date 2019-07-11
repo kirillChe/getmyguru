@@ -6,8 +6,14 @@ import {
     Tab,
     Typography
 } from '@material-ui/core';
+import useForceUpdate from 'use-force-update';
+import { withSnackbar } from 'notistack';
+import axios from 'axios';
 
 import {SignUpGuru, SignUpAdept} from '.';
+import messages from "./SignUpAdept.messages";
+import {useIntl} from "../hooks";
+const siteKey = '6LdsOK0UAAAAAOMe-7qd0Qx5Tn14l1HFeUGTv5yf';
 
 function TabContainer(props) {
     return (
@@ -45,9 +51,30 @@ const styles = theme => ({
     },
 });
 
-const SignUp = (props) => {
-    const { classes } = props;
+const SignUp = ({classes, dialogClick, enqueueSnackbar}) => {
     const [tabIndex, setTabIndex] = useState(0);
+    const forceUpdate = useForceUpdate();
+    const { formatMessage } = useIntl();
+
+    function handleSubmit (state) {
+        return async () => {
+            console.log(`Sign up form submitted:`);
+            try {
+                let response = await axios.post('/api/users', state);
+                if (response.status === 201) {
+                    dialogClick();
+                } else {
+                    console.log('Sign up error');
+                    enqueueSnackbar(formatMessage(messages.signUpError), {variant: 'error'});
+                    forceUpdate();
+                }
+            } catch (e) {
+                console.log('Sign up error: ', e);
+                enqueueSnackbar(formatMessage(messages.signUpError), {variant: 'error'});
+                forceUpdate();
+            }
+        }
+    }
 
     return (
         <div className={classes.root}>
@@ -69,8 +96,8 @@ const SignUp = (props) => {
                     label="Trainer"
                 />
             </Tabs>
-            {tabIndex === 0 && <SignUpAdept dialogClick={props.dialogClick} />}
-            {tabIndex === 1 && <SignUpGuru dialogClick={props.dialogClick} />}
+            {tabIndex === 0 && <SignUpAdept handleSubmit={handleSubmit} siteKey={siteKey} />}
+            {tabIndex === 1 && <SignUpGuru handleSubmit={handleSubmit} siteKey={siteKey} />}
 
         </div>
     );
@@ -80,4 +107,4 @@ SignUp.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SignUp);
+export default withStyles(styles)(withSnackbar(SignUp));

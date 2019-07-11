@@ -33,7 +33,7 @@ const Profile = ({children, history, enqueueSnackbar}) => {
             const config = { headers: { 'Content-Type': 'multipart/form-data' } };
             const data = new FormData();
 
-            acceptedFiles.map(file => {
+            acceptedFiles.forEach(file => {
                 data.append('File[]', file);
             });
             try {

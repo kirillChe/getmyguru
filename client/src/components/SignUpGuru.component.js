@@ -5,11 +5,9 @@ import {
     Button,
     TextField
 } from '@material-ui/core';
-import useForceUpdate from 'use-force-update';
-import { withSnackbar } from 'notistack';
-
-import axios from 'axios';
 import moment from 'moment';
+import ReCAPTCHA from 'react-google-recaptcha';
+
 import { MainContext } from 'context';
 import {DatePicker, Switch, PasswordField} from 'components/Form';
 import { useIntl } from 'hooks';
@@ -25,14 +23,13 @@ const styles = theme => ({
     },
 });
 
-const SignUpGuru = ({classes, dialogClick, enqueueSnackbar}) => {
+const SignUpGuru = ({classes, handleSubmit, siteKey}) => {
     const { language: userLanguage, countryCode } = useContext(MainContext);
     const { formatMessage } = useIntl();
-    const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
-    const [submitError, setSubmitError] = useState(false);
 
     const [state, setState] = React.useState({
+        captcha: '',
         gender: 'male',
         birthDate: moment().startOf('day').subtract(30, 'years').calendar(),
         firstName: '',
@@ -76,23 +73,8 @@ const SignUpGuru = ({classes, dialogClick, enqueueSnackbar}) => {
         setShowPassword(!showPassword);
     }
 
-    async function handleSubmit () {
-        console.log(`Sign up guru form submitted:`);
-        try {
-            let response = await axios.post('/api/users', state);
-            console.log('Sign up guru response: ');
-            if (response.status === 201) {
-                dialogClick();
-            } else {
-                console.log('Sign up guru error');
-                enqueueSnackbar(formatMessage(messages.signUpError), { variant: 'error' });
-                forceUpdate();
-            }
-        }catch (e) {
-            console.log('Sign up guru error: ', e);
-            enqueueSnackbar(formatMessage(messages.signUpError), { variant: 'error' });
-            forceUpdate();
-        }
+    function handleCaptchaResponseChange(response) {
+        setState({...state, captcha: response});
     }
 
     return (
@@ -150,6 +132,10 @@ const SignUpGuru = ({classes, dialogClick, enqueueSnackbar}) => {
                 togglePasswordMask={togglePasswordMask}
                 onChange={handleChange}
             />
+            <ReCAPTCHA
+                sitekey={siteKey}
+                onChange={handleCaptchaResponseChange}
+            />
             <Button
                 type="submit"
                 fullWidth
@@ -157,7 +143,7 @@ const SignUpGuru = ({classes, dialogClick, enqueueSnackbar}) => {
                 color="primary"
                 className={classes.submit}
                 disabled={!validateForm()}
-                onClick={handleSubmit}
+                onClick={handleSubmit(state)}
             >
                 {formatMessage(messages.signUp)}
             </Button>
@@ -168,8 +154,8 @@ const SignUpGuru = ({classes, dialogClick, enqueueSnackbar}) => {
 
 SignUpGuru.propTypes = {
     classes: PropTypes.object.isRequired,
-    dialogClick: PropTypes.func.isRequired,
-    enqueueSnackbar: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    siteKey: PropTypes.string.isRequired
 };
 
-export default withStyles(styles)(withSnackbar(SignUpGuru));
+export default withStyles(styles)(SignUpGuru);

@@ -46,6 +46,14 @@
                 "pass": "Aaa06865"
             }
         },
-        "port": 3100
+        "port": 3100,
+        "session": {
+            "secret": "d59a980741765f1ad36cd07dfe819d9b"
+        },
+        "recaptcha": {
+            "uri": "https://www.google.com/recaptcha/api/siteverify",
+            "siteKey": "6LdsOK0UAAAAAOMe-7qd0Qx5Tn14l1HFeUGTv5yf",
+            "secretKey": "6LdsOK0UAAAAABF99_rWGuE27OH0TkrTVa6cVOkm"
+        }
     }
 }

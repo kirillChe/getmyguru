@@ -5,10 +5,8 @@ import {
     Button,
     TextField
 } from '@material-ui/core';
-import useForceUpdate from 'use-force-update';
-import { withSnackbar } from 'notistack';
+import ReCAPTCHA from 'react-google-recaptcha';
 
-import axios from 'axios';
 import { MainContext } from 'context';
 import { PasswordField} from 'components/Form';
 import { useIntl } from 'hooks';
@@ -24,13 +22,13 @@ const styles = theme => ({
     },
 });
 
-const SignUpAdept = ({classes, dialogClick, enqueueSnackbar}) => {
+const SignUpAdept = ({classes, handleSubmit, siteKey}) => {
     const { language: userLanguage, countryCode } = useContext(MainContext);
     const { formatMessage } = useIntl();
-    const forceUpdate = useForceUpdate();
     const [showPassword, setShowPassword] = useState(false);
 
     const [state, setState] = React.useState({
+        captcha: '',
         firstName: '',
         lastName: '',
         email: '',
@@ -62,23 +60,8 @@ const SignUpAdept = ({classes, dialogClick, enqueueSnackbar}) => {
         setShowPassword(!showPassword);
     }
 
-    async function handleSubmit () {
-        console.log(`Sign up adept form submitted:`);
-        try {
-            let response = await axios.post('/api/users', state);
-            console.log('Sign up adept response: ');
-            if (response.status === 201) {
-                dialogClick();
-            } else {
-                console.log('Sign up adept error');
-                enqueueSnackbar(formatMessage(messages.signUpError), { variant: 'error' });
-                forceUpdate();
-            }
-        }catch (e) {
-            console.log('Sign up adept error: ', e);
-            enqueueSnackbar(formatMessage(messages.signUpError), { variant: 'error' });
-            forceUpdate();
-        }
+    function handleCaptchaResponseChange(response) {
+        setState({...state, captcha: response});
     }
 
     return (
@@ -121,6 +104,10 @@ const SignUpAdept = ({classes, dialogClick, enqueueSnackbar}) => {
                 togglePasswordMask={togglePasswordMask}
                 onChange={handleChange}
             />
+            <ReCAPTCHA
+                sitekey={siteKey}
+                onChange={handleCaptchaResponseChange}
+            />
             <Button
                 type="submit"
                 fullWidth
@@ -128,7 +115,7 @@ const SignUpAdept = ({classes, dialogClick, enqueueSnackbar}) => {
                 color="primary"
                 className={classes.submit}
                 disabled={!validateForm()}
-                onClick={handleSubmit}
+                onClick={handleSubmit(state)}
             >
                 {formatMessage(messages.signUp)}
             </Button>
@@ -157,8 +144,8 @@ const SignUpAdept = ({classes, dialogClick, enqueueSnackbar}) => {
 
 SignUpAdept.propTypes = {
     classes: PropTypes.object.isRequired,
-    dialogClick: PropTypes.func.isRequired,
-    enqueueSnackbar: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    siteKey: PropTypes.string.isRequired
 };
 
-export default withStyles(styles)(withSnackbar(SignUpAdept));
+export default withStyles(styles)(SignUpAdept);

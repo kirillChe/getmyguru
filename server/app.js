@@ -12,7 +12,8 @@ const passport = require('passport')
     , session = require('express-session')
     , redisStore = require('connect-redis')(session)
     , redis = require("redis")
-    , client = redis.createClient('redis://redis');
+    , client = redis.createClient('redis://redis')
+    , {secret} = require('./config/config.json').global.session;
 
 //Models
 const models = require('./app/models');
@@ -42,7 +43,7 @@ const serverApp = async () => {
 
     app.use(session({
         store: new redisStore({client}),
-        secret: 'secretforsession',
+        secret,
         resave: true,
         saveUninitialized: true,
         genid: () => uuid(),/*,

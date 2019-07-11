@@ -4,6 +4,7 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import { withRouter } from 'react-router-dom';
 import { MessagesContext, MainContext } from 'context';
 import { injectIntl, intlShape } from 'react-intl';
+import { withSnackbar } from 'notistack';
 
 import axios from 'axios';
 import * as R from 'ramda';
@@ -111,4 +112,4 @@ MessagesList.propTypes = {
     intl: intlShape,
 };
 
-export default withRouter(injectIntl(MessagesList));
+export default withRouter(injectIntl(withSnackbar(MessagesList)));

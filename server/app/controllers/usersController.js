@@ -9,6 +9,7 @@ const R = require('ramda')
 //internal modules
 const filePath = __dirname + '/../../public'
     , helper = require('./helpers/userHelpers')
+    , {port} = require('../../config/config.json').global
     , {User, File, Rating, UserLanguage, UserInfo} = require('../models');
 
 const create = async (req, res) => {
@@ -227,18 +228,36 @@ const resetPassword = async (req, res) => {
             message: 'Missing required parameter email'
         });
 
+    let user;
+    try {
+        user = await User.findOne({ where: {email} });
+    } catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while trying to find user with provided email',
+            meta: {
+                error,
+                email
+            }
+        });
+    }
+    if (!user)
+        return res.status(404).send({
+            message: 'Cannot find user with provided email',
+            meta: { email }
+        });
+
     try {
         //@todo move host/port to config
-        let url = `http://${req.host}:3100/reset_password`;
+        let url = `http://${req.host}:${port}/reset_password`;
+        let info = await user.resetPassword(url);
+        console.log('reset password info: ', info);
+        if (info)
+            return res.sendStatus(204);
 
-        let ctx = {
-            url,
-            email: email
-        };
+        res.status(502).send({
+            message: 'Some error occurred while trying to reset password'
+        });
 
-        await User.resetPassword(ctx);
-
-        res.sendStatus(204);
     } catch (error) {
         res.status(502).send({
             message: 'Some error occurred while trying to reset password',

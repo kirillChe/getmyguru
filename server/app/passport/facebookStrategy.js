@@ -1,15 +1,11 @@
 const FacebookStrategy = require('passport-facebook').Strategy
     , {User} = require('../models')
     , R = require('ramda')
-    , utils = require('../utils');
+    , utils = require('../utils')
+    , fbConfig = require('../../config/config.json').global.passport.facebook;
 
 const strategy = new FacebookStrategy(
-    {
-        clientID: '2069194676524263',
-        clientSecret: '6c550d60f076ed929eb4799c0adb1003',
-        callbackURL: 'http://localhost:3100/auth/facebook/callback',
-        profileFields: ['emails', 'name']
-    },
+    R.merge(fbConfig, {profileFields: ['emails', 'name']}),
     async (accessToken, refreshToken, profile, done) => {
         if (!profile.emails || !profile.emails[0] || !profile.emails[0].value)
             return done(null, false, {message: 'missing required parameter email'});

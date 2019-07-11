@@ -4,10 +4,12 @@ services:
   redis:
     image: redis:5.0.4
     command: redis-server
+    container_name: redis
 
   redcom:
     image: tenstartups/redis-commander
     command: --redis-host redis
+    container_name: redcom
     ports:
       - '3381:8081'
 
@@ -21,6 +23,7 @@ services:
       MYSQL_PASSWORD: Qwerty
     ports:
       - '3306:3306'
+    container_name: db
     volumes:
       - db_data:/var/lib/mysql
 
@@ -63,6 +66,7 @@ services:
     image: phpmyadmin/phpmyadmin
     ports:
       - "5151:80"
+    container_name: myadmin
     #restart: always
     environment:
       - PMA_HOST=db

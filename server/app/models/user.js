@@ -1,19 +1,10 @@
 'use strict';
 
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
-const on = require('await-handler');
-
-const mailerConfig = {
-    service: 'Gmail',
-    auth: {
-        user: 'getmyguru.dev@gmail.com',
-        pass: 'Aaa068651'
-    }
-};
-
-const transporter = nodemailer.createTransport(mailerConfig);
+const bcrypt = require('bcryptjs')
+    , jwt = require('jsonwebtoken')
+    , nodemailer = require('nodemailer')
+    , mailerConfig = require('../../config/config.json').global.mailer
+    , transporter = nodemailer.createTransport(mailerConfig);
 
 
 module.exports = (sequelize, DataTypes) => {
@@ -103,37 +94,40 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     User.afterCreate(async user => {
-        let [err, info] = await on(transporter.sendMail({
-            from: 'Info <info@getmyguru.online>', // sender address
-            to: user.email, // list of receivers
-            subject: `Hello, ${user.firstName} ${user.lastName}!`, // Subject line
-            text: 'Click bellow to confirm your registration'
-            // html: "<b>Hello world?</b>" // html body
-        }));
+        try {
+            let info = await transporter.sendMail({
+                from: 'Info <info@getmyguru.online>', // sender address
+                to: user.email, // list of receivers
+                subject: `Hello, ${user.firstName} ${user.lastName}!`, // Subject line
+                text: 'Click bellow to confirm your registration...(BETA)'
+                // html: "<b>Hello world?</b>" // html body
+            });
 
-        console.log("Message sent: %s", err, info);
+            console.log('Message sent: %s', info);
+        }catch (e) {
+            //@todo send error to logger
+            console.log('Confirmation message was not send: ', e);
+        }
     });
 
     User.prototype.verifyPassword = function (password) {
         return bcrypt.compareSync(password, this.password);
     };
 
-    User.resetPassword = async function ({url, email}) {
-
-        let [err, user] = await on(User.findOne({ where: {email} }));
-        if (err || !user)
-            throw err || new Error('User Not Found');
-
+    User.prototype.resetPassword = async function (url) {
+        let user = this;
         let token = jwt.sign({}, user.password, {
             algorithm: 'HS256',
             subject: '' + user.id,
             // 24 hours
             expiresIn: 60 * 60 * 24
         });
+        console.log('_________________HERE: 126________________________');
 
         let forgotPwdLink = `${url}/${token}`;
+        console.log('_________________HERE: 129________________________');
 
-        let [err2, info] = await on(transporter.sendMail({
+        let info = await transporter.sendMail({
             from: 'Info <info@getmyguru.online>', // sender address
             to: user.email, // list of receivers
             subject: `Hello, ${user.firstName} ${user.lastName}!`, // Subject line
@@ -141,27 +135,21 @@ module.exports = (sequelize, DataTypes) => {
             Use the link bellow to set up a new password.
             ${forgotPwdLink}` // plain text body
             // html: "<b>Hello world?</b>" // html body
-        }));
-
-        if (err2)
-            throw err2;
-
+        });
+        console.log('_________________HERE: 140________________________', info);
         return info;
     };
+
 
     User.setNewPassword = async function ({newPassword, token}) {
         let decoded = jwt.decode(token, {complete: true});
         let userId = decoded.payload.sub;
 
-        let [err, user] = await on(User.findByPk(userId));
-        if (err || !user)
-            throw err || new Error('User Not Found');
+        let user = await User.findByPk(userId);
+        if (!user)
+            throw new Error('Cannot find user. Token is wrong.');
 
-        try {
-            jwt.verify(token, user.password);
-        } catch(err2) {
-            throw err2;
-        }
+        jwt.verify(token, user.password);
 
         let isEqual = bcrypt.compareSync(newPassword, user.password);
         if (isEqual)

@@ -1,14 +1,11 @@
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
     , {User} = require('../models')
     , R = require('ramda')
-    , utils = require('../utils');
+    , utils = require('../utils')
+    , googleConfig = require('../../config/config.json').global.passport.google;
 
 const strategy = new GoogleStrategy(
-    {
-        clientID: '1035591542587-lis9j02o005am3oulp6ffkl31prjum14.apps.googleusercontent.com',
-        clientSecret: 'RPuhYmrhsnCYMJ4ORCG4EmPv',
-        callbackURL: 'http://localhost:3100/auth/google/callback'
-    },
+    googleConfig,
     async (accessToken, refreshToken, profile, done) => {
         if (!profile.emails || !profile.emails[0] || !profile.emails[0].value)
             return done(null, false, {message: 'missing required parameter email'});

@@ -137,6 +137,15 @@ const SignUpAdept = ({classes, handleSubmit, siteKey}) => {
             >
                 {'GOOGLE'}
             </Button>
+            <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                href={'/auth/vk?test=test'}
+            >
+                {'Vkontakte'}
+            </Button>
         </div>
     );
 };

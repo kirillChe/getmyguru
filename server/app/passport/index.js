@@ -4,6 +4,7 @@ const passport = require('passport')
     , RememberMeStrategy = require('./rememberMeStrategy')
     , FacebookStrategy = require('./facebookStrategy')
     , GoogleStrategy = require('./googleStrategy')
+    , VkontakteStrategy = require('./vkStrategy')
     , R = require('ramda')
     , Op = require('sequelize').Op;
 
@@ -56,5 +57,6 @@ passport.use(LocalStrategy);
 passport.use(RememberMeStrategy);
 passport.use(FacebookStrategy);
 passport.use(GoogleStrategy);
+passport.use(VkontakteStrategy);
 
 module.exports = passport;

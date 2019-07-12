@@ -36,14 +36,20 @@
                 "clientID": "12069194676524263",
                 "clientSecret": "16c550d60f076ed929eb4799c0adb1003",
                 "callbackURL": "1http://localhost:3100/auth/facebook/callback"
+            },
+            "vk": {
+                "clientID": "17054563",
+                "clientSecret": "14TZfHW4jmYohCMN3Znop",
+                "callbackURL": "1http://localhost:3100/auth/vk/callback",
+                "passReqToCallback": true
             }
         },
         "mailer": {
             "service": "Gmail",
             "secure": false,
             "auth": {
-                "user": "getmyguru.dev@gmail.com",
-                "pass": "Aaa06865"
+                "user": "1getmyguru.dev@gmail.com",
+                "pass": "1Aaa06865"
             }
         },
         "port": 3100,
@@ -51,9 +57,9 @@
             "secret": "d59a980741765f1ad36cd07dfe819d9b"
         },
         "recaptcha": {
-            "uri": "https://www.google.com/recaptcha/api/siteverify",
-            "siteKey": "6LdsOK0UAAAAAOMe-7qd0Qx5Tn14l1HFeUGTv5yf",
-            "secretKey": "6LdsOK0UAAAAABF99_rWGuE27OH0TkrTVa6cVOkm"
+            "uri": "1https://www.google.com/recaptcha/api/siteverify",
+            "siteKey": "16LdsOK0UAAAAAOMe-7qd0Qx5Tn14l1HFeUGTv5yf",
+            "secretKey": "16LdsOK0UAAAAABF99_rWGuE27OH0TkrTVa6cVOkm"
         }
     }
 }

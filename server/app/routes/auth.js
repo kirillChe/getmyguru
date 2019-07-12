@@ -50,8 +50,6 @@ router.get('/facebook', passport.authenticate('facebook', { scope : ['email'] })
 router.get('/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/' }),
     function(req, res) {
-        // Successful authentication, redirect home.
-        console.log('_________________Successful authentication________________________');
         res.redirect('/');
     });
 
@@ -62,6 +60,17 @@ router.get('/google',
 
 router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: '/' }),
+    function(req, res) {
+        res.redirect('/');
+    });
+
+/* VK ROUTER */
+/** GET /auth/vk - Login to App throw VK account */
+router.get('/vk',
+    passport.authenticate('vkontakte', { scope: ['email'] }));
+
+router.get('/vk/callback',
+    passport.authenticate('vkontakte', { failureRedirect: '/' }),
     function(req, res) {
         res.redirect('/');
     });

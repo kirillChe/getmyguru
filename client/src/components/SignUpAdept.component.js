@@ -23,7 +23,7 @@ const styles = theme => ({
 });
 
 const SignUpAdept = ({classes, handleSubmit, siteKey}) => {
-    const { language: userLanguage, countryCode } = useContext(MainContext);
+    const { language, countryCode } = useContext(MainContext);
     const { formatMessage } = useIntl();
     const [showPassword, setShowPassword] = useState(false);
 
@@ -34,7 +34,7 @@ const SignUpAdept = ({classes, handleSubmit, siteKey}) => {
         email: '',
         password: '',
         userType: 'adept',
-        language: userLanguage,
+        language,
         country: countryCode
     });
 
@@ -44,6 +44,8 @@ const SignUpAdept = ({classes, handleSubmit, siteKey}) => {
         email,
         password
     } = state;
+
+    const socialAuthQuery = `language=${language}&country=${countryCode}&userType=${state.userType}`;
 
     function handleChange (e) {
         let name = e.target.name;
@@ -124,7 +126,7 @@ const SignUpAdept = ({classes, handleSubmit, siteKey}) => {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
-                href={'/auth/facebook'}
+                href={`/auth/facebook?${socialAuthQuery}`}
             >
                 {'FACEBOOK'}
             </Button>
@@ -133,7 +135,7 @@ const SignUpAdept = ({classes, handleSubmit, siteKey}) => {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
-                href={'/auth/google'}
+                href={`/auth/google?${socialAuthQuery}`}
             >
                 {'GOOGLE'}
             </Button>
@@ -142,7 +144,7 @@ const SignUpAdept = ({classes, handleSubmit, siteKey}) => {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
-                href={'/auth/vk?test=test'}
+                href={`/auth/vk?${socialAuthQuery}`}
             >
                 {'Vkontakte'}
             </Button>

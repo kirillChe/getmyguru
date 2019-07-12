@@ -24,7 +24,7 @@ const styles = theme => ({
 });
 
 const SignUpGuru = ({classes, handleSubmit, siteKey}) => {
-    const { language: userLanguage, countryCode } = useContext(MainContext);
+    const { language, countryCode } = useContext(MainContext);
     const { formatMessage } = useIntl();
     const [showPassword, setShowPassword] = useState(false);
 
@@ -37,7 +37,7 @@ const SignUpGuru = ({classes, handleSubmit, siteKey}) => {
         email: '',
         password: '',
         userType: 'guru',
-        language: userLanguage,
+        language,
         country: countryCode
     });
 
@@ -49,6 +49,8 @@ const SignUpGuru = ({classes, handleSubmit, siteKey}) => {
         email,
         password,
     } = state;
+
+    const socialAuthQuery = `language=${language}&country=${countryCode}&userType=${state.userType}`;
 
     const handleChangeSwitch = name => e => {
         setState({ ...state, [name]: e.target.checked ? 'female' : 'male' });
@@ -146,6 +148,33 @@ const SignUpGuru = ({classes, handleSubmit, siteKey}) => {
                 onClick={handleSubmit(state)}
             >
                 {formatMessage(messages.signUp)}
+            </Button>
+            <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                href={`/auth/facebook?${socialAuthQuery}`}
+            >
+                {'FACEBOOK'}
+            </Button>
+            <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                href={`/auth/google?${socialAuthQuery}`}
+            >
+                {'GOOGLE'}
+            </Button>
+            <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                href={`/auth/vk?${socialAuthQuery}`}
+            >
+                {'Vkontakte'}
             </Button>
         </div>
     );

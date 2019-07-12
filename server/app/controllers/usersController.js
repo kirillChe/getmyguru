@@ -47,9 +47,7 @@ const create = async (req, res) => {
     let userData = R.merge(
         R.omit(['country', 'captcha'], req.body),
         {
-            info: {
-                country: req.body.country
-            },
+            info: {},
             languages: [
                 {
                     code: req.body.language
@@ -57,6 +55,10 @@ const create = async (req, res) => {
             ]
         }
     );
+
+    // may not be provided for some reason
+    if (req.body.country)
+        userData.info.country = req.body.country;
 
     // Step 3. Create user
     try {

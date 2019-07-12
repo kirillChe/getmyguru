@@ -4,6 +4,12 @@ const express = require('express')
     , passport = require('../passport')
     , {User} = require('../models');
 
+const getQueryState = req => JSON.stringify({
+    language: req.query.language,
+    country: req.query.country,
+    userType: req.query.userType
+});
+
 
 /** GET /auth/isLoggedIn - Checks is user logged in */
 router.get(
@@ -45,7 +51,15 @@ router.post(
 
 /* FACEBOOK ROUTER */
 /** GET /auth/facebook - Login to App throw Facebook account */
-router.get('/facebook', passport.authenticate('facebook', { scope : ['email'] }));
+router.get('/facebook', (req, res, next) => {
+    passport.authenticate(
+        'facebook',
+        {
+            scope: ['email'],
+            state: getQueryState(req)
+        }
+    )(req, res, next);
+});
 
 router.get('/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/' }),
@@ -55,8 +69,15 @@ router.get('/facebook/callback',
 
 /* GOOGLE ROUTER */
 /** GET /auth/google - Login to App throw Google account */
-router.get('/google',
-    passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email' }));
+router.get('/google', (req, res, next) => {
+    passport.authenticate(
+        'google',
+        {
+            scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+            state: getQueryState(req)
+        }
+    )(req, res, next);
+});
 
 router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: '/' }),
@@ -66,8 +87,15 @@ router.get('/google/callback',
 
 /* VK ROUTER */
 /** GET /auth/vk - Login to App throw VK account */
-router.get('/vk',
-    passport.authenticate('vkontakte', { scope: ['email'] }));
+router.get('/vk', (req, res, next) => {
+    passport.authenticate(
+        'vkontakte',
+        {
+            scope: ['email'],
+            state: getQueryState(req)
+        }
+    )(req, res, next);
+});
 
 router.get('/vk/callback',
     passport.authenticate('vkontakte', { failureRedirect: '/' }),

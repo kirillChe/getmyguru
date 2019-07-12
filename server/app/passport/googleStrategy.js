@@ -1,43 +1,18 @@
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
-    , {User} = require('../models')
     , R = require('ramda')
-    , utils = require('../utils')
-    , googleConfig = require('../../config/config.json').global.passport.google;
+    , googleConfig = require('../../config/config.json').global.passport.google
+    , { createUser } = require('./helpers');
 
 const strategy = new GoogleStrategy(
     googleConfig,
-    async (accessToken, refreshToken, profile, done) => {
+    async (req, accessToken, refreshToken, profile, done) => {
         if (!profile.emails || !profile.emails[0] || !profile.emails[0].value)
             return done(null, false, {message: 'missing required parameter email'});
 
+        let email = profile.emails[0].value;
+
         try{
-            let email = profile.emails[0].value;
-
-            let filter = {
-                where: { email },
-            };
-            let user = await User.findOne(filter);
-
-            if (!user) {
-                let userData = {
-                    email,
-                    password: utils.randomString(10),
-                    firstName: profile.name && profile.name.givenName || null,
-                    lastName: profile.name && profile.name.familyName || null,
-                    info: {}
-                };
-                user = await User.create(userData, {
-                    include: [
-                        {
-                            association: User.associations.info,
-                            as: 'info'
-                        }
-                    ]
-                });
-            }
-
-            //transform user instance to plain object
-            user = user.get({ plain: true });
+            const user = await createUser({req, email, profile});
 
             done(null, R.omit(['password', 'avatar', 'token'], user));
         } catch (e) {

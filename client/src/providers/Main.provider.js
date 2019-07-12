@@ -69,7 +69,7 @@ class MainProvider extends PureComponent {
 
     getUserCountry = async () => {
         try {
-            let response = await axios.get('https://ipinfo.io/');
+            let response = await axios.get('https://ipinfo.io/json');
             this.setState({
                 countryCode: response.data.country
             });

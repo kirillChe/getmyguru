@@ -1,6 +1,6 @@
 const vkStrategy = require('passport-vkontakte').Strategy
     , R = require('ramda')
-    , vkConfig = require('../../config/config.json').global.passport.vk
+    , vkConfig = require('../../config/config.json').passport.vk
     , { createUser } = require('./helpers');
 
 const strategy = new vkStrategy(

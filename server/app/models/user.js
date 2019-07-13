@@ -3,7 +3,7 @@
 const bcrypt = require('bcryptjs')
     , jwt = require('jsonwebtoken')
     , nodemailer = require('nodemailer')
-    , mailerConfig = require('../../config/config.json').global.mailer
+    , mailerConfig = require('../../config/config.json').mailer
     , transporter = nodemailer.createTransport(mailerConfig);
 
 

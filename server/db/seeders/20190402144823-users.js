@@ -53,7 +53,7 @@ module.exports = {
             },
             {
                 id: 4,
-                firstName: 'Domald',
+                firstName: 'Donald',
                 lastName: 'Trump',
                 userType: 'guru',
                 avatar: 4,

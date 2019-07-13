@@ -13,7 +13,7 @@ const passport = require('passport')
     , redisStore = require('connect-redis')(session)
     , redis = require("redis")
     , client = redis.createClient('redis://redis')
-    , {secret} = require('./config/config.json').global.session;
+    , {secret} = require('./config/config.json').session;
 
 //Models
 const models = require('./app/models');

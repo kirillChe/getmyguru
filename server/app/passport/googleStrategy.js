@@ -1,6 +1,6 @@
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
     , R = require('ramda')
-    , googleConfig = require('../../config/config.json').global.passport.google
+    , googleConfig = require('../../config/config.json').passport.google
     , { createUser } = require('./helpers');
 
 const strategy = new GoogleStrategy(

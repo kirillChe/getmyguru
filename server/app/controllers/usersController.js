@@ -10,7 +10,7 @@ const R = require('ramda')
 //internal modules
 const filePath = __dirname + '/../../public'
     , helper = require('./helpers/userHelpers')
-    , {port, recaptcha} = require('../../config/config.json').global
+    , {port, recaptcha} = require('../../config/config.json')
     , {User, File, Rating, UserLanguage, UserInfo} = require('../models');
 
 const create = async (req, res) => {

@@ -192,12 +192,12 @@ const Profile = (props) => {
                                 <Grid container spacing={5}>
                                     <Grid item>
                                         <Typography variant="body1">
-                                            <b>{profile.rating}</b> {formatMessage(messages.rating)}
+                                            {formatMessage(messages.rating)} <b>{profile.rating}</b>
                                         </Typography>
                                     </Grid>
                                     <Grid item>
                                         <Typography variant="body1">
-                                            <b>{profile.ratersCount}</b> {formatMessage(messages.raters)}
+                                        {formatMessage(messages.raters)} <b>{profile.ratersCount}</b>
                                         </Typography>
                                     </Grid>
                                 </Grid>

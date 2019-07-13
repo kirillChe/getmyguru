@@ -1,6 +1,6 @@
 const FacebookStrategy = require('passport-facebook').Strategy
     , R = require('ramda')
-    , fbConfig = require('../../config/config.json').global.passport.facebook
+    , fbConfig = require('../../config/config.json').passport.facebook
     , { createUser } = require('./helpers');
 
 const strategy = new FacebookStrategy(

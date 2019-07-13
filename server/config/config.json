@@ -1,67 +1,39 @@
 {
-    "db": {
-        "development": {
-            "username": "root",
-            "password": "Qwerty",
-            "database": "dev_db",
-            "host": "db",
-            "dialect": "mysql",
-            "logging": false
+    "passport": {
+        "google": {
+            "clientID": "11035591542587-lis9j02o005am3oulp6ffkl31prjum14.apps.googleusercontent.com",
+            "clientSecret": "1RPuhYmrhsnCYMJ4ORCG4EmPv",
+            "callbackURL": "1http://localhost:3100/auth/google/callback",
+            "passReqToCallback": true
         },
-        "test": {
-            "username": "root",
-            "password": "Qwerty",
-            "database": "dev_db",
-            "host": "db",
-            "dialect": "mysql",
-            "logging": false
+        "facebook": {
+            "clientID": "12069194676524263",
+            "clientSecret": "16c550d60f076ed929eb4799c0adb1003",
+            "callbackURL": "1http://localhost:3100/auth/facebook/callback",
+            "passReqToCallback": true
         },
-        "production": {
-            "username": "root",
-            "password": "Qwerty",
-            "database": "dev_db",
-            "host": "db",
-            "dialect": "mysql",
-            "logging": false
+        "vk": {
+            "clientID": "17054563",
+            "clientSecret": "14TZfHW4jmYohCMN3Znop",
+            "callbackURL": "1http://localhost:3100/auth/vk/callback",
+            "passReqToCallback": true
         }
     },
-    "global": {
-        "passport": {
-            "google": {
-                "clientID": "11035591542587-lis9j02o005am3oulp6ffkl31prjum14.apps.googleusercontent.com",
-                "clientSecret": "1RPuhYmrhsnCYMJ4ORCG4EmPv",
-                "callbackURL": "1http://localhost:3100/auth/google/callback",
-                "passReqToCallback": true
-            },
-            "facebook": {
-                "clientID": "12069194676524263",
-                "clientSecret": "16c550d60f076ed929eb4799c0adb1003",
-                "callbackURL": "1http://localhost:3100/auth/facebook/callback",
-                "passReqToCallback": true
-            },
-            "vk": {
-                "clientID": "17054563",
-                "clientSecret": "14TZfHW4jmYohCMN3Znop",
-                "callbackURL": "1http://localhost:3100/auth/vk/callback",
-                "passReqToCallback": true
-            }
-        },
-        "mailer": {
-            "service": "Gmail",
-            "secure": false,
-            "auth": {
-                "user": "getmyguru.dev@gmail.com",
-                "pass": "Aaa06865"
-            }
-        },
-        "port": 3100,
-        "session": {
-            "secret": "d59a980741765f1ad36cd07dfe819d9b"
-        },
-        "recaptcha": {
-            "uri": "1https://www.google.com/recaptcha/api/siteverify",
-            "siteKey": "16LdsOK0UAAAAAOMe-7qd0Qx5Tn14l1HFeUGTv5yf",
-            "secretKey": "16LdsOK0UAAAAABF99_rWGuE27OH0TkrTVa6cVOkm"
+    "mailer": {
+        "service": "Gmail",
+        "secure": false,
+        "auth": {
+            "user": "1getmyguru.dev@gmail.com",
+            "pass": "1Aaa06865"
         }
+    },
+    "port": 3100,
+    "session": {
+        "secret": "d59a980741765f1ad36cd07dfe819d9b"
+    },
+    "recaptcha": {
+        "uri": "1https://www.google.com/recaptcha/api/siteverify",
+        "siteKey": "16LdsOK0UAAAAAOMe-7qd0Qx5Tn14l1HFeUGTv5yf",
+        "secretKey": "16LdsOK0UAAAAABF99_rWGuE27OH0TkrTVa6cVOkm"
     }
 }

@@ -47,14 +47,14 @@ const ForgotPwd = (props) => {
                 props.dialogClick('showEmailSent')();
             } else {
                 console.log('Forgot pwd error: ');
-                enqueueSnackbar(formatMessage(messages.resetPwdError), { variant: 'error' });
+                enqueueSnackbar(formatMessage(messages.resetPwdError), { variant: 'error', preventDuplicate: true });
 
                 forceUpdate();
             }
 
         }catch (e) {
             console.log('Forgot pwd error: ', e);
-            enqueueSnackbar(formatMessage(messages.resetPwdError), { variant: 'error' });
+            enqueueSnackbar(formatMessage(messages.resetPwdError), { variant: 'error', preventDuplicate: true });
 
             forceUpdate();
         }

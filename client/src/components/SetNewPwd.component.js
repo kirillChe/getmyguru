@@ -60,6 +60,7 @@ const SetNewPwd = ({classes, enqueueSnackbar, dialogClick, token}) => {
             console.log('Set new pwd response: ');
             console.log(response);
             if (response.status === 204) {
+                enqueueSnackbar(formatMessage(messages.setNewPwdSuccess), { variant: 'success' });
                 dialogClick();
             } else {
                 console.log('Set new pwd error');

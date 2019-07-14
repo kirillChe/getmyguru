@@ -16,6 +16,9 @@ const strategy = new LocalStrategy(
             if (!user)
                 return done(null, false, {message: 'Incorrect login'});
 
+            if (!user.confirmed)
+                return done(null, false, {message: 'User email is not confirmed'});
+
             if (!user.verifyPassword(password))
                 return done(null, false, {message: 'Incorrect password'});
             

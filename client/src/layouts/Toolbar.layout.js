@@ -15,6 +15,8 @@ import {
 } from '@material-ui/core';
 import FitnessIcon from '@material-ui/icons/FitnessCenter';
 import * as R from 'ramda';
+import axios from 'axios';
+import { withSnackbar } from 'notistack';
 
 import {Login, SignUp, ForgotPwd, ProfileMenu, SetNewPwd} from 'components';
 import { MainContext } from 'context';
@@ -73,8 +75,10 @@ const pathComponents = getPathComponents(window.location.pathname);
 class ToolbarLayout extends Component {
     static contextType = MainContext;
     state = {
+        loading: false,
         showSetNewPwd: pathComponents && pathComponents[1] === 'reset_password',
         showEmailSent: false,
+        showConfirmEmailSent: false,
         showLogin: false,
         showSignUp: false,
         showForgotPwd: false,
@@ -91,7 +95,7 @@ class ToolbarLayout extends Component {
         }
     };
 
-    handleClick = function (state) {
+    handleClick = state => {
         return (e) => {
             //hook for calling from another component
             if (e)
@@ -99,6 +103,7 @@ class ToolbarLayout extends Component {
             let states = {
                 showSetNewPwd: false,
                 showEmailSent: false,
+                showConfirmEmailSent: false,
                 showLogin: false,
                 showSignUp: false,
                 showForgotPwd: false
@@ -107,6 +112,33 @@ class ToolbarLayout extends Component {
             this.setState(states);
         }
     };
+
+    async confirmUserRegistration () {
+        try {
+            let response = await axios.post('/api/users/confirmEmail', {token: this.state.token});
+            if (response.status === 204) {
+                this.setState({
+                    loading: false,
+                    showLogin: true
+                });
+                this.props.enqueueSnackbar(this.props.intl.formatMessage(messages.confirmEmailSuccess), {variant: 'success'});
+            } else {
+                this.props.enqueueSnackbar(this.props.intl.formatMessage(messages.confirmEmailError), {variant: 'error'});
+            }
+        } catch (e) {
+            this.props.enqueueSnackbar(this.props.intl.formatMessage(messages.confirmEmailError), {variant: 'error'});
+        }
+        this.setState({
+            loading: false
+        });
+    }
+
+    async componentDidMount() {
+        if (pathComponents && pathComponents[1] === 'confirm') {
+            this.setState({loading: true});
+            await this.confirmUserRegistration();
+        }
+    }
 
     render() {
         let context = this.context;
@@ -157,6 +189,25 @@ class ToolbarLayout extends Component {
                         </DialogContent>
                     </Dialog>
                      {/*Email sent dialog end*/}
+                    {/* Confirm registration email sent dialog start */}
+                    <Dialog
+                        open={this.state.showConfirmEmailSent}
+                        TransitionComponent={Transition}
+                        onClose={this.handleClose('showConfirmEmailSent')}
+                        className={classes.dialog}
+                    >
+                        <DialogContent className={classes.content}>
+                            <Typography variant="h5">
+                                {intl.formatMessage(messages.confirmEmailSentHeader)}
+                            </Typography>
+                            <div className={classes.signup}>
+                                <Typography>
+                                    {intl.formatMessage(messages.confirmEmailSentText)}
+                                </Typography>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                     {/* Confirm registration email sent dialog end*/}
                      {/*Sign up dialog start*/}
                     <Dialog
                         open={this.state.showSignUp}
@@ -168,7 +219,7 @@ class ToolbarLayout extends Component {
                             <Typography variant="h5">
                                 {intl.formatMessage(messages.signUp)}
                             </Typography>
-                            <SignUp dialogClick={this.handleClick('showLogin')} />
+                            <SignUp dialogClick={this.handleClick('showConfirmEmailSent')} />
                             <div className={classes.signup}>
                                 <Typography>
                                     {intl.formatMessage(messages.haveAccount)}
@@ -273,4 +324,4 @@ ToolbarLayout.propTypes = {
     intl: intlShape,
 };
 
-export default withStyles(styles)(injectIntl(ToolbarLayout));
+export default withStyles(styles)(injectIntl(withSnackbar(ToolbarLayout)));

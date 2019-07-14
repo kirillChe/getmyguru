@@ -1,7 +1,12 @@
-const Op = require('sequelize').Op;
-const R = require('ramda');
-const moment = require('moment');
-const {User, UserInfo, UserLanguage, File} = require('../../models');
+const Op = require('sequelize').Op
+    , R = require('ramda')
+    , moment = require('moment')
+    , request = require('request-promise')
+    , jwt = require('jsonwebtoken')
+    , nodemailer = require('nodemailer')
+    , {User, UserInfo, UserLanguage, File} = require('../../models')
+    , {recaptcha, mailer, port} = require('../../../config/config.json')
+    , transporter = nodemailer.createTransport(mailer);
 
 const updateUserWithAssociations = async ({user, userData}) => {
     console.dir(userData, {colors: true, depth: 3});
@@ -171,7 +176,49 @@ const prepareGuruFilter = ({filter, rawFilters}) => {
     return getCustomSearchFilter(filter, rawFilters);
 };
 
+const verifyCaptcha = async ({req}) => {
+    return await request({
+        uri: recaptcha.uri,
+        method: 'POST',
+        json: true,
+        qs: {
+            secret: recaptcha.secretKey,
+            response: req.body.captcha,
+            remoteip: req.connection.remoteAddress
+        }
+    });
+};
+
+const sendConfirmationEmail = async ({user, req}) => {
+    let token = jwt.sign({}, user.password, {
+        algorithm: 'HS256',
+        subject: '' + user.id,
+        // 12 hours
+        expiresIn: 60 * 60 * 12
+    });
+
+    //@todo move host/port to config
+    let url = `http://${req.host}:${port}/confirm`;
+    let confirmEmailLink = `${url}/${token}`;
+
+    return await transporter.sendMail({
+        from: 'Info <info@getmyguru.online>', // sender address
+        to: user.email, // list of receivers
+        subject: `Hello, ${user.firstName} ${user.lastName}!`, // Subject line
+        text: `Click to confirm your email ${confirmEmailLink}`
+        // html: "<b>Hello world?</b>" // html body
+    });
+};
+
+const getUserIdFromToken = async ({token}) => {
+    let decoded = jwt.decode(token, {complete: true});
+    return decoded.payload.sub;
+};
+
 module.exports = {
     updateUserWithAssociations,
-    prepareGuruFilter
+    prepareGuruFilter,
+    verifyCaptcha,
+    sendConfirmationEmail,
+    getUserIdFromToken
 };

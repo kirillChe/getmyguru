@@ -7,4 +7,5 @@ export { default as SignUpAdept } from './SignUpAdept.component';
 export { default as SetNewPwd } from './SetNewPwd.component';
 export { default as MessageInput } from './MessageInput.component';
 export { default as ErrorBoundary } from './ErrorBoundary.component';
+export { default as Spinner } from './Spinner.component';
 

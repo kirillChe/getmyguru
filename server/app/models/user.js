@@ -21,6 +21,14 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             defaultValue: 'adept'
         },
+        confirmed: {
+            type: DataTypes.TINYINT(1),
+            allowNull: false,
+            defaultValue: false,
+            get() {
+                return Boolean(this.getDataValue('confirmed'));
+            }
+        },
         avatar: {
             type: DataTypes.INTEGER(11)
         },
@@ -39,7 +47,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(100),
             allowNull: false
         },
-
         language: {
             type: DataTypes.ENUM,
             values: ['en', 'ru'],
@@ -93,22 +100,22 @@ module.exports = (sequelize, DataTypes) => {
             user.password = bcrypt.hashSync(user.password, 10);
     });
 
-    User.afterCreate(async user => {
-        try {
-            let info = await transporter.sendMail({
-                from: 'Info <info@getmyguru.online>', // sender address
-                to: user.email, // list of receivers
-                subject: `Hello, ${user.firstName} ${user.lastName}!`, // Subject line
-                text: 'Click bellow to confirm your registration...(BETA)'
-                // html: "<b>Hello world?</b>" // html body
-            });
-
-            console.log('Message sent: %s', info);
-        }catch (e) {
-            //@todo send error to logger
-            console.log('Confirmation message was not send: ', e);
-        }
-    });
+    // User.afterCreate(async user => {
+    //     try {
+    //         let info = await transporter.sendMail({
+    //             from: 'Info <info@getmyguru.online>', // sender address
+    //             to: user.email, // list of receivers
+    //             subject: `Hello, ${user.firstName} ${user.lastName}!`, // Subject line
+    //             text: 'Click bellow to confirm your registration...(BETA)'
+    //             // html: "<b>Hello world?</b>" // html body
+    //         });
+    //
+    //         console.log('Message sent: %s', info);
+    //     }catch (e) {
+    //         //@todo send error to logger
+    //         console.log('Confirmation message was not send: ', e);
+    //     }
+    // });
 
     User.prototype.verifyPassword = function (password) {
         return bcrypt.compareSync(password, this.password);
@@ -119,15 +126,13 @@ module.exports = (sequelize, DataTypes) => {
         let token = jwt.sign({}, user.password, {
             algorithm: 'HS256',
             subject: '' + user.id,
-            // 24 hours
-            expiresIn: 60 * 60 * 24
+            // 10 min
+            expiresIn: 60 * 10
         });
-        console.log('_________________HERE: 126________________________');
 
         let forgotPwdLink = `${url}/${token}`;
-        console.log('_________________HERE: 129________________________');
 
-        let info = await transporter.sendMail({
+        return await transporter.sendMail({
             from: 'Info <info@getmyguru.online>', // sender address
             to: user.email, // list of receivers
             subject: `Hello, ${user.firstName} ${user.lastName}!`, // Subject line
@@ -136,8 +141,6 @@ module.exports = (sequelize, DataTypes) => {
             ${forgotPwdLink}` // plain text body
             // html: "<b>Hello world?</b>" // html body
         });
-        console.log('_________________HERE: 140________________________', info);
-        return info;
     };
 
 

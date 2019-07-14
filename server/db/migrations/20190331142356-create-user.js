@@ -21,6 +21,11 @@ module.exports = {
                 type: Sequelize.ENUM('admin', 'guru', 'adept'),
                 defaultValue: 'adept'
             },
+            confirmed: {
+                type: Sequelize.TINYINT(1),
+                allowNull: false,
+                defaultValue: false
+            },
             avatar: {
                 type: Sequelize.INTEGER(11).UNSIGNED
             },

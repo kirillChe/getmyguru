@@ -23,6 +23,7 @@ export default function Routes() {
         <Switch>
             <Route exact path="/" component={Main} />
             <Route path="/reset_password" component={Main} />
+            <Route path="/confirm" component={Main} />
             <PrivateRoute exact path="/account/profile/:id" component={Profile} />
             <PrivateRoute exact path="/account/profile/:id/edit" component={EditProfile} />
             <PrivateRoute exact path="/account/messages/:id" component={Messages} />

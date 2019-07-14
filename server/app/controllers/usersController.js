@@ -4,16 +4,20 @@ const R = require('ramda')
     , fs = require('fs')
     , events = require('events')
     , sequelize = require('sequelize')
-    , Op = require('sequelize').Op
-    , request = require('request-promise');
+    , Op = require('sequelize').Op;
 
 //internal modules
 const filePath = __dirname + '/../../public'
     , helper = require('./helpers/userHelpers')
-    , {port, recaptcha} = require('../../config/config.json')
+    , {port} = require('../../config/config.json')
     , {User, File, Rating, UserLanguage, UserInfo} = require('../models');
 
 const create = async (req, res) => {
+    if (req.body.userType === 'admin')
+        return res.status(400).send({
+            message: 'What the fuck are you doing?'
+        });
+
     if (!req.body.captcha)
         return res.status(400).send({
             message: 'Please, select captcha'
@@ -21,16 +25,7 @@ const create = async (req, res) => {
 
     //STEP 1. Verify captcha
     try {
-        let response = await request({
-            uri: recaptcha.uri,
-            method: 'POST',
-            qs: {
-                secret: recaptcha.secretKey,
-                response: req.body.captcha,
-                remoteip: req.connection.remoteAddress
-            }
-        });
-
+        let response = await helper.verifyCaptcha({req});
         if (!response || response.success !== true)
             return res.status(400).send({
                 message: 'Invalid captcha'
@@ -61,8 +56,9 @@ const create = async (req, res) => {
         userData.info.country = req.body.country;
 
     // Step 3. Create user
+    let user;
     try {
-        let user = await User.create(userData, {
+        user = await User.create(userData, {
             include: [
                 {
                     association: User.associations.languages,
@@ -74,8 +70,6 @@ const create = async (req, res) => {
                 }
             ]
         });
-
-        res.status(201).json(user);
     }catch (error) {
         return res.status(502).send({
             message: 'Cannot create a user',
@@ -83,6 +77,50 @@ const create = async (req, res) => {
                 error,
                 userData
             }
+        });
+    }
+
+    // Step 4. Send confirmation email
+    try{
+        let info = await helper.sendConfirmationEmail({req, user});
+        console.log('confirmation info sent: ', info);
+        res.sendStatus(201);
+    }catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while sending confirmation email',
+            meta: { error }
+        });
+    }
+};
+
+const confirmEmail = async (req, res) => {
+    if (!req.body.token)
+        return res.status(400).send({
+            message: 'Missing required parameter token'
+        });
+
+    let user;
+    try {
+        let userId = await helper.getUserIdFromToken({token: req.body.token});
+        user = await User.findByPk(userId);
+        if (!user)
+            return res.status(404).send({
+                message: 'Wrong token'
+            });
+    }catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while searching a user',
+            meta: { error }
+        });
+    }
+
+    try {
+        await user.update({confirmed: true});
+        res.sendStatus(204);
+    }catch (error) {
+        return res.status(502).send({
+            message: 'Some error occurred while trying to confirm the user',
+            meta: { error }
         });
     }
 };
@@ -499,6 +537,7 @@ const changeLanguage = async (req, res) => {
 
 module.exports = {
     create,
+    confirmEmail,
     update,
     resetPassword,
     setNewPassword,

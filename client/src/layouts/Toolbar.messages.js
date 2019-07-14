@@ -13,6 +13,14 @@ export default defineMessages({
         id: 'toolbar.signUp',
         defaultMessage: '_Sign Up_'
     },
+    confirmEmailSuccess: {
+        id: 'toolbar.confirmEmailSuccess',
+        defaultMessage: '_Email is confirmed successfully. Please, enter your credentials for entrance_'
+    },
+    confirmEmailError: {
+        id: 'toolbar.confirmEmailError',
+        defaultMessage: '_Some error occurred while trying to confirm email. Please tell to site administrator_'
+    },
     emailSent: {
         id: 'toolbar.emailSent',
         defaultMessage: '_Email sent!_'
@@ -20,6 +28,14 @@ export default defineMessages({
     resetPwdText: {
         id: 'toolbar.resetPwdText',
         defaultMessage: '_A reset password link has been sent to you via email. Go to the mail and click the link to enter a new password._'
+    },
+    confirmEmailSentHeader: {
+        id: 'toolbar.confirmEmailSentHeader',
+        defaultMessage: '_Done!_'
+    },
+    confirmEmailSentText: {
+        id: 'toolbar.confirmEmailSentText',
+        defaultMessage: '_Check your email to confirm registration_'
     },
     haveAccount: {
         id: 'toolbar.haveAccount',

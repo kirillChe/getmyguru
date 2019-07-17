@@ -1,5 +1,5 @@
-const Op = require('sequelize').Op;
-const R = require('ramda');
+const Op = require('sequelize').Op
+    , R = require('ramda');
 
 const {Message, User, File} = require('../models');
 
@@ -10,9 +10,9 @@ const conversationsPartners = async (req, res) => {
         return res.status(400).send({ message: 'Missing required parameter ownerId' });
 
     //find all conversations for owner
-    let messages = [];
+    let messages = [], filter = {};
     try{
-        let filter = {
+        filter = {
             where: {
                 [Op.or]: [
                     {
@@ -36,10 +36,13 @@ const conversationsPartners = async (req, res) => {
         if (!messages || messages.length === 0)
             return res.json([]);
 
-    }catch (error) {
+    }catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while searching messages',
-            meta: { error, filter }
+            meta: {
+                error: e.message,
+                filter
+            }
         });
     }
 
@@ -54,7 +57,7 @@ const conversationsPartners = async (req, res) => {
     //find all partners by their ids
     let users = [];
     try{
-        let filter = {
+        filter = {
             where: {
                 id: {
                     [Op.in]: partnersIds
@@ -80,10 +83,13 @@ const conversationsPartners = async (req, res) => {
                 meta: { filter }
             });
 
-    } catch (error) {
+    } catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while searching users',
-            meta: { error, filter }
+            meta: {
+                error: e.message,
+                filter
+            }
         });
     }
 
@@ -147,10 +153,13 @@ const conversation = async (req, res) => {
 
         res.json(response);
 
-    } catch (error) {
+    } catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while searching users',
-            meta: { error, filter }
+            meta: {
+                error: e.message,
+                filter
+            }
         });
     }
 };

@@ -23,7 +23,7 @@ const upload = async (req, res) => {
             return res.status(502).send({
                 message: 'Some error occurred while searching user from session',
                 meta: {
-                    error,
+                    error: e.message,
                     userId: req.session.passport.user
                 }
             });
@@ -37,17 +37,21 @@ const upload = async (req, res) => {
     };
     try {
         await File.upload(ctx);
-    } catch (error) {
+    } catch (e) {
         res.status(502).send({
             message: 'Some error occurred while uploading image for user',
-            meta: { error, userId }
+            meta: {
+                error: e.message,
+                userId
+            }
         });
     }
 };
 
 const userImages = async (req, res) => {
+    let filter = {};
     try {
-        let filter = {
+        filter = {
             where: {
                 id: req.params.id
             },
@@ -64,10 +68,13 @@ const userImages = async (req, res) => {
         }, user && user.files || []);
 
         res.status(200).json(images);
-    } catch (error) {
+    } catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while searching user\' images',
-            meta: { error, filter }
+            meta: {
+                error: e.message,
+                filter
+            }
         });
     }
 };
@@ -97,11 +104,11 @@ const destroy = async (req, res) => {
         }
         await file.destroy();
         res.sendStatus(204);
-    }catch (error) {
+    }catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while trying to delete user\'s image',
             meta: {
-                error,
+                error: e.message,
                 fileId: req.params.id,
                 userId: req.session.passport.user
             }

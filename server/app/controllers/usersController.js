@@ -31,10 +31,10 @@ const create = async (req, res) => {
                 message: 'Invalid captcha'
             });
 
-    } catch (error) {
+    } catch (e) {
         return res.status(400).send({
             message: 'Invalid captcha',
-            meta: { error }
+            meta: { error: e.message }
         });
     }
 
@@ -70,11 +70,11 @@ const create = async (req, res) => {
                 }
             ]
         });
-    }catch (error) {
+    }catch (e) {
         return res.status(502).send({
             message: 'Cannot create a user',
             meta: {
-                error,
+                error: e.message,
                 userData
             }
         });
@@ -85,10 +85,10 @@ const create = async (req, res) => {
         let info = await helper.sendConfirmationEmail({req, user});
         console.log('confirmation info sent: ', info);
         res.sendStatus(201);
-    }catch (error) {
+    }catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while sending confirmation email',
-            meta: { error }
+            meta: { error: e.message }
         });
     }
 };
@@ -107,20 +107,20 @@ const confirmEmail = async (req, res) => {
             return res.status(404).send({
                 message: 'Wrong token'
             });
-    }catch (error) {
+    }catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while searching a user',
-            meta: { error }
+            meta: { error: e.message }
         });
     }
 
     try {
         await user.update({confirmed: true});
         res.sendStatus(204);
-    }catch (error) {
+    }catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while trying to confirm the user',
-            meta: { error }
+            meta: { error: e.message }
         });
     }
 };
@@ -142,11 +142,11 @@ const update = async (req, res) => {
                     message: 'This user has no permissions for updating other users'
                 });
 
-        } catch (error) {
+        } catch (e) {
             return res.status(502).send({
                 message: 'Some error occurred while searching user from session',
                 meta: {
-                    error,
+                    error: e.message,
                     userId: req.session.passport.user
                 }
             });
@@ -165,11 +165,11 @@ const update = async (req, res) => {
                 meta: {userId}
             });
 
-    } catch (error) {
+    } catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while searching user',
             meta: {
-                error,
+                error: e.message,
                 userId
             }
         });
@@ -185,11 +185,11 @@ const update = async (req, res) => {
         if (fieldname === 'userData') {
             try{
                 userData = JSON.parse(val);
-            } catch (error) {
+            } catch (e) {
                 return res.status(502).send({
                     message: 'Field userData must be stringified object',
                     meta: {
-                        error,
+                        error: e.message,
                         userData
                     }
                 });
@@ -249,11 +249,11 @@ const update = async (req, res) => {
         file.pipe(fs.createWriteStream(saveTo));
     });
 
-    busboy.on('error', error => {
-        console.log('Upload failed: ', error);
+    busboy.on('error', e => {
+        console.log('Upload failed: ', e);
         res.status(502).send({
             message: 'Some error occurred while file/s uploading',
-            meta: { error }
+            meta: { error: e.message }
         });
     });
 
@@ -277,12 +277,12 @@ const update = async (req, res) => {
                 res.sendStatus(201);
             }
 
-        } catch (error) {
+        } catch (e) {
             console.log('Failed to update user model: ', e);
             res.status(502).send({
                 message: 'Some error occurred while updating a user',
                 meta: {
-                    error,
+                    error: e.message,
                     userData
                 }
             });
@@ -302,11 +302,11 @@ const resetPassword = async (req, res) => {
     let user;
     try {
         user = await User.findOne({ where: {email} });
-    } catch (error) {
+    } catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while trying to find user with provided email',
             meta: {
-                error,
+                error: e.message,
                 email
             }
         });
@@ -329,11 +329,11 @@ const resetPassword = async (req, res) => {
             message: 'Some error occurred while trying to reset password'
         });
 
-    } catch (error) {
+    } catch (e) {
         res.status(502).send({
             message: 'Some error occurred while trying to reset password',
             meta: {
-                error,
+                error: e.message,
                 email
             }
         });
@@ -358,13 +358,13 @@ const setNewPassword = async (req, res) => {
     try {
         await User.setNewPassword(ctx);
         res.sendStatus(204);
-    } catch (error) {
+    } catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while trying to set new password',
             meta: {
                 token: ctx.token,
                 newPassword: ctx.newPassword,
-                error
+                error: e.message
             }
         });
     }
@@ -376,16 +376,17 @@ const getGurusPreviews = async (req, res) => {
             message: 'Missing required parameter filter'
         });
 
-    let users = [];
+    let users = [], filter = {};
     try {
-        let filter = await helper.prepareGuruFilter(req.query);
+        filter = await helper.prepareGuruFilter(req.query);
         users = await User.findAll(filter);
-    } catch (error) {
+        JSON.parse('fdsasd');
+    } catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while searching the users',
             meta: {
                 filter,
-                error
+                error: e.message
             }
         });
     }
@@ -409,9 +410,9 @@ const userProfile = async (req, res) => {
             message: 'Missing required parameter id'
         });
     
-    let user, ratersCount;
+    let user, ratersCount, filter = {};
     try {
-        let filter = {
+        filter = {
             where: {
                 id: req.params.id
             },
@@ -439,18 +440,18 @@ const userProfile = async (req, res) => {
                 meta: { filter }
             });
 
-    }catch (error) {
+    }catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while searching a user',
             meta: {
                 filter,
-                error
+                error: e.message
             }
         });
     }
 
     try {
-        let filter = {
+        filter = {
             where: {
                 userId: req.params.id
             },
@@ -462,12 +463,12 @@ const userProfile = async (req, res) => {
 
         ratersCount = ratings && ratings[0] && ratings[0].ratersCount || 0;
 
-    }catch (error) {
+    }catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while searching the rating for user',
             meta: {
                 filter,
-                error
+                error: e.message
             }
         });
     }
@@ -508,10 +509,10 @@ const filtersData = async (req, res) => {
         });
         countriesRange = R.map(R.prop('country'), countries);
         res.json({languagesRange, countriesRange});
-    } catch (error) {
+    } catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while assembling filters data',
-            meta: { error }
+            meta: { error: e.message }
         });
     }
 };
@@ -527,10 +528,10 @@ const changeLanguage = async (req, res) => {
         let currentUser = await User.findByPk(req.session.passport.user);
         await currentUser.update({language});
         res.sendStatus(204);
-    } catch (error) {
+    } catch (e) {
         res.status(502).send({
             message: 'Some error occurred while updating user language',
-            meta: { error }
+            meta: { error: e.message }
         });
     }
 };

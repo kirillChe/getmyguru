@@ -10,7 +10,7 @@ const create = async (req, res) => {
         res.status(502).send({
             message: 'Cannot create a comment',
             meta: {
-                error: e
+                error: e.message
             }
         });
     }
@@ -58,7 +58,7 @@ const commentsTree = async (req, res) => {
         return res.status(502).send({
             message: 'Some error occurred while searching owner\'s comments tree',
             meta: {
-                error: e
+                error: e.message
             }
         });
     }

@@ -10,6 +10,7 @@ const R = require('ramda')
 const filePath = __dirname + '/../../public'
     , helper = require('./helpers/userHelpers')
     , {port} = require('../../config/config.json')
+    , { logger } = require('../../config/logger')
     , {User, File, Rating, UserLanguage, UserInfo} = require('../models');
 
 const create = async (req, res) => {
@@ -380,7 +381,6 @@ const getGurusPreviews = async (req, res) => {
     try {
         filter = await helper.prepareGuruFilter(req.query);
         users = await User.findAll(filter);
-        JSON.parse('fdsasd');
     } catch (e) {
         return res.status(502).send({
             message: 'Some error occurred while searching the users',
